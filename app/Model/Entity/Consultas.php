@@ -28,6 +28,104 @@ class Consultas extends Conn {
         } 
     }
 
+    public function getEspecialidade($TENANCY_ID) {
+        try{           
+            $sql = "SELECT * FROM ESP_ESPECIALIDADE WHERE TENANCY_ID = :TENANCY_ID ORDER BY ESP_DCTITULO  ASC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function datasBloqueadasByIdProf($TENANCY_ID, $DEN_IDDENTISTA) {
+        try{           
+            $sql = "SELECT AGB_DTBLOQUEADA FROM AGB_AGENDA_BLOQUEIO WHERE TENANCY_ID = :TENANCY_ID AND DEN_IDDENTISTA = :DEN_IDDENTISTA AND AGB_DCDIA_TODO = 'SIM'";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":DEN_IDDENTISTA", $DEN_IDDENTISTA);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function datasBloqueadasByDataProf($TENANCY_ID, $DEN_IDDENTISTA, $AGB_DTBLOQUEADA) {
+        try{           
+            $sql = "SELECT AGB_DTBLOQUEADA FROM AGB_AGENDA_BLOQUEIO 
+            WHERE TENANCY_ID = :TENANCY_ID 
+                AND DEN_IDDENTISTA = :DEN_IDDENTISTA 
+                AND AGB_DCDIA_TODO = 'SIM' 
+                AND AGB_DTBLOQUEADA = :AGB_DTBLOQUEADA";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":DEN_IDDENTISTA", $DEN_IDDENTISTA);
+            $stmt->bindParam(":AGB_DTBLOQUEADA", $AGB_DTBLOQUEADA);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function insertConsultaAgenda($DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
+        
+        $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
+        $CON_DTCONSULTA = $dataObj->format('Y-m-d');
+
+        $checkDataBloqueio = $this->datasBloqueadasByDataProf($TENANCY_ID, $DEN_IDDENTISTA, $CON_DTCONSULTA);
+        if(!empty($checkDataBloqueio)) {
+            return ["success" => false,"message" => "O dentista marcou esta data como indisponível para consultas. Por favor, escolha uma nova data!"];
+        }
+
+        try{           
+            $sql = "
+                INSERT INTO CON_CONSULTAS (
+                    DEN_IDDENTISTA,
+                    CON_NMESPECIALIDADE,
+                    PAC_IDPACIENTE,
+                    CON_DCOBSERVACOES,
+                    CON_NUMDURACAO,
+                    CON_DTCONSULTA,
+                    CON_HORACONSULTA,
+                    TENANCY_ID
+                ) VALUES (
+                    :DEN_IDDENTISTA,
+                    :CON_NMESPECIALIDADE,
+                    :PAC_IDPACIENTE,
+                    :CON_DCOBSERVACOES,
+                    :CON_NUMDURACAO,
+                    :CON_DTCONSULTA,
+                    :CON_HORACONSULTA,
+                    :TENANCY_ID
+                )
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindValue(':DEN_IDDENTISTA', $DEN_IDDENTISTA, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_NMESPECIALIDADE', $CON_NMESPECIALIDADE, PDO::PARAM_STR);
+            $stmt->bindValue(':PAC_IDPACIENTE', $PAC_IDPACIENTE, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_DCOBSERVACOES', $CON_DCOBSERVACOES, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_NUMDURACAO', $CON_NUMDURACAO, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_DTCONSULTA', $CON_DTCONSULTA, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_HORACONSULTA', $CON_HORACONSULTA, PDO::PARAM_STR);
+            $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
+
+            $stmt->execute();
+
+            return ["success" => true,"message" => "Consulta cadastrada com sucesso!"];
+
+        } catch (PDOException $e) {
+            //return ["success" => false,"message" => "Houve um erro ao cadastrar a consulta!"];
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
     public function getConsultasByHash($CON_DCHASH_CONFIRMACAO_PRESENCA) {
         try{           
             $sql = "SELECT * FROM VW_CONSULTAS WHERE CON_DCHASH_CONFIRMACAO_PRESENCA = :CON_DCHASH_CONFIRMACAO_PRESENCA";
@@ -210,7 +308,7 @@ class Consultas extends Conn {
     }
 
 
-    public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $TENANCY_ID) {
+    public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $TENANCY_ID) { 
         try {
             $sql = "WITH RECURSIVE horarios_possiveis AS (
                         SELECT TIME('08:00:00') AS horario
@@ -242,7 +340,7 @@ class Consultas extends Conn {
         
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            return ["error" => $e->getMessage()];
+            //return ["error" => $e->getMessage()];
         }
     }
 
@@ -288,44 +386,44 @@ class Consultas extends Conn {
 
     public function updateConsultaAgenda($CON_IDCONSULTA, $CON_DTCONSULTA, $CON_HORACONSULTA, $CON_NUMDURACAO, $TENANCY_ID)
     {
-    try {
-        $sql = "UPDATE CON_CONSULTAS 
-                SET 
-                    CON_DTCONSULTA = :CON_DTCONSULTA,
-                    CON_HORACONSULTA = :CON_HORACONSULTA,
-                    CON_NUMDURACAO = :CON_NUMDURACAO
-                WHERE 
-                    TENANCY_ID = :TENANCY_ID 
-                    AND CON_IDCONSULTA = :CON_IDCONSULTA";
+        try {
+            $sql = "UPDATE CON_CONSULTAS 
+                    SET 
+                        CON_DTCONSULTA = :CON_DTCONSULTA,
+                        CON_HORACONSULTA = :CON_HORACONSULTA,
+                        CON_NUMDURACAO = :CON_NUMDURACAO
+                    WHERE 
+                        TENANCY_ID = :TENANCY_ID 
+                        AND CON_IDCONSULTA = :CON_IDCONSULTA";
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->bindParam(":CON_DTCONSULTA", $CON_DTCONSULTA);
-        $stmt->bindParam(":CON_HORACONSULTA", $CON_HORACONSULTA);
-        $stmt->bindParam(":CON_NUMDURACAO", $CON_NUMDURACAO, PDO::PARAM_INT);
-        $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
-        $stmt->bindParam(":CON_IDCONSULTA", $CON_IDCONSULTA);
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":CON_DTCONSULTA", $CON_DTCONSULTA);
+            $stmt->bindParam(":CON_HORACONSULTA", $CON_HORACONSULTA);
+            $stmt->bindParam(":CON_NUMDURACAO", $CON_NUMDURACAO, PDO::PARAM_INT);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":CON_IDCONSULTA", $CON_IDCONSULTA);
 
-        $stmt->execute();
+            $stmt->execute();
 
-        // Retorna sucesso ou falha
-        if ($stmt->rowCount() > 0) {
-            return [
-                "success" => true,
-                "message" => "Consulta atualizada com sucesso.",
-                "id" => $CON_IDCONSULTA,
-                "data" => $CON_DTCONSULTA,
-                "hora" => $CON_HORACONSULTA,
-                "duracao" => $CON_NUMDURACAO
-            ];
-        } else {
-            return [
-                "success" => false,
-                "message" => "Nenhuma linha foi atualizada (talvez os dados sejam idênticos)."
-            ];
+            // Retorna sucesso ou falha
+            if ($stmt->rowCount() > 0) {
+                return [
+                    "success" => true,
+                    "message" => "Consulta atualizada com sucesso.",
+                    "id" => $CON_IDCONSULTA,
+                    "data" => $CON_DTCONSULTA,
+                    "hora" => $CON_HORACONSULTA,
+                    "duracao" => $CON_NUMDURACAO
+                ];
+            } else {
+                return [
+                    "success" => false,
+                    "message" => "Nenhuma linha foi atualizada (talvez os dados sejam idênticos)."
+                ];
+            }
+        } catch (PDOException $e) {
+            return ["success" => false, "message" => "Erro: " . $e->getMessage()];
         }
-    } catch (PDOException $e) {
-        return ["success" => false, "message" => "Erro: " . $e->getMessage()];
-    }
     }
 
 

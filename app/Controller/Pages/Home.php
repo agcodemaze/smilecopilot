@@ -25,6 +25,7 @@ class Home extends Page{
         $s3 = new S3Controller();
 
         $consultasHoje = $objConsultas->getConsultasHoje(TENANCY_ID);
+        $especialidades = $objConsultas->getEspecialidade(TENANCY_ID);
         $getModeloMsgsWhatsapp = $objWhatsapp->getModelosMsgWhatsapp(TENANCY_ID); 
         $configuracoes = $objOrganization->getConfiguracoes(TENANCY_ID);
         $pacientes = $objPaciente->getPacientes(TENANCY_ID);
@@ -77,7 +78,7 @@ class Home extends Page{
             <script src="'.ASSETS_PATH.'vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
             <script src="'.ASSETS_PATH.'vendor/datatables.net-select/js/dataTables.select.min.js"></script>
             <script src="'.ASSETS_PATH.'js/app.min.js"></script>
-            <script src="'.ASSETS_PATH.'utils/alertDelete.js"></script>      
+            <script src="'.ASSETS_PATH.'utils/alertDelete.js"></script>     
         ';
 //<script src="'.ASSETS_PATH.'utils/simple-timepicker-pt.js"></script>
         //VIEW DA HOME
@@ -92,6 +93,7 @@ class Home extends Page{
             'consultasHoje' => $consultasHoje,
             'componentsScriptsHeader' => $componentsScriptsHeader,
             'componentsScriptsFooter' => $componentsScriptsFooter,
+            'especialidades' => $especialidades,
             's3' => $s3
         ]); 
 
@@ -125,6 +127,13 @@ class Home extends Page{
         $objConsultas = new Consultas();
         $ConsultasToCalendar = $objConsultas->getConsultasToCalendar(TENANCY_ID, $DEN_IDDENTISTA);
         return $ConsultasToCalendar;
+    }
+
+    public static function getDatasBloqueadasByProfId($DEN_IDDENTISTA) {
+
+        $objConsultas = new Consultas();
+        $datasBloqueadas = $objConsultas->datasBloqueadasByIdProf(TENANCY_ID, $DEN_IDDENTISTA);
+        return $datasBloqueadas;
     }
 }
 

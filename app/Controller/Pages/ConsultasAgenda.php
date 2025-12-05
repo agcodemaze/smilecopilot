@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller\Pages;
 
 use \App\Utils\View;
@@ -7,25 +6,22 @@ use \App\Model\Entity\Organization;
 use \App\Model\Entity\Consultas;
 use \App\Utils\Auth;
 
-/**
- * A classe Login é responsável por controlar a página de login
- * e as ações de autenticação do usuário.
- */
 class ConsultasAgenda{
 
     public function getHorariosDisp($data, $duracao) {
-        Auth::authCheck(); //verifica se já tem login válido (jwt)
+        Auth::authCheck(); 
         try {
                 $objConsultas = new Consultas();
-                $response = $objConsultas->getHorariosDisponiveis($data, "30", TENANCY_ID);
-                //$data = json_decode($response, true);            
-                echo json_encode($response);               
-                return json_encode($response);             
 
+                $dataObj = \DateTime::createFromFormat('d/m/Y', $data);
+                $data = $dataObj->format('Y-m-d');
+
+                $response = $objConsultas->getHorariosDisponiveis($data, $duracao, TENANCY_ID);           
+                return $response;           
 
         } catch (PDOException $e) {   
             $erro = $e->getMessage();           
-            return json_encode(["success" => false, "message" => "Erro no servidor. Tente novamente mais tarde."]);
+            //return ["success" => false, "message" => "Erro no servidor. Tente novamente mais tarde."];
         }
     }  
     
@@ -48,8 +44,7 @@ class ConsultasAgenda{
                     $duracao = ($intervalo->days * 24 * 60) + ($intervalo->h * 60) + $intervalo->i;
                 }
 
-                if($duracao > 60)
-                {
+                if($duracao > 60) {
                     return json_encode(["success" => false, "message" => "Consulta não pode ter duração maior que 1 hora."]);
                 }
 
@@ -60,6 +55,22 @@ class ConsultasAgenda{
         } catch (PDOException $e) {   
             $erro = $e->getMessage();           
             return json_encode(["success" => false, "message" => "Erro no servidor. Tente novamente mais tarde."]);
+        }
+    } 
+
+    public function insertConsulta($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario) {
+        Auth::authCheck();
+
+        try {
+                $objConsultas = new Consultas();
+
+                $response = $objConsultas->insertConsultaAgenda($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, TENANCY_ID);
+
+                return json_encode($response);
+        
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();        
+            return json_encode(["success" => false, "message" => "Houve um erro ao cadastrar a consulta."]);
         }
     } 
 }

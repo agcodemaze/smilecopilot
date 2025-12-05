@@ -10,7 +10,7 @@ use \App\Model\Entity\Organization;
  * A classe Agenda é responsável por controlar a página de agendamentos/calendário
  * do sistema.
  */
-class Agenda extends Page{
+class Agenda extends Page{  
 
     /**
     * Metodo responsavel por retornar o conteúdo da página de agenda.
@@ -54,9 +54,9 @@ class Agenda extends Page{
 
         //VIEW DA HOME
         $content = ([
-            'title' => $objOrganization->title,
-            'description' => $objOrganization->description,
-            'site' => $objOrganization->site,
+           // 'title' => $objOrganization->title,
+           // 'description' => $objOrganization->description,
+           // 'site' => $objOrganization->site,
             'componentsScriptsHeader' => $componentsScriptsHeader,
             'componentsScriptsFooter' => $componentsScriptsFooter
         ]); 

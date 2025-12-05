@@ -1,7 +1,5 @@
 <?php
-
 require __DIR__.'/vendor/autoload.php';
-
 
 $dotenvPath = __DIR__;
 
@@ -135,6 +133,13 @@ $obRouter->post('/updatemodeloanamneseProc', [
     }
 ]);
 
+//ROTA CAD ANAMNESE
+$obRouter->get('/anamnese',[
+    function(){
+        return new Response(200,CadAnamnese::getAnamnese());
+    }
+]);
+
 //ROTA DELETE MODELO ANAMNESE
 $obRouter->post('/deletemodeloanamnese',[
     function(){
@@ -159,10 +164,25 @@ $obRouter->get('/listaconsulta',[
     }
 ]);
 
-//ROTA CAD ANAMNESE
-$obRouter->get('/anamnese',[
-    function(){
-        return new Response(200,CadAnamnese::getAnamnese());
+//ROTA CADASTRAR CONSULTA
+$obRouter->post('/cadconsulta', [
+    function() {
+        $consultaController = new \App\Controller\Pages\ConsultasAgenda();
+
+        $paciente = EncryptDecrypt::sanitize($_POST['paciente'] ?? '');
+        $especialidade = EncryptDecrypt::sanitize($_POST['especialidade'] ?? '');
+        $observacao = EncryptDecrypt::sanitize($_POST['observacao'] ?? '');
+        $duracao = EncryptDecrypt::sanitize($_POST['duracao'] ?? '');
+        $data = EncryptDecrypt::sanitize($_POST['data'] ?? '');
+        $horario = EncryptDecrypt::sanitize($_POST['horarios'][0] ?? '');
+        $idDentista = EncryptDecrypt::sanitize($_POST['idDentista'] ?? '');
+
+        if(empty($data)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informada a data da consulta."]));}
+        if(empty($paciente)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o paciente da consulta."]));}
+        if(empty($horario)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o horário da consulta."]));}
+        if(empty($idDentista)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o dentista que irá atender consulta."]));}
+
+        return new Response(200, $consultaController->insertConsulta($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario));
     }
 ]);
 
@@ -229,9 +249,10 @@ $obRouter->post('/horariosdisp', [
         $data = $_POST['data'] ?? '';
         $duracao = $_POST['duracao'] ?? '';
 
-        $result = $consultaController->getHorariosDisp($data, $duracao);
-
-        return new \App\Http\Response(200, json_encode($result), 'application/json');
+        $result = json_encode($consultaController->getHorariosDisp($data, $duracao)); 
+        
+        //return new \App\Http\Response(200, json_encode($result), 'application/json');
+        return new \App\Http\Response(200, $result);
     }
 ]);
 

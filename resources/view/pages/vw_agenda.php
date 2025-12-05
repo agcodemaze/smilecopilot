@@ -85,7 +85,7 @@
 
 
                                             <div class="row d-none d-md-block" id="agenda-pc">
-                                                <div class="col-lg-12">
+                                                <div class="col-lg-9">
                                                     <div class="mt-4 mt-lg-0">  
                                                         <?php if ($profissionalId != "all"): ?>                                      
                                                         <div id="calendar"></div>

@@ -11,13 +11,14 @@ $hora = new DateTime($inicio);
 $horaFim = new DateTime($fim);
 $intervalo = new DateInterval('PT30M');
 
+$datasBloqueadas = [];
+
 while ($hora <= $horaFim) {
     $horarios[] = $hora->format('H:i');
     $hora->add($intervalo);
 }
 //logica para horarios disponiveis
 
-//trecho q reutilizo a url para criar os links de atalho para dias da semana
 $currentUrl = $_SERVER['REQUEST_URI'];
 $parsedUrl = parse_url($currentUrl);
 $path = $parsedUrl['path'];
@@ -44,9 +45,13 @@ if ($profissionalId === "all" && !empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayPredef(""); 
 } elseif (!empty($profissionalId) && !empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayProfPredef($profissionalId, $dia);
+    $datasBloqueadas = \App\Controller\Pages\Home::getDatasBloqueadasByProfId($profissionalId);
 } elseif (!empty($profissionalId) && empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayProfPredef($profissionalId, $dia);
+    $datasBloqueadas = \App\Controller\Pages\Home::getDatasBloqueadasByProfId($profissionalId);
 }
+
+$datasBloqueadas = array_column($datasBloqueadas, "AGB_DTBLOQUEADA");
 
 $botaoStyleDeactiveOntem = "btn-soft-secondary ";
 $botaoStyleDeactiveHoje = "btn-soft-secondary ";
@@ -101,7 +106,6 @@ foreach ($consultasHoje as $c) {
 }
 
 ?>
-
 <style>
     #timeline {
         width: 100%;
@@ -111,13 +115,9 @@ foreach ($consultasHoje as $c) {
         background: #f9fafb;
         padding: 10px;
     }
-
-    /* Remove borda padrão da timeline */
     .vis-timeline {
         border: none !important;
     }
-
-    /* Estilo dos itens */
     .vis-item {
         font-size: 13px;
         line-height: 16px;
@@ -128,41 +128,28 @@ foreach ($consultasHoje as $c) {
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         color: #fff !important;
     }
-
-    /* Texto do eixo do tempo */
     .vis-time-axis .vis-text {
         font-size: 12px;
         color: #666;
     }
-
-    /* Linha do tempo atual */
     .vis-current-time {
         background-color: #FF5252 !important;
         width: 2px !important;
     }
-  /* cor vermelha para datas bloqueadas */
-  .flatpickr-day.data-bloqueada {
-    background: #f7584dff !important;
-    color: white !important;
-    cursor: not-allowed !important;
-  }
-
+    .flatpickr-day.data-bloqueada {
+        background: #f7584dff !important;
+        color: white !important;
+        cursor: not-allowed !important;
+    }
     #alternative-page-datatable td {
         padding-top: 4px;
         padding-bottom: 4px;
         vertical-align: middle; 
-        }
-
-
+    }
     .table td, .table th {
         white-space: normal;
         word-break: break-word;
     }
-
-</style>
-<style>
-    /* Avatar do usuário */
-    /* Botões de ação */
     .action-icon {
         display: inline-flex;
         align-items: center;
@@ -175,37 +162,46 @@ foreach ($consultasHoje as $c) {
         color: #555;
         transition: all 0.2s;
     }
-
     .action-icon:hover {
         background-color: #d2d5d6ff;
         border: 1px solid #aaa7a7ff;
         color: #000;
     }
-
-    /* Botão delete */
     .action-icon i.mdi-delete {
         color: #f16a6a;
     }
-
-    /* Tabela responsiva com hover */
     #alternative-page-datatable tbody tr:hover {
         background-color: #f9f9f9;
         cursor: pointer;
     }
-
-    /* Truncar texto longo */
     .text-truncate {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-
     .disabled-link {
         pointer-events: none; 
         opacity: 0.3;         
         cursor: default;      
     }
+    select {
+        cursor: pointer !important;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        padding: 8px 10px;
+        transition: border-color .2s;
+    }
+    select:focus {
+        border-color: #0cadc2 !important;
+        box-shadow: 0 0 0 0.2rem rgba(12, 173, 194, 0.25) !important;
+        outline: none !important;
+    }
+    select option:hover {
+        background-color: #0cadc2 !important;
+        color: #fff !important;
+    }
 </style>
+
 <!-- Start Content-->
 <div class="container-fluid" style="max-width:100% !important; padding-left:10px; padding-right:10px;">
     <!-- start page title -->
@@ -427,6 +423,19 @@ foreach ($consultasHoje as $c) {
                                     }
                                     
                                     $anamneseDispEnv = empty($consulta["ANR_DCCOD_AUTENTICACAO"]) ? true : false;
+
+                                    $tel = preg_replace('/\D/', '', $consulta['PAC_DCTELEFONE'] ?? '');
+
+                                    if ($tel && strlen($tel) >= 12) {
+                                        $country  = substr($tel, 0, 2);       // Código do país
+                                        $ddd      = substr($tel, 2, 2);       // DDD
+                                        $numero1  = substr($tel, 4, -4);      // Parte inicial do número
+                                        $numero2  = substr($tel, -4);         // Últimos 4 dígitos
+
+                                        $telefoneFormatado = "+$country ($ddd) $numero1-$numero2";
+                                    } else {
+                                        $telefoneFormatado = "";
+                                    }
                                 ?> 
                             <tr 
                                 data-consulta-id="<?= htmlspecialchars($consulta['CON_IDCONSULTA']) ?>" 
@@ -447,7 +456,10 @@ foreach ($consultasHoje as $c) {
                                             strtotime($dataConsulta . ' ' . str_replace(['h','ás'], ['',''], $consultaHoraIni))
                                         ) ?>
                                     </span>
-                                    <?= htmlspecialchars($dataConsulta, ENT_QUOTES, 'UTF-8') ?> <?= htmlspecialchars($consultaHoraIni, ENT_QUOTES, 'UTF-8') ?> <?= \App\Core\Language::get('as'); ?> <?= htmlspecialchars($consultaHoraFim, ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars($dataConsulta, ENT_QUOTES, 'UTF-8') ?>
+                                    <span class="text-info fw-bold"><?= htmlspecialchars($consultaHoraIni, ENT_QUOTES, 'UTF-8') ?></span>
+                                    <?= \App\Core\Language::get('as'); ?>
+                                    <?= htmlspecialchars($consultaHoraFim, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
                                 <td class="text-truncate status" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
@@ -457,7 +469,7 @@ foreach ($consultasHoje as $c) {
                                 </td>
                                         
                                 <td class="text-truncate" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <?= htmlspecialchars((string)$consulta['PAC_DCTELEFONE'], ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars((string)$telefoneFormatado, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
                                 <td class="text-truncate" style="cursor: pointer; max-width: 150px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
@@ -635,53 +647,6 @@ foreach ($consultasHoje as $c) {
 </script>
 <!-- msg modal -->
 
-<!-- /.Modal Alteração de consulta -->
-<div id="editarConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-
-            <div class="modal-body">
-                <div class="text-center mt-2 mb-4">
-                    <a href="index.html" class="text-success">
-                        <span><img src="/public/assets/images/SmileCopilot-Logo_139x28.png" style="height:28px; width:auto;"></span>
-                    </a>
-                </div>
-
-                <form class="ps-3 pe-3" action="#">
-
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Name</label>
-                        <input class="form-control" type="email" id="username" required="" placeholder="Michael Zenaty">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="emailaddress" class="form-label">Email address</label>
-                        <input class="form-control" type="email" id="emailaddress" required="" placeholder="john@deo.com">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input class="form-control" type="password" required="" id="password" placeholder="Enter your password">
-                    </div>
-
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="customCheck1">
-                            <label class="form-check-label" for="customCheck1">I accept <a href="#">Terms and Conditions</a></label>
-                        </div> 
-                    </div>
-
-                    <div class="mb-3 text-center">
-                        <button class="btn btn-primary" type="submit">Sign Up Free</button>
-                    </div>
-
-                </form>
-
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
-<!-- /.Modal Alteração de consulta -->
 
 <!-- /.Modal nova consulta -->
 <div id="novaConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -703,12 +668,12 @@ foreach ($consultasHoje as $c) {
                     </a>
                 </div>
 
-                <form class="ps-3 pe-3" action="#">
+                <form class="ps-3 pe-3" id="formNovaConsulta">
 
                     <div class="mb-3">
                         <label for="paciente" class="form-label">Paciente</label>
                         <div class="input-group">
-                            <select class="select2 form-control" id="paciente" data-placeholder="Escolha um paciente">
+                            <select class="form-control" id="paciente" name="paciente" required>
                                 <option value="">Selecione...</option>
                                 <?php foreach($pacientes as $p): ?>
                                     <option value="<?= $p['PAC_IDPACIENTE'] ?>">
@@ -716,66 +681,82 @@ foreach ($consultasHoje as $c) {
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <a href="/cadastropaciente" class="btn btn-success"
-                                style="
-                                    background-color: #0cadc2ff;
-                                    color: white;
-                                    border-color: #135fd1ff;
-                                    width: 40px;
-                                    height: 38px;            
-                                    display: flex;
-                                    align-items: center;
-                                    justify-content: center;
-                                    font-size: 1.5rem;        
-                                    font-weight: bold;
-                                    margin-left: 5px;
-                                    padding: 0;
-                                " data-bs-toggle="popover" data-bs-placement="right" data-bs-trigger="hover"
-                        data-bs-custom-class="info-popover" data-bs-title="<?= \App\Core\Language::get('pacientes'); ?>"
-                        data-bs-content="<?= \App\Core\Language::get('adicionar_paciente'); ?>">
-                                +
-                            </a>
                         </div>
                     </div>
+                                
+                    <div class="mb-3">
+                        <label for="especialidade" class="form-label">Especialidade</label>
+                        <div class="input-group">
+                            <select class="form-control" id="especialidade" name="especialidade" required>
+                                <option value="">Selecione...</option>
+                                <?php foreach($especialidades as $p): ?>
+                                    <option value="<?= $p['ESP_DCTITULO'] ?>">
+                                        <?= htmlspecialchars($p['ESP_DCTITULO']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                                
+                    <input type="hidden" id="idDentista" name="idDentista" value="<?php echo $_SESSION['PROFISSIONAL_ID']; ?>"/> 
+                                
                     <div class="mb-3">
                         <label for="observacao" class="form-label">Observações</label>
-                        <textarea class="form-control" id="observacao" rows="4"></textarea>
+                        <textarea class="form-control" id="observacao" name="observacao" rows="4" maxlength="300"
+                                  style="white-space: pre-wrap; overflow-wrap: break-word;"></textarea>
+                        <small id="contadorObs" class="text-muted">0 / 300</small>
                     </div>
+                                
+                    <script>
+                        document.getElementById('observacao').addEventListener('input', function () {
+                            document.getElementById('contadorObs').textContent = this.value.length + " / 300";
+                        });
+                    </script>
+
                     <div class="mb-3">
                         <label class="form-label">Duração da Consulta</label>
+                    
                         <div class="form-check form-radio-danger">
-                            <input type="radio" value="30" id="duracao1" name="duracao" class="form-check-input">
+                            <input type="radio" value="30" id="duracao1" name="duracao" class="form-check-input" required>
                             <label class="form-check-label" for="duracao1">30 Minutos</label>
                         </div>
+                    
                         <div class="form-check form-radio-danger">
-                            <input type="radio" value="60" id="duracao2" name="duracao" class="form-check-input">
+                            <input type="radio" value="60" id="duracao2" name="duracao" class="form-check-input" required>
                             <label class="form-check-label" for="duracao2">60 Minutos</label>
                         </div>
-                    </div> 
-
+                    </div>
+                    
                     <div class="mb-3">
                         <label class="form-label">Data</label>
-                        <input type="text" id="basic-datepicker" class="form-control">
+                        <input type="text" id="basic-datepicker" name="data" class="form-control" required>
                     </div>
-
+                    
                     <div class="mb-3">
                         <label class="form-label">Horários disponíveis</label>
-                        <div id="horarios-disponiveis">
-
-                        </div>
+                        <div id="horarios-disponiveis"></div>
                     </div>
-
+                    
                     <div class="mb-3 text-center">
-                        <button class="btn" style="background-color: #0cadc2ff; color: white; border-color: #135fd1ff;" type="submit">Salvar</button>
+                        <button id="btnSalvar"
+                                class="btn btn-primary btn-sweet"
+                                data-form="formNovaConsulta"
+                                data-url="/cadconsulta"
+                                data-title="Nova Consulta">
+                            Salvar
+                        </button>
                     </div>
-
                 </form>
-
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Modal nova consulta -->
+
+
+
+
+
 
 <!-- Info Alert Modal -->
 <div id="info-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -906,15 +887,60 @@ foreach ($consultasHoje as $c) {
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+    
         // Datas bloqueadas
-        var datasBloqueadas = [
-            "2025-09-15",
-            "2025-09-20",
-            "2025-09-22"
-        ];
-
+        var datasBloqueadas = <?php echo json_encode($datasBloqueadas); ?>;
+    
+        // ---- FUNÇÃO REUTILIZÁVEL PARA BUSCAR OS HORÁRIOS ----
+        function carregarHorarios() {
+            var dateStr = document.getElementById("basic-datepicker").value;
+            if (!dateStr) return;
+        
+            var container = document.getElementById('horarios-disponiveis');
+            container.innerHTML = '<p>Carregando horários...</p>';
+        
+            // Verifica duração selecionada
+            var duracaoEl = document.querySelector('input[name="duracao"]:checked');
+            var duracao = duracaoEl ? duracaoEl.value : '';
+        
+            // Envia para o backend
+            fetch('/horariosdisp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body:
+                    'data=' + encodeURIComponent(dateStr) +
+                    '&duracao=' + encodeURIComponent(duracao)
+            })
+            .then(response => response.json())
+            .then(data => {
+                container.innerHTML = '';
+            
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p>Nenhum horário disponível com a duração selecionada.</p>';
+                    return;
+                }
+            
+                data.forEach(function(horario) {
+                    var label = document.createElement('label');
+                    label.className = 'form-check-label d-block mb-1';
+                    label.innerHTML = `
+                        <input type="radio" name="horarios[]" value="${horario.horario}" class="form-check-input me-2">
+                        ${horario.horario}
+                    `;
+                    container.appendChild(label);
+                });
+            })
+            .catch(err => {
+                container.innerHTML = '<p>Erro ao buscar horários.</p>';
+                console.error(err);
+            });
+        }
+    
+        // ---- FLATPICKR ----
         flatpickr("#basic-datepicker", {
-            dateFormat: "Y-m-d",
+            dateFormat: "d/m/Y",
             minDate: "today",
             disable: datasBloqueadas,
             locale: {
@@ -933,57 +959,30 @@ foreach ($consultasHoje as $c) {
                 toggleTitle: 'Clique para alternar',
                 time_24hr: true
             },
+        
+            // Pinta datas bloqueadas
             onDayCreate: function(dObj, dStr, fp, dayElem) {
                 var data = dayElem.dateObj.toISOString().slice(0, 10);
                 if (datasBloqueadas.includes(data)) {
                     dayElem.classList.add("data-bloqueada");
-                    dayElem.style.backgroundColor = "#ffcccc"; // vermelho
+                    dayElem.style.backgroundColor = "#ffcccc";
                 }
             },
+        
+            // 🔄 Recarrega horários ao mudar a data
             onChange: function(selectedDates, dateStr, instance) {
-                if (!dateStr) return;
-
-                var container = document.getElementById('horarios-disponiveis');
-                container.innerHTML = '<p>Carregando horários...</p>';
-
-                // Pega o valor do input de duração
-                var duracao = document.getElementById('duracao') ? document.getElementById('duracao').value : '';
-
-                // POST para o PHP
-                fetch('/horariosdisp', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: 'data=' + encodeURIComponent(dateStr) + '&duracao=' + encodeURIComponent(duracao)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    container.innerHTML = ''; // limpa carregando
-
-                    if (!data || data.length === 0) {
-                        container.innerHTML = '<p>Nenhum horário disponível com a duração selecionada.</p>';
-                        return;
-                    }
-
-                    data.forEach(function(horario) {
-                        var label = document.createElement('label');
-                        label.className = 'form-check-label d-block mb-1';
-                        label.innerHTML = `
-                            <input type="radio" name="horarios[]" value="${horario.horario}" class="form-check-input me-2">
-                            ${horario.horario}
-                        `;
-                        container.appendChild(label);
-                    });
-                })
-                .catch(err => {
-                    container.innerHTML = '<p>Erro ao buscar horários.</p>';
-                    console.error(err);
-                });
+                carregarHorarios();
             }
         });
+    
+        // 🔄 Recarrega horários ao mudar a duração
+        document.querySelectorAll('input[name="duracao"]').forEach(function(el) {
+            el.addEventListener('change', carregarHorarios);
+        });
+    
     });
 </script>
+
 
 <script>
     document.getElementById('searchField').addEventListener('keyup', function() {
@@ -1079,6 +1078,7 @@ foreach ($consultasHoje as $c) {
 </script>
 <!-- stream eventos consultas -->
  
+<script src="<?= ASSETS_PATH ?>utils/alertInsert.js"></script>
 
 <?php if ($lang  === "pt" || empty($lang)): ?>
     <script src="<?= ASSETS_PATH ?>utils/datatable-Init-ptbr.js"></script>
