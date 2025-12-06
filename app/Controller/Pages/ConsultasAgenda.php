@@ -58,13 +58,18 @@ class ConsultasAgenda{
         }
     } 
 
-    public function insertConsulta($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario) {
+    public function insertConsulta($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario) {
         Auth::authCheck();
+        $objConsultas = new Consultas();
+
+        if(empty($convenio)) {
+            $convenio = "Não Informado";
+            $convenioPaciente = $objConsultas->getConvenioByIdPaciente($paciente, TENANCY_ID);
+            $convenio = $convenioPaciente["CNV_DCCONVENIO"];
+        }
 
         try {
-                $objConsultas = new Consultas();
-
-                $response = $objConsultas->insertConsultaAgenda($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, TENANCY_ID);
+                $response = $objConsultas->insertConsultaAgenda($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, TENANCY_ID);
 
                 return json_encode($response);
         

@@ -200,6 +200,36 @@ foreach ($consultasHoje as $c) {
         background-color: #0cadc2 !important;
         color: #fff !important;
     }
+    #horarios-disponiveis {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px 12px; /* espaço entre os horários */
+    }
+</style>
+
+<style>
+    .linha-agendamento {
+        display: flex;
+        align-items: center;
+        gap: 20px; /* espaço entre os blocos */
+        flex-wrap: wrap; /* quebra no mobile */
+    }
+
+    .grupo-duracao {
+        display: flex;
+        align-items: center;
+        gap: 15px; /* espaço entre cada duração */
+    }
+
+    .grupo-duracao .form-check {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    .mt-horarios {
+        margin-top: 20px !important; /* pode ajustar */
+    }
 </style>
 
 <!-- Start Content-->
@@ -481,7 +511,7 @@ foreach ($consultasHoje as $c) {
                                 </td>
                                         
                                 <td class="text-truncate" style="cursor: pointer; max-width: 150px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CNV_DCCONVENIO'])), ENT_QUOTES, 'UTF-8') ?>
+                                    <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_DCCONVENIO'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
                                 <td class="table-action" style="width: 90px;">
@@ -683,7 +713,11 @@ foreach ($consultasHoje as $c) {
                             </select>
                         </div>
                     </div>
-                                
+                    
+                    <div class="mb-3">
+                        <input type="radio" name="convenio" id="convenio" value="Particular" class="form-check-input me-2">Consulta Particular (sem convênio)
+                    </div>
+                          
                     <div class="mb-3">
                         <label for="especialidade" class="form-label">Especialidade</label>
                         <div class="input-group">
@@ -702,7 +736,7 @@ foreach ($consultasHoje as $c) {
                                 
                     <div class="mb-3">
                         <label for="observacao" class="form-label">Observações</label>
-                        <textarea class="form-control" id="observacao" name="observacao" rows="4" maxlength="300"
+                        <textarea class="form-control" id="observacao" name="observacao" rows="3" maxlength="300"
                                   style="white-space: pre-wrap; overflow-wrap: break-word;"></textarea>
                         <small id="contadorObs" class="text-muted">0 / 300</small>
                     </div>
@@ -713,26 +747,33 @@ foreach ($consultasHoje as $c) {
                         });
                     </script>
 
-                    <div class="mb-3">
-                        <label class="form-label">Duração da Consulta</label>
-                    
-                        <div class="form-check form-radio-danger">
-                            <input type="radio" value="30" id="duracao1" name="duracao" class="form-check-input" required>
-                            <label class="form-check-label" for="duracao1">30 Minutos</label>
+                    <div class="linha-agendamento">
+                        <!-- Campo Data -->
+                        <div>
+                            <label class="form-label">Data</label>
+                            <input type="text" id="basic-datepicker" name="data" class="form-control" required style="width:150px;">
                         </div>
-                    
-                        <div class="form-check form-radio-danger">
-                            <input type="radio" value="60" id="duracao2" name="duracao" class="form-check-input" required>
-                            <label class="form-check-label" for="duracao2">60 Minutos</label>
+
+                        <!-- Duração -->
+                        <div>
+                            <label class="form-label">Duração</label>
+
+                            <div class="grupo-duracao">
+                                <div class="form-check form-radio-danger">
+                                    <input type="radio" value="30" id="duracao1" name="duracao" class="form-check-input" required>
+                                    <label class="form-check-label" for="duracao1">30 Min</label>
+                                </div>
+
+                                <div class="form-check form-radio-danger">
+                                    <input type="radio" value="60" id="duracao2" name="duracao" class="form-check-input" required>
+                                    <label class="form-check-label" for="duracao2">60 Min</label>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label class="form-label">Data</label>
-                        <input type="text" id="basic-datepicker" name="data" class="form-control" required>
-                    </div>
-                    
-                    <div class="mb-3">
+                    <div class="mb-3 mt-horarios">
                         <label class="form-label">Horários disponíveis</label>
                         <div id="horarios-disponiveis"></div>
                     </div>
@@ -923,11 +964,12 @@ foreach ($consultasHoje as $c) {
                 }
             
                 data.forEach(function(horario) {
+                    var horarioFormatado = horario.horario.substring(0, 5);
                     var label = document.createElement('label');
                     label.className = 'form-check-label d-block mb-1';
                     label.innerHTML = `
                         <input type="radio" name="horarios[]" value="${horario.horario}" class="form-check-input me-2">
-                        ${horario.horario}
+                        ${horarioFormatado}
                     `;
                     container.appendChild(label);
                 });

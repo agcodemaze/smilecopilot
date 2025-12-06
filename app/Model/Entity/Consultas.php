@@ -72,7 +72,24 @@ class Consultas extends Conn {
         } 
     }
 
-    public function insertConsultaAgenda($DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
+    public function getConvenioByIdPaciente($PAC_IDPACIENTE, $TENANCY_ID) {
+        try{           
+            $sql = "SELECT CNV.CNV_DCCONVENIO 
+                    FROM PAC_PACIENTES PAC
+                    INNER JOIN CNV_CONVENIO CNV ON (PAC.CNV_IDCONVENIO = CNV.CNV_IDCONVENIO AND TENANCY_ID = :TENANCY_ID)
+                    WHERE PAC.PAC_IDPACIENTE = :PAC_IDPACIENTE";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":PAC_IDPACIENTE", $PAC_IDPACIENTE);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function insertConsultaAgenda($CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
         
         $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
         $CON_DTCONSULTA = $dataObj->format('Y-m-d');
@@ -85,6 +102,7 @@ class Consultas extends Conn {
         try{           
             $sql = "
                 INSERT INTO CON_CONSULTAS (
+                    CON_DCCONVENIO,
                     DEN_IDDENTISTA,
                     CON_NMESPECIALIDADE,
                     PAC_IDPACIENTE,
@@ -94,6 +112,7 @@ class Consultas extends Conn {
                     CON_HORACONSULTA,
                     TENANCY_ID
                 ) VALUES (
+                    :CON_DCCONVENIO,
                     :DEN_IDDENTISTA,
                     :CON_NMESPECIALIDADE,
                     :PAC_IDPACIENTE,
@@ -107,6 +126,7 @@ class Consultas extends Conn {
 
             $stmt = $this->pdo->prepare($sql);
 
+            $stmt->bindValue(':CON_DCCONVENIO', $CON_DCCONVENIO, PDO::PARAM_STR);
             $stmt->bindValue(':DEN_IDDENTISTA', $DEN_IDDENTISTA, PDO::PARAM_STR);
             $stmt->bindValue(':CON_NMESPECIALIDADE', $CON_NMESPECIALIDADE, PDO::PARAM_STR);
             $stmt->bindValue(':PAC_IDPACIENTE', $PAC_IDPACIENTE, PDO::PARAM_STR);

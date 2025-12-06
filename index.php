@@ -176,13 +176,14 @@ $obRouter->post('/cadconsulta', [
         $data = EncryptDecrypt::sanitize($_POST['data'] ?? '');
         $horario = EncryptDecrypt::sanitize($_POST['horarios'][0] ?? '');
         $idDentista = EncryptDecrypt::sanitize($_POST['idDentista'] ?? '');
+        $convenio = EncryptDecrypt::sanitize($_POST['convenio'] ?? '');
 
         if(empty($data)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informada a data da consulta."]));}
         if(empty($paciente)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o paciente da consulta."]));}
         if(empty($horario)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o horário da consulta."]));}
         if(empty($idDentista)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o dentista que irá atender consulta."]));}
 
-        return new Response(200, $consultaController->insertConsulta($idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario));
+        return new Response(200, $consultaController->insertConsulta($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario));
     }
 ]);
 
