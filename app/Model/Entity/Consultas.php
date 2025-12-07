@@ -331,11 +331,11 @@ class Consultas extends Conn {
     public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $TENANCY_ID) { 
         try {
             $sql = "WITH RECURSIVE horarios_possiveis AS (
-                        SELECT TIME('08:00:00') AS horario
+                        SELECT TIME('06:00:00') AS horario
                         UNION ALL
                         SELECT ADDTIME(horario, SEC_TO_TIME(:CON_NUMDURACAO*60))
                         FROM horarios_possiveis
-                        WHERE ADDTIME(horario, SEC_TO_TIME(:CON_NUMDURACAO*60)) <= TIME('18:00:00')
+                        WHERE ADDTIME(horario, SEC_TO_TIME(:CON_NUMDURACAO*60)) <= TIME('23:00:00')
                     )
                     SELECT h.horario
                     FROM horarios_possiveis h

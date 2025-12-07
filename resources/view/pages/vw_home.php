@@ -60,20 +60,20 @@ $botaoStyleDeactiveTodos = "btn-soft-secondary ";
 
 if(isset($_GET['dia'])) {
     if($_GET['dia'] == "1") { 
-        $botaoStyleDeactiveHoje = "btn btn-primary"; 
+        $botaoStyleDeactiveHoje = "btn btn-info"; 
         $textTitulo = "de_hoje";
     }elseif ($_GET['dia'] == "2") {
-        $botaoStyleDeactiveUltimos6Meses = "btn btn-primary";
+        $botaoStyleDeactiveUltimos6Meses = "btn btn-info";
         $textTitulo = "ultimos_6_meses_desc";
     }elseif ($_GET['dia'] == "4") {
-        $botaoStyleDeactiveUltimos12Meses = "btn btn-primary";
+        $botaoStyleDeactiveUltimos12Meses = "btn btn-info";
         $textTitulo = "ultimos_12_meses_desc";
     }elseif($_GET['dia'] == "3") {
-        $botaoStyleDeactiveProximos6Meses = "btn btn-primary";
+        $botaoStyleDeactiveProximos6Meses = "btn btn-info";
         $textTitulo = "proximos_6_meses_desc";
     }
 } else {
-    $botaoStyleDeactiveHoje = "btn btn-primary";
+    $botaoStyleDeactiveHoje = "btn btn-info";
     $textTitulo = "de_hoje";
 }
 
@@ -230,6 +230,7 @@ foreach ($consultasHoje as $c) {
     .mt-horarios {
         margin-top: 20px !important; /* pode ajustar */
     }
+    
 </style>
 
 <!-- Start Content-->
@@ -237,7 +238,7 @@ foreach ($consultasHoje as $c) {
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box">
+            <div class="page-title-box"> 
                 <div class="page-title-right">
                 </div>
                 <h4 class="page-title"><?= \App\Core\Language::get('consultas'); ?> <?= \App\Core\Language::get($textTitulo); ?> </h4>
@@ -252,39 +253,96 @@ foreach ($consultasHoje as $c) {
             <div class="card widget-inline">
                 <div class="card-body p-0">
                     <div class="row g-0">
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="card rounded-0 shadow-none m-0">
-                                <div class="card-body text-center py-2">
-                                    <i class="ri-pie-chart-line text-muted font-24"></i>
-                                    <h3><span><?= $totalConsultas; ?></span></h3>
-                                    <p class="text-muted font-15 mb-0"><?= \App\Core\Language::get('total_de'); ?><br><?= \App\Core\Language::get('consultas'); ?></p>
+                        <div class="row g-0">
+                            <!-- TOTAL CONSULTAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/consultas.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $totalConsultas; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('total_de'); ?>
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="card rounded-0 shadow-none m-0 border-start border-light">
-                                <div class="card-body text-center py-2">
-                                    <i class="ri-calendar-check-line text-muted font-24"></i>
-                                    <h3><span><?= $confirmadas; ?></span></h3> 
-                                    <p class="text-muted font-15 mb-0"><?= \App\Core\Language::get('consultas'); ?><br><?= \App\Core\Language::get('confirmadas'); ?></p>
+
+                            <!-- CONFIRMADAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/confirmada.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $confirmadas; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('confirmadas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="card rounded-0 shadow-none m-0 border-start border-light">
-                                <div class="card-body text-center py-2">
-                                    <i class="ri-close-circle-line text-muted font-24"></i>
-                                    <h3><span><?= $canceladas; ?></span></h3>
-                                    <p class="text-muted font-15 mb-0"><?= \App\Core\Language::get('consultas'); ?><br><?= \App\Core\Language::get('canceladas'); ?></p>
+
+                            <!-- CANCELADAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/cancel.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $canceladas; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('canceladas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6 col-lg-3">
-                            <div class="card rounded-0 shadow-none m-0 border-start border-light">
-                                <div class="card-body text-center py-2">
-                                    <i class="ri-checkbox-circle-line text-muted font-24"></i>
-                                    <h3><span><?= $concluida; ?></h3>
-                                    <p class="text-muted font-15 mb-0"><?= \App\Core\Language::get('consultas'); ?><br><?= \App\Core\Language::get('concluidas'); ?></p>
+
+                            <!-- CONCLUÍDAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/concluidas.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $concluida; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('concluidas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -305,7 +363,7 @@ foreach ($consultasHoje as $c) {
                 <span id="relogio" class="fw-bold text-muted"></span>
             </div>
             <?php if ($totalConsultas > 0): ?>
-            <div id="timeline" style="height: 200px; overflow-y: auto; border: 0px solid #ccc; padding: 0 15px;"></div>
+            <div id="timeline" style="height: 110px; overflow-y: auto; border: 0px solid #ccc; padding: 0 15px;"></div>
             <?php endif; ?>
             <?php if ($totalConsultas == 0): ?>
                 <div style="height: 50px; overflow-y: auto; align-items: center; justify-content: center;  border: 0px solid #ccc; padding: 0 15px;">Não há consultas agendadas</div>                
@@ -319,34 +377,44 @@ foreach ($consultasHoje as $c) {
 <div class="row">
     <div class="col-lg-12">
         <div class="card">
-            <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
-                <h4 class="header-title mb-2 mb-md-0"><?= \App\Core\Language::get('agenda'); ?></h4>
-                <!-- Botões -->
-                <div class="d-flex flex-column flex-md-row gap-1 w-100 w-md-auto mt-2 mt-md-0 ms-md-5">
-                    <button type="button" class="btn <?= $botaoStyleDeactiveUltimos12Meses ?> btn-sm w-100 w-md-auto" 
+            <div class="card-header d-flex flex-column justify-content-center align-items-center text-center py-3">   
+                <h4 class="header-title mb-3"><?= \App\Core\Language::get('agenda'); ?></h4>
+                <div class="d-flex flex-column flex-md-row gap-2 w-100">
+                        
+                    <button type="button" 
+                            class="btn <?= $botaoStyleDeactiveUltimos12Meses ?> btn-sm rounded-pill shadow-sm flex-fill py-1"
                             onclick="window.location.href='<?= $newUrl.'&dia=4'; ?>'">
-                        <i class="ri-calendar-2-line me-2"></i>
-                        <?= \App\Core\Language::get('ultimos_2_anos'); ?>                        
+                        <i class="ri-calendar-2-line me-1"></i>
+                        <?= \App\Core\Language::get('ultimos_2_anos'); ?>
                     </button>
-                    <button type="button" class="btn <?= $botaoStyleDeactiveUltimos6Meses ?> btn-sm w-100 w-md-auto" 
+                        
+                    <button type="button" 
+                            class="btn <?= $botaoStyleDeactiveUltimos6Meses ?> btn-sm rounded-pill shadow-sm flex-fill py-1"
                             onclick="window.location.href='<?= $newUrl.'&dia=2'; ?>'">
-                        <i class="ri-calendar-2-line me-2"></i>
+                        <i class="ri-calendar-2-line me-1"></i>
                         <?= \App\Core\Language::get('ultimos_6_meses'); ?>
                     </button>
-                    <button type="button" class="btn <?= $botaoStyleDeactiveHoje ?> btn-sm w-100 w-md-auto" 
+                        
+                    <button type="button" 
+                            class="btn <?= $botaoStyleDeactiveHoje ?> btn-sm rounded-pill shadow-sm flex-fill py-1"
                             onclick="window.location.href='<?= $newUrl.'&dia=1'; ?>'">
-                        <i class="ri-calendar-2-line me-2"></i>
+                        <i class="ri-calendar-2-line me-1"></i>
                         <?= \App\Core\Language::get('hoje'); ?>
                     </button>
-                    <button type="button" class="btn <?= $botaoStyleDeactiveProximos6Meses ?> btn-sm w-100 w-md-auto" 
+                        
+                    <button type="button" 
+                            class="btn <?= $botaoStyleDeactiveProximos6Meses ?> btn-sm rounded-pill shadow-sm flex-fill py-1"
                             onclick="window.location.href='<?= $newUrl.'&dia=3'; ?>'">
-                            <i class="ri-checkbox-multiple-line me-2"></i>
+                        <i class="ri-checkbox-multiple-line me-1"></i>
                         <?= \App\Core\Language::get('proximos_6_meses'); ?>
                     </button>
-                    <?php if ($profissionalId != "all"): ?> 
-                    <!-- Botão afastado com responsividade -->
-                    <button type="button" class="btn btn-sm w-100 w-md-auto ms-md-5 mt-2 mt-md-0" style="background-color: #0cadc2ff; color: white; border-color: #135fd1ff;" data-bs-toggle="modal" data-bs-target="#novaConsulta-modal">
-                        <i class="ri-user-3-line me-2"></i>
+                        
+                    <?php if ($profissionalId != "all"): ?>
+                    <button type="button" 
+                            class="btn btn-sm rounded-pill shadow-sm flex-fill py-1"
+                            style="background-color:#6effc7; color:#000; border-color:#6effc7;"
+                            data-bs-toggle="modal" data-bs-target="#novaConsulta-modal">
+                        <i class="ri-add-fill me-1"></i>
                         <?= \App\Core\Language::get('cadastrar_consulta_ini'); ?>
                     </button>
                     <?php endif; ?>
@@ -694,7 +762,7 @@ foreach ($consultasHoje as $c) {
             <div class="modal-body">
                 <div class="text-center mt-2 mb-4">
                     <a href="index.html" class="text-success">
-                        <span><img src="/public/assets/images/SmileCopilot-Logo_139x28.png" style="height:28px; width:auto;"></span>
+                        <span><img src="/public/assets/images/logo_bright.png" style="height:28px; width:auto;"></span>
                     </a>
                 </div>
 
@@ -851,7 +919,7 @@ foreach ($consultasHoje as $c) {
         } else if (c.status == 'FALTA') {
             corFundo = 'linear-gradient(135deg, #f74c18ff, #d12727ff)';
         } else {
-            corFundo = 'linear-gradient(135deg, #cccccc, #aaaaaa)'; // fallback
+            corFundo = 'linear-gradient(135deg, #cccccc, #aaaaaa)';
         }
 
         return {
@@ -878,11 +946,11 @@ foreach ($consultasHoje as $c) {
         end: endVisivel,
         editable: false,
         showCurrentTime: true,
-        stack: true,
+        stack: false,                      // ❗ NÃO EMPILHA — mantém tudo na mesma linha
         horizontalScroll: true,
         zoomMin: 1000 * 60 * 30,
         zoomMax: 1000 * 60 * 60 * 24,
-        margin: { item: 10, axis: 5 },
+        margin: { item: 0, axis: 5 },      // ❗ SEM GAP ENTRE OS ITENS
         orientation: 'top',
         locale: '<?= $lang; ?>'
     };
@@ -894,8 +962,8 @@ foreach ($consultasHoje as $c) {
             const itemId = properties.items[0];
             const item = items.get(itemId);
 
-            // Preenche modal
-            document.getElementById('username').value = item.content.replace(/<[^>]*>?/gm, '');
+            document.getElementById('username').value =
+                item.content.replace(/<[^>]*>?/gm, '');
             document.getElementById('emailaddress').value = item.email || '';
             document.getElementById('password').value = '';
             document.getElementById('customCheck1').checked = false;
@@ -912,6 +980,7 @@ foreach ($consultasHoje as $c) {
 
     setInterval(atualizarTimeline, 120000);
 </script>
+
 
 <script>
     function atualizarRelogio() {
@@ -1024,7 +1093,6 @@ foreach ($consultasHoje as $c) {
     
     });
 </script>
-
 
 <script>
     document.getElementById('searchField').addEventListener('keyup', function() {

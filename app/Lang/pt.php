@@ -93,7 +93,10 @@
     'processando_solicitacao' => 'Processando a solicitação...', 
     'paciente_desc' => 'Aqui são listados todos os pacientes cadastrados.', 
     'login' => 'Entre com a sua conta',
-    'login_desc' => 'ou <span class="text-primary" style="cursor: pointer;">cadastre-se</span> para utilizar 7 dias gratuitos.',
+    'login_desc' => 'ou <span class="text-info fw-bold" style="cursor:pointer;">cadastre-se</span> e experimente 
+<span style="color:#0dcaf0; font-weight:700; text-shadow:0 0 6px rgba(13,202,240,.4);">
+    7 dias gratuitos
+</span>.',
     'senha' => 'Senha',
     'senha_esqueceu' => 'Esqueceu sua senha?',
     'entrar' => 'Entrar',
@@ -131,7 +134,7 @@
     'dt_consulta' => 'Data',
     'reagendar_consulta' => 'Reagendar consulta',
     'consulta_desc' => 'Aqui são listadas todas as consultas cadastradas para o profissional selecionado.',
-    'escolha_dentista' => 'Selecione o dentista', 
+    'escolha_dentista' => 'Dentista...', 
     'nenhuma_obs' => 'Nenhuma observação foi informada.',
     'idade' => 'Idade', 
     'dados_paciente' => 'Dados do Paciente', 
