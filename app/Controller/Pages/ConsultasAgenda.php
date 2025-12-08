@@ -58,7 +58,7 @@ class ConsultasAgenda{
         }
     } 
 
-    public function insertConsulta($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario) {
+    public function insertConsulta($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, $tokenConfPresenca) {
         Auth::authCheck();
         $objConsultas = new Consultas();
 
@@ -69,13 +69,34 @@ class ConsultasAgenda{
         }
 
         try {
-                $response = $objConsultas->insertConsultaAgenda($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, TENANCY_ID);
+                $response = $objConsultas->insertConsultaAgenda($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, $tokenConfPresenca, TENANCY_ID);
 
                 return json_encode($response);
         
         } catch (PDOException $e) {   
             $erro = $e->getMessage();        
             return json_encode(["success" => false, "message" => "Houve um erro ao cadastrar a consulta."]);
+        }
+    } 
+
+    public function updateConsultaInfo($id, $convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario) {
+        Auth::authCheck();
+        $objConsultas = new Consultas();
+
+        if(empty($convenio)) {
+            $convenio = "Não Informado";
+            $convenioPaciente = $objConsultas->getConvenioByIdPaciente($paciente, TENANCY_ID);
+            $convenio = $convenioPaciente["CNV_DCCONVENIO"];
+        }
+
+        try {
+                $response = $objConsultas->updateConsultaAgendaInfo($id, $convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, TENANCY_ID);
+
+                return json_encode($response);
+        
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();        
+            return json_encode(["success" => false, "message" => "Houve um erro ao atualizar a consulta."]);
         }
     } 
 }

@@ -229,8 +229,7 @@ foreach ($consultasHoje as $c) {
     }
     .mt-horarios {
         margin-top: 20px !important; /* pode ajustar */
-    }
-    
+    }    
 </style>
 
 <!-- Start Content-->
@@ -583,6 +582,25 @@ foreach ($consultasHoje as $c) {
                                 </td>
                                         
                                 <td class="table-action" style="width: 90px;">
+
+                                    <a href="javascript:void(0);" class="action-icon abrir-edicao"
+                                       data-id="<?= $consulta['CON_IDCONSULTA'] ?>"
+                                       data-paciente="<?= $consulta['PAC_IDPACIENTE'] ?>"
+                                       data-convenio="<?= $consulta['CON_DCCONVENIO'] ?>"
+                                       data-especialidade="<?= $consulta['CON_NMESPECIALIDADE'] ?>"
+                                       data-observacao="<?= htmlspecialchars($consulta['CON_DCOBSERVACOES']) ?>"
+                                       data-data="<?= $consulta['CON_DTCONSULTA'] ?>"
+                                       data-duracao="<?= $consulta['CON_NUMDURACAO'] ?>"
+                                       data-hora="<?= $consulta['CON_HORACONSULTA'] ?>"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#novaConsulta-modal"
+                                       onclick="event.stopPropagation();">
+                                        <i class="mdi mdi-square-edit-outline"
+                                           data-bs-toggle="popover"
+                                           data-bs-trigger="hover"
+                                           data-bs-content="<?= \App\Core\Language::get('editar_consulta'); ?>"></i>
+                                    </a>
+
                                     <a href="/editarpaciente?id=<?= htmlspecialchars($consulta['PAC_IDPACIENTE']) ?>" class="action-icon" onclick="event.stopPropagation();"> 
                                         <i class="mdi mdi-account-outline" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<?= \App\Core\Language::get('ver_paciente'); ?>"></i>
                                     </a> 
@@ -768,6 +786,8 @@ foreach ($consultasHoje as $c) {
 
                 <form class="ps-3 pe-3" id="formNovaConsulta">
 
+                    <input type="hidden" id="id" name="id" />
+
                     <div class="mb-3">
                         <label for="paciente" class="form-label">Paciente</label>
                         <div class="input-group">
@@ -782,8 +802,8 @@ foreach ($consultasHoje as $c) {
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <input type="radio" name="convenio" id="convenio" value="Particular" class="form-check-input me-2">Consulta Particular (sem convênio)
+                    <div class="mb-3 form-checkbox-info">
+                        <input type="checkbox" name="convenio" id="convenio" value="Particular" class="form-check-input me-2">Particular
                     </div>
                           
                     <div class="mb-3">
@@ -848,7 +868,7 @@ foreach ($consultasHoje as $c) {
                     
                     <div class="mb-3 text-center">
                         <button id="btnSalvar"
-                                class="btn btn-primary btn-sweet"
+                                class="btn btn-info btn-sweet"
                                 data-form="formNovaConsulta"
                                 data-url="/cadconsulta"
                                 data-title="Nova Consulta">
@@ -909,13 +929,13 @@ foreach ($consultasHoje as $c) {
         // Define cor de fundo com base no status
         let corFundo;
         if(c.status == 'CONFIRMADA'){
-            corFundo = 'linear-gradient(135deg, #28af49ff, #1aad75ff)';
+            corFundo = 'linear-gradient(135deg, #43df96ff, #3fe7a7ff)';
         } else if (c.status == 'CANCELADA') {
-            corFundo = 'linear-gradient(135deg, #f39821ff, #a8850fff)';
+            corFundo = 'linear-gradient(135deg, #f7b148ff, #facc36ff)';
         } else if (c.status == 'CONCLUIDA') {
             corFundo = 'linear-gradient(135deg, #4c4e4eff, #a5acadff)';
         } else if (c.status == 'AGENDADA') {
-            corFundo = 'linear-gradient(135deg, #2196F3, #21CBF3)';
+            corFundo = 'linear-gradient(135deg, #237ec9ff, #2476adff)';
         } else if (c.status == 'FALTA') {
             corFundo = 'linear-gradient(135deg, #f74c18ff, #d12727ff)';
         } else {
@@ -1108,6 +1128,151 @@ foreach ($consultasHoje as $c) {
     
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const modal = document.getElementById("novaConsulta-modal");
+        let horarioManual = null; 
+
+        function toBrDateIfIso(dateStr) {
+            if (!dateStr) return "";
+            if (dateStr.indexOf("-") !== -1 && dateStr.split("-").length === 3) {
+                const parts = dateStr.split("-");
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        async function carregarHorarios() {
+            try {
+                const dateEl = document.getElementById("basic-datepicker");
+                const container = document.getElementById("horarios-disponiveis");
+                const dateStr = dateEl ? dateEl.value : "";
+
+                if (!dateStr) {
+                    container.innerHTML = '<p>Selecione a data para ver horários.</p>';
+                    return;
+                }
+
+                container.innerHTML = '<p>Carregando horários...</p>';
+
+                const duracaoEl = document.querySelector('input[name="duracao"]:checked');
+                const duracao = duracaoEl ? duracaoEl.value : '';
+
+                const body = 'data=' + encodeURIComponent(dateStr) + '&duracao=' + encodeURIComponent(duracao);
+
+                const resp = await fetch('/horariosdisp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: body
+                });
+
+                const data = await resp.json();
+                container.innerHTML = '';
+
+                if (horarioManual) {
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label d-block mb-1';
+                    label.innerHTML = `
+                        <input type="radio" name="horarios[]" value="${horarioManual}" class="form-check-input me-2" checked>
+                        ${horarioManual}
+                    `;
+                    container.appendChild(label);
+                }
+
+                if (data && data.length > 0) {
+                    data.forEach(function(h) {
+                        const hFormat = (h.horario || '').substring(0,5);
+                        if (hFormat === horarioManual) return; 
+                        const label = document.createElement('label');
+                        label.className = 'form-check-label d-block mb-1';
+                        label.innerHTML = `
+                            <input type="radio" name="horarios[]" value="${h.horario}" class="form-check-input me-2">
+                            ${hFormat}
+                        `;
+                        container.appendChild(label);
+                    });
+                }
+
+                if ((!data || data.length === 0) && !horarioManual) {
+                    container.innerHTML = '<p>Nenhum horário disponível.</p>';
+                }
+
+            } catch (err) {
+                console.error('Erro ao carregar horários:', err);
+                const container = document.getElementById("horarios-disponiveis");
+                if (container) container.innerHTML = '<p>Erro ao buscar horários.</p>';
+            }
+        }
+
+        modal.addEventListener("show.bs.modal", function (event) {
+            const trigger = event.relatedTarget;
+
+            // NOVA CONSULTA
+            if (!trigger || !trigger.classList.contains("abrir-edicao")) {
+                limparModal();
+                document.getElementById("btnSalvar").dataset.url = "/cadconsulta";
+                document.getElementById("btnSalvar").innerText = "Salvar";
+                document.getElementById("btnSalvar").dataset.title = "Nova Consulta";
+                horarioManual = null;
+                return;
+            }
+
+            // EDIÇÃO
+            const id = trigger.dataset.id || "";
+            const paciente = trigger.dataset.paciente || "";
+            const convenio = trigger.dataset.convenio || "";
+            const especialidade = trigger.dataset.especialidade || "";
+            const observacao = trigger.dataset.observacao || "";
+            const data = trigger.dataset.data || "";
+            const duracao = trigger.dataset.duracao || "";
+            const hora = trigger.dataset.hora || "";
+
+            document.getElementById("id").value = id;
+            document.getElementById("paciente").value = paciente;
+            document.getElementById("especialidade").value = especialidade;
+            document.getElementById("observacao").value = observacao;
+            document.getElementById("contadorObs").textContent = observacao.length + " / 300";
+            document.getElementById("basic-datepicker").value = toBrDateIfIso(data);
+            document.getElementById("convenio").checked = (convenio === "Particular");
+
+            if (duracao == "30") document.getElementById("duracao1").checked = true;
+            if (duracao == "60") document.getElementById("duracao2").checked = true;
+
+            horarioManual = hora.length === 8 ? hora.substring(0,5) : hora;
+
+            carregarHorarios();
+
+            document.getElementById("btnSalvar").dataset.url = "/cadconsulta";
+            document.getElementById("btnSalvar").innerText = "Atualizar";
+            document.getElementById("btnSalvar").dataset.title = "Editar Consulta";
+        });
+
+        document.querySelectorAll('input[name="duracao"]').forEach(el => 
+            el.addEventListener('change', () => {
+                horarioManual = null;
+                carregarHorarios();
+            })
+        );
+
+        const datepicker = document.getElementById("basic-datepicker");
+        if (datepicker) datepicker.addEventListener('change', () => {
+            horarioManual = null;
+            carregarHorarios();
+        });
+
+    });
+
+    function limparModal() {
+        const form = document.getElementById("formNovaConsulta");
+        if (form) form.reset();
+        const contador = document.getElementById("contadorObs");
+        if (contador) contador.textContent = "0 / 300";
+        const container = document.getElementById("horarios-disponiveis");
+        if (container) container.innerHTML = "";
+    }
+</script>
+
 <!-- stream eventos consultas -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1154,7 +1319,7 @@ foreach ($consultasHoje as $c) {
                             statusCell.textContent = texto;
                             statusCell.className = classe;
                         
-                            mostrarAlerta(`Consulta #${linha.dataset.consultaId} foi atualizada para "${texto}"`);
+                            //mostrarAlerta(`Consulta #${linha.dataset.consultaId} foi atualizada para "${texto}"`);
                         }
                     }
 
@@ -1181,7 +1346,7 @@ foreach ($consultasHoje as $c) {
         setTimeout(() => alerta.remove(), 6000);
 
         const audio = new Audio('/public/assets/som/notificacao.mp3'); // ajuste o caminho do som
-        audio.play().catch(err => console.warn('Não foi possível tocar o som:', err));
+        //audio.play().catch(err => console.warn('Não foi possível tocar o som:', err));
     }
 
     });

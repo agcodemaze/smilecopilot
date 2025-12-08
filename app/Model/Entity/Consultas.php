@@ -89,7 +89,7 @@ class Consultas extends Conn {
         } 
     }
 
-    public function insertConsultaAgenda($CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
+    public function insertConsultaAgenda($CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $CON_DCHASH_CONFIRMACAO_PRESENCA, $TENANCY_ID) {
         
         $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
         $CON_DTCONSULTA = $dataObj->format('Y-m-d');
@@ -110,6 +110,7 @@ class Consultas extends Conn {
                     CON_NUMDURACAO,
                     CON_DTCONSULTA,
                     CON_HORACONSULTA,
+                    CON_DCHASH_CONFIRMACAO_PRESENCA,
                     TENANCY_ID
                 ) VALUES (
                     :CON_DCCONVENIO,
@@ -120,6 +121,7 @@ class Consultas extends Conn {
                     :CON_NUMDURACAO,
                     :CON_DTCONSULTA,
                     :CON_HORACONSULTA,
+                    :CON_DCHASH_CONFIRMACAO_PRESENCA,
                     :TENANCY_ID
                 )
             ";
@@ -134,6 +136,7 @@ class Consultas extends Conn {
             $stmt->bindValue(':CON_NUMDURACAO', $CON_NUMDURACAO, PDO::PARAM_STR);
             $stmt->bindValue(':CON_DTCONSULTA', $CON_DTCONSULTA, PDO::PARAM_STR);
             $stmt->bindValue(':CON_HORACONSULTA', $CON_HORACONSULTA, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_DCHASH_CONFIRMACAO_PRESENCA', $CON_DCHASH_CONFIRMACAO_PRESENCA, PDO::PARAM_STR);
             $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
 
             $stmt->execute();
@@ -145,6 +148,55 @@ class Consultas extends Conn {
             return ["error" => $e->getMessage()];
         } 
     }
+
+    public function updateConsultaAgendaInfo($CON_IDCONSULTA, $CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
+        
+        $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
+        $CON_DTCONSULTA = $dataObj->format('Y-m-d');
+
+        $checkDataBloqueio = $this->datasBloqueadasByDataProf($TENANCY_ID, $DEN_IDDENTISTA, $CON_DTCONSULTA);
+        if(!empty($checkDataBloqueio)) {
+            return ["success" => false, "message" => "O dentista marcou esta data como indisponível para consultas. Por favor, escolha uma nova data!"];
+        }
+
+        try {
+            $sql = "
+                UPDATE CON_CONSULTAS
+                SET
+                    CON_DCCONVENIO = :CON_DCCONVENIO,
+                    DEN_IDDENTISTA = :DEN_IDDENTISTA,
+                    CON_NMESPECIALIDADE = :CON_NMESPECIALIDADE,
+                    PAC_IDPACIENTE = :PAC_IDPACIENTE,
+                    CON_DCOBSERVACOES = :CON_DCOBSERVACOES,
+                    CON_NUMDURACAO = :CON_NUMDURACAO,
+                    CON_DTCONSULTA = :CON_DTCONSULTA,
+                    CON_HORACONSULTA = :CON_HORACONSULTA,
+                    TENANCY_ID = :TENANCY_ID
+                WHERE CON_IDCONSULTA = :CON_IDCONSULTA
+            ";
+
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindValue(':CON_DCCONVENIO', $CON_DCCONVENIO, PDO::PARAM_STR);
+            $stmt->bindValue(':DEN_IDDENTISTA', $DEN_IDDENTISTA, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_NMESPECIALIDADE', $CON_NMESPECIALIDADE, PDO::PARAM_STR);
+            $stmt->bindValue(':PAC_IDPACIENTE', $PAC_IDPACIENTE, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_DCOBSERVACOES', $CON_DCOBSERVACOES, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_NUMDURACAO', $CON_NUMDURACAO, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_DTCONSULTA', $CON_DTCONSULTA, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_HORACONSULTA', $CON_HORACONSULTA, PDO::PARAM_STR);
+            $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_IDCONSULTA', $CON_IDCONSULTA, PDO::PARAM_INT);
+
+            $stmt->execute();
+
+            return ["success" => true, "message" => "Consulta atualizada com sucesso!"];
+
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
 
     public function getConsultasByHash($CON_DCHASH_CONFIRMACAO_PRESENCA) {
         try{           
@@ -326,7 +378,6 @@ class Consultas extends Conn {
             return ["error" => $e->getMessage()];
         }
     }
-
 
     public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $TENANCY_ID) { 
         try {

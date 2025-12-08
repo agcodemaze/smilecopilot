@@ -172,6 +172,7 @@
     'atualizado_em' => 'Atualizado em',
     'tornar_modelo_ativo' => 'Tornar este o modelo ativo.', 
     'excluir_modelo_anamnese' => 'Excluir Modelo de Anamnese', 
+    'editar_consulta' => 'Editar Consulta',
 
 
 
