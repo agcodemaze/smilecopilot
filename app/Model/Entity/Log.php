@@ -7,15 +7,6 @@ use PDOException;
 
 class Log extends Conn { 
 
-    /**
-     * Insere um registro de log no sistema
-     * 
-     * @param string $LOS_DCUSUARIO Nome ou ID do usuário
-     * @param string $LOS_DCNIVEL Nível do log 'CRITICAL','INFO','WARNING','ERROR','NOTICE','DEBUG'
-     * @param string $LOS_DCMSG Mensagem do log
-     * @param int $TENANCY_ID ID do tenancy (multi-tenant)
-     * @return string JSON com sucesso ou erro
-     */
     public function insertLog($LOS_DCUSUARIO, $LOS_DCNIVEL, $LOS_DCMSG, $TENANCY_ID) {
 
         $levels = ['CRITICAL','INFO','WARNING','ERROR','NOTICE','DEBUG'];
@@ -43,6 +34,24 @@ class Log extends Conn {
             return json_encode([
                 "success" => false,
                 "message" => "Falha ao gravar o log."
+            ]);
+        } 
+    }
+
+    public function getLog($TENANCY_ID) {
+
+        try {
+            $sql = "SELECT * FROM LOS_LOGSISTEMA WHERE TENANCY_ID = :TENANCY_ID ORDER BY LOS_DTCREATE_AT DESC";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID, PDO::PARAM_INT); 
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return json_encode([
+                "success" => false,
+                "message" => "Falha ao buscar os logs do sistema."
             ]);
         } 
     }

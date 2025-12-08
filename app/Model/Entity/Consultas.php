@@ -3,19 +3,16 @@
 namespace App\Model\Entity;
 use \App\Model\Entity\Conn;
 use PDO;
-use PDOException;
+use PDOException; 
+use \App\Controller\Pages\LogSistema; 
+use \App\Model\Entity\Paciente;
+use \App\Model\Entity\Profissionais;
 
 /**
  * Classe responsável por gerenciar as operações de consultas no banco de dados.
  */
 class Consultas extends Conn { 
 
-    /**
-     * Busca todas as consultas agendadas para o dia atual com base no fuso horário de São Paulo (-03:00).
-     *
-     * @param int $TENANCY_ID O ID do inquilino (clínica).
-     * @return array Retorna um array associativo com as consultas ou um array com a mensagem de erro.
-     */
     public function getConsultasHoje($TENANCY_ID) {
         try{           
             $sql = "SELECT * FROM VW_CONSULTAS WHERE CON_DTCONSULTA = DATE(CONVERT_TZ(NOW(), '+00:00', '-03:00')) AND TENANCY_ID = :TENANCY_ID ORDER BY CON_DTCONSULTA, CON_HORACONSULTA ASC";
@@ -24,6 +21,21 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_consultas') .$e->getMessage(), $TENANCY_ID);
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function getConsultasById($TENANCY_ID, $CON_IDCONSULTA) {
+        try{           
+            $sql = "SELECT * FROM VW_CONSULTAS WHERE CON_IDCONSULTA = :CON_IDCONSULTA AND TENANCY_ID = :TENANCY_ID";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":CON_IDCONSULTA", $CON_IDCONSULTA);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_consultas') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
@@ -36,6 +48,7 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_especialidade') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
@@ -49,6 +62,7 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_datas_bloqueadas') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
@@ -68,6 +82,7 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_datas_bloqueadas') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
@@ -85,14 +100,24 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_convenios_por_paciente') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
 
     public function insertConsultaAgenda($CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $CON_DCHASH_CONFIRMACAO_PRESENCA, $TENANCY_ID) {
         
+        $dataConsultaLog = $CON_DTCONSULTA;
         $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
         $CON_DTCONSULTA = $dataObj->format('Y-m-d');
+
+        $pacienteObj = new Paciente();
+        $paciente = $pacienteObj->getPacientesById($TENANCY_ID, $PAC_IDPACIENTE);
+        $pacienteNome = $paciente["PAC_DCNOME"];
+
+        $rofissionaisObj = new Profissionais();
+        $rofissionais = $rofissionaisObj->getProfissionalById($TENANCY_ID, $DEN_IDDENTISTA);
+        $ProfissionaisNome = $rofissionais["DEN_DCNOME"];
 
         $checkDataBloqueio = $this->datasBloqueadasByDataProf($TENANCY_ID, $DEN_IDDENTISTA, $CON_DTCONSULTA);
         if(!empty($checkDataBloqueio)) {
@@ -140,19 +165,28 @@ class Consultas extends Conn {
             $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
 
             $stmt->execute();
-
+            LogSistema::insertLog(USER_NAME,"INFO", \App\Core\Language::get('info_insert_consulta') . "Nome do Paciente: $pacienteNome | Dentista: $ProfissionaisNome | Data da Consulta: $dataConsultaLog | Horário: $CON_HORACONSULTA | Especialidade: $CON_NMESPECIALIDADE | Convênio: $CON_DCCONVENIO", $TENANCY_ID);
             return ["success" => true,"message" => "Consulta cadastrada com sucesso!"];
 
         } catch (PDOException $e) {
-            //return ["success" => false,"message" => "Houve um erro ao cadastrar a consulta!"];
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_insert_consulta') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
 
     public function updateConsultaAgendaInfo($CON_IDCONSULTA, $CON_DCCONVENIO, $DEN_IDDENTISTA, $CON_NMESPECIALIDADE, $PAC_IDPACIENTE, $CON_DCOBSERVACOES, $CON_NUMDURACAO, $CON_DTCONSULTA, $CON_HORACONSULTA, $TENANCY_ID) {
         
+        $dataConsultaLog = $CON_DTCONSULTA;
         $dataObj = \DateTime::createFromFormat('d/m/Y', $CON_DTCONSULTA);
         $CON_DTCONSULTA = $dataObj->format('Y-m-d');
+
+        $pacienteObj = new Paciente();
+        $paciente = $pacienteObj->getPacientesById($TENANCY_ID, $PAC_IDPACIENTE);
+        $pacienteNome = $paciente["PAC_DCNOME"];
+
+        $rofissionaisObj = new Profissionais();
+        $rofissionais = $rofissionaisObj->getProfissionalById($TENANCY_ID, $DEN_IDDENTISTA);
+        $ProfissionaisNome = $rofissionais["DEN_DCNOME"];
 
         $checkDataBloqueio = $this->datasBloqueadasByDataProf($TENANCY_ID, $DEN_IDDENTISTA, $CON_DTCONSULTA);
         if(!empty($checkDataBloqueio)) {
@@ -189,18 +223,18 @@ class Consultas extends Conn {
             $stmt->bindValue(':CON_IDCONSULTA', $CON_IDCONSULTA, PDO::PARAM_INT);
 
             $stmt->execute();
-
+            LogSistema::insertLog(USER_NAME,"INFO", \App\Core\Language::get('info_update_consulta') . "Nome do Paciente: $pacienteNome | Dentista: $ProfissionaisNome | Data da Consulta: $dataConsultaLog | Horário: $CON_HORACONSULTA | Especialidade: $CON_NMESPECIALIDADE | Convênio: $CON_DCCONVENIO", $TENANCY_ID);
             return ["success" => true, "message" => "Consulta atualizada com sucesso!"];
 
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_update_consulta') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
 
-
     public function getConsultasByHash($CON_DCHASH_CONFIRMACAO_PRESENCA) {
         try{           
-            $sql = "SELECT * FROM VW_CONSULTAS WHERE CON_DCHASH_CONFIRMACAO_PRESENCA = :CON_DCHASH_CONFIRMACAO_PRESENCA";
+            $sql = "SELECT * FROM VW_CONSULTAS WHERE CO_DCHASH_CONFIRMACAO_PRESENCA = :CON_DCHASH_CONFIRMACAO_PRESENCA";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(":CON_DCHASH_CONFIRMACAO_PRESENCA", $CON_DCHASH_CONFIRMACAO_PRESENCA);
             $stmt->execute();
@@ -232,10 +266,10 @@ class Consultas extends Conn {
             $stmt->bindParam(":CON_DCHASH_CONFIRMACAO_PRESENCA", $CON_DCHASH_CONFIRMACAO_PRESENCA);
             $stmt->bindParam(":CON_ENSTATUS", $CON_ENSTATUS);
             $stmt->execute();
-        
+           
             return $stmt->rowCount();
         
-        } catch (\PDOException $e) {
+        } catch (\PDOException $e) {            
             return ["error" => $e->getMessage()];
         }
     }
@@ -250,6 +284,7 @@ class Consultas extends Conn {
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+             LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_consultas_por_profissional') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } 
     }
@@ -282,6 +317,7 @@ class Consultas extends Conn {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_consultas_por_profissional') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         }
     }
@@ -327,12 +363,12 @@ class Consultas extends Conn {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_consultas_por_profissional') .$e->getMessage(), $TENANCY_ID);
             return ["error" => $e->getMessage()];
         } catch (Exception $e) {
             return ["error" => $e->getMessage()];
         }
     }
-
 
     public function getConsultasByDayPredef($TENANCY_ID, $diaSemana) {
         try {     
@@ -379,7 +415,7 @@ class Consultas extends Conn {
         }
     }
 
-    public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $TENANCY_ID) { 
+    public function getHorariosDisponiveis($CON_DTCONSULTA, $CON_NUMDURACAO, $DEN_IDDENTISTA, $TENANCY_ID) { 
         try {
             $sql = "WITH RECURSIVE horarios_possiveis AS (
                         SELECT TIME('06:00:00') AS horario
@@ -395,6 +431,7 @@ class Consultas extends Conn {
                         FROM CON_CONSULTAS c
                         WHERE c.CON_DTCONSULTA = :CON_DTCONSULTA
                           AND c.TENANCY_ID = :TENANCY_ID
+                          AND c.DEN_IDDENTISTA = :DEN_IDDENTISTA
                           AND c.CON_ENSTATUS IN ('AGENDADA','CONFIRMADA')
                           AND (
                               h.horario < ADDTIME(c.CON_HORACONSULTA, SEC_TO_TIME(c.CON_NUMDURACAO*60))
@@ -406,6 +443,7 @@ class Consultas extends Conn {
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(":CON_DTCONSULTA", $CON_DTCONSULTA);
             $stmt->bindParam(":CON_NUMDURACAO", $CON_NUMDURACAO);
+            $stmt->bindParam(":DEN_IDDENTISTA", $DEN_IDDENTISTA);
             $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
             $stmt->execute();
         
@@ -457,6 +495,17 @@ class Consultas extends Conn {
 
     public function updateConsultaAgenda($CON_IDCONSULTA, $CON_DTCONSULTA, $CON_HORACONSULTA, $CON_NUMDURACAO, $TENANCY_ID)
     {
+
+        $consulta = $this->getConsultasById($TENANCY_ID, $CON_IDCONSULTA);
+        $pacienteNome = $consulta["PAC_DCNOME"];
+        $dentistaNome = $consulta["DEN_DCNOME"];
+        $horaAntes = $consulta["CON_HORACONSULTA"];
+        $horaDepois = $CON_HORACONSULTA;
+        $duracaoAntes = $consulta["CON_NUMDURACAO"];
+        $duracaoDepois = $CON_NUMDURACAO;
+        $dataAntes = (new \DateTime($consulta["CON_DTCONSULTA"]))->format('d/m/Y');
+        $dataDepois = (new \DateTime($CON_DTCONSULTA))->format('d/m/Y');
+
         try {
             $sql = "UPDATE CON_CONSULTAS 
                     SET 
@@ -478,6 +527,7 @@ class Consultas extends Conn {
 
             // Retorna sucesso ou falha
             if ($stmt->rowCount() > 0) {
+                LogSistema::insertLog(USER_NAME,"INFO", \App\Core\Language::get('info_update_consulta_agenda') . "Nome do Paciente: $pacienteNome | Nome do Dentista: $dentistaNome | Data Antes: $dataAntes | Data Depois: $dataDepois | Hora Antes: $horaAntes | Hora Depois: $horaDepois | Duração Antes: $duracaoAntes | Duração Depois: $duracaoDepois", $TENANCY_ID);
                 return [
                     "success" => true,
                     "message" => "Consulta atualizada com sucesso.",
@@ -493,12 +543,38 @@ class Consultas extends Conn {
                 ];
             }
         } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_update_consulta_agenda') .$e->getMessage(), $TENANCY_ID);
             return ["success" => false, "message" => "Erro: " . $e->getMessage()];
         }
     }
 
+    public function deleteConsultaAgenda($CON_IDCONSULTA, $TENANCY_ID) {
 
+        $consulta = $this->getConsultasById($TENANCY_ID, $CON_IDCONSULTA);
+        $pacienteNome = $consulta["PAC_DCNOME"];
+        $dentistaNome = $consulta["DEN_DCNOME"];
+        $hora = $consulta["CON_HORACONSULTA"];
+        $duracao = $consulta["CON_NUMDURACAO"];
+        $data = (new \DateTime($consulta["CON_DTCONSULTA"]))->format('d/m/Y');
 
+        try {
+            $sql = "
+                DELETE FROM CON_CONSULTAS
+                WHERE CON_IDCONSULTA = :CON_IDCONSULTA AND TENANCY_ID = :TENANCY_ID";
 
+            $stmt = $this->pdo->prepare($sql);
+
+            $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
+            $stmt->bindValue(':CON_IDCONSULTA', $CON_IDCONSULTA, PDO::PARAM_INT);
+
+            $stmt->execute();
+            LogSistema::insertLog(USER_NAME,"NOTICE", \App\Core\Language::get('notice_delete_consulta') . " Nome do Paciente: $pacienteNome | Nome do Dentista: $dentistaNome | Data: $data | Hora: $hora | Duração: $duracao", $TENANCY_ID);
+            return ["success" => true, "message" => "Consulta excluída com sucesso!"];
+
+        } catch (PDOException $e) {
+            LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_delete_consulta') .$e->getMessage(), $TENANCY_ID);
+            return ["error" => $e->getMessage()];
+        } 
+    }
 
 }

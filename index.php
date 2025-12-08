@@ -45,6 +45,8 @@ use \App\Controller\Pages\EncryptDecrypt;
 use \App\Controller\Pages\ListModeloAnamnese; 
 use \App\Controller\Pages\CadModeloAnamnese; 
 use \App\Controller\Pages\EditModeloAnamnese; 
+use \App\Controller\Pages\ListLog; 
+use \App\Controller\Pages\LogSistema; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -77,7 +79,7 @@ $obRouter->get('/inicial',[
 $obRouter->get('/editarpaciente',[
     function(){
         $id = $_GET['id'] ?? null; 
-        return new Response(200,EditPaciente::editCadPaciente($id));
+        return new Response(200,EditPaciente::editCadPaciente($id)); 
     }
 ]);
 
@@ -182,7 +184,7 @@ $obRouter->post('/cadconsulta', [
         if(empty($data)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informada a data da consulta."]));}
         if(empty($paciente)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o paciente da consulta."]));}
         if(empty($horario)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o horário da consulta."]));}
-        if(empty($idDentista)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o dentista que irá atender consulta."]));}
+        if(empty($idDentista) || $idDentista == "all"){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o dentista que irá atender consulta."]));}
 
         if(!empty($id)) {
             return new Response(200, $consultaController->updateConsultaInfo($id, $convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario));
@@ -190,6 +192,18 @@ $obRouter->post('/cadconsulta', [
             $tokenConfPresenca = bin2hex(random_bytes(16));
             return new Response(200, $consultaController->insertConsulta($convenio, $idDentista, $especialidade, $paciente, $observacao, $duracao, $data, $horario, $tokenConfPresenca));
         }
+    }
+]);
+
+//ROTA DELETAR CONSULTA
+$obRouter->post('/deleteConsulta',[
+    function(){
+        header('Content-Type: application/json');
+
+        $consultaController = new \App\Controller\Pages\ConsultasAgenda();
+
+        $id = $_POST['id'];
+        return new Response(200,$consultaController->deleteConsulta($id));
     }
 ]);
 
@@ -255,8 +269,13 @@ $obRouter->post('/horariosdisp', [
 
         $data = $_POST['data'] ?? '';
         $duracao = $_POST['duracao'] ?? '';
+        $iddentista = $_POST['iddentista'] ?? '';
 
-        $result = json_encode($consultaController->getHorariosDisp($data, $duracao)); 
+        if(empty($iddentista)) {
+            return new \App\Http\Response(200, "");
+        }
+
+        $result = json_encode($consultaController->getHorariosDisp($data, $duracao, $iddentista)); 
         
         //return new \App\Http\Response(200, json_encode($result), 'application/json');
         return new \App\Http\Response(200, $result);
@@ -359,6 +378,13 @@ $obRouter->get('/anamneseFinal', function() {
 
     return new \App\Http\Response(200, $html);
 });
+
+//ROTA LOG INFO RENDER TELA
+$obRouter->get('/listLogInfo',[
+    function(){
+        return new Response(200,ListLog::getLog());
+    }
+]);
 
 //IMPRIME RESPONSE NA PÁGINA
 $obRouter->run()

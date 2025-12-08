@@ -246,13 +246,13 @@ foreach ($consultasHoje as $c) {
     </div>
     <!-- end page title -->
      
-
     <div class="row">
         <div class="col-12">
             <div class="card widget-inline">
                 <div class="card-body p-0">
                     <div class="row g-0">
                         <div class="row g-0">
+
                             <!-- TOTAL CONSULTAS -->
                             <div class="col-6 col-lg-3 mb-3">
                                 <div class="card rounded-0 shadow-none m-0">
@@ -351,8 +351,8 @@ foreach ($consultasHoje as $c) {
         </div> <!-- end col-->
     </div>
     <!-- end row-->
-<?php if ($profissionalId != "all"): ?> 
-<div class="row">        
+    <?php if ($profissionalId != "all"): ?> 
+    <div class="row">        
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center">
@@ -369,16 +369,16 @@ foreach ($consultasHoje as $c) {
             <?php endif; ?>
         </div>
     </div><!-- end col-->    
-</div>
-<?php endif; ?>
-<!-- end row-->
-    
-<div class="row">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header d-flex flex-column justify-content-center align-items-center text-center py-3">   
-                <h4 class="header-title mb-3"><?= \App\Core\Language::get('agenda'); ?></h4>
-                <div class="d-flex flex-column flex-md-row gap-2 w-100">
+    </div>
+    <?php endif; ?>
+    <!-- end row-->
+                
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header d-flex flex-column justify-content-center align-items-center text-center py-3">   
+                    <h4 class="header-title mb-3"><?= \App\Core\Language::get('agenda'); ?></h4>
+                    <div class="d-flex flex-column flex-md-row gap-2 w-100">
                         
                     <button type="button" 
                             class="btn <?= $botaoStyleDeactiveUltimos12Meses ?> btn-sm rounded-pill shadow-sm flex-fill py-1"
@@ -417,12 +417,12 @@ foreach ($consultasHoje as $c) {
                         <?= \App\Core\Language::get('cadastrar_consulta_ini'); ?>
                     </button>
                     <?php endif; ?>
+                    </div>
                 </div>
-            </div>
-            <div class="card-header bg-light-lighten border-top border-bottom border-light py-1 text-center">
-                <p class="m-0"><b><?= $confirmadas; ?></b> <?= \App\Core\Language::get('consultas'); ?> <?= \App\Core\Language::get('confirmadas'); ?> <?= \App\Core\Language::get('de'); ?> <?= $totalConsultas; ?></p>
-            </div>
-            <div class="card-body pt-2">
+                <div class="card-header bg-light-lighten border-top border-bottom border-light py-1 text-center">
+                    <p class="m-0"><b><?= $confirmadas; ?></b> <?= \App\Core\Language::get('consultas'); ?> <?= \App\Core\Language::get('confirmadas'); ?> <?= \App\Core\Language::get('de'); ?> <?= $totalConsultas; ?></p>
+                </div>
+                <div class="card-body pt-2">
                 <div class="table-responsive">
                     <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
@@ -635,7 +635,7 @@ foreach ($consultasHoje as $c) {
                                        data-id="<?= htmlspecialchars((string)$consulta['CON_IDCONSULTA'], ENT_QUOTES, 'UTF-8') ?>"    
                                        data-dialogTitle="<?= \App\Core\Language::get('consultas_lista'); ?>"    
                                        data-dialogMessage="<?= \App\Core\Language::get('tem_certeza_excluir_consulta'); ?> <?= htmlspecialchars((string)$consulta['PAC_DCNOME'], ENT_QUOTES, 'UTF-8') ?>?"   
-                                       data-dialogUriToProcess="/deleteTaskProc"   
+                                       data-dialogUriToProcess="/deleteConsulta"   
                                        data-dialogUriToRedirect="/inicial"   
                                        data-dialogConfirmButton="<?= \App\Core\Language::get('confirmar'); ?>"
                                        data-dialogCancelButton="<?= \App\Core\Language::get('cancelar'); ?>" 
@@ -658,10 +658,10 @@ foreach ($consultasHoje as $c) {
 
 
                 </div> <!-- end table-responsive-->
-            </div> <!-- end card body-->
-        </div> <!-- end card -->
-    </div><!-- end col-->
-</div>
+                </div> <!-- end card body-->
+            </div> <!-- end card -->
+        </div><!-- end col-->
+    </div>
 <!-- end row-->
 </div> <!-- container -->
 <!-- msg modal -->
@@ -764,7 +764,7 @@ foreach ($consultasHoje as $c) {
 <!-- msg modal -->
 
 
-<!-- /.Modal nova consulta -->
+<!-- /.Modal nova/editar consulta -->
 <div id="novaConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -880,12 +880,7 @@ foreach ($consultasHoje as $c) {
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div>
-<!-- /.Modal nova consulta -->
-
-
-
-
-
+<!-- /.Modal nova/editar consulta -->
 
 <!-- Info Alert Modal -->
 <div id="info-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1032,6 +1027,7 @@ foreach ($consultasHoje as $c) {
             // Verifica duração selecionada
             var duracaoEl = document.querySelector('input[name="duracao"]:checked');
             var duracao = duracaoEl ? duracaoEl.value : '';
+            const iddentista = '<?= $profissionalId ?>';
         
             // Envia para o backend
             fetch('/horariosdisp', {
@@ -1041,7 +1037,8 @@ foreach ($consultasHoje as $c) {
                 },
                 body:
                     'data=' + encodeURIComponent(dateStr) +
-                    '&duracao=' + encodeURIComponent(duracao)
+                    '&duracao=' + encodeURIComponent(duracao) +
+                    '&iddentista=' + encodeURIComponent(iddentista)
             })
             .then(response => response.json())
             .then(data => {
@@ -1158,10 +1155,11 @@ foreach ($consultasHoje as $c) {
 
                 const duracaoEl = document.querySelector('input[name="duracao"]:checked');
                 const duracao = duracaoEl ? duracaoEl.value : '';
+                const iddentista = '<?= $profissionalId ?>';
 
-                const body = 'data=' + encodeURIComponent(dateStr) + '&duracao=' + encodeURIComponent(duracao);
+                const body = 'data=' + encodeURIComponent(dateStr) + '&duracao=' + encodeURIComponent(duracao) + '&iddentista=' + encodeURIComponent(iddentista);
 
-                const resp = await fetch('/horariosdisp', {
+                const resp = await fetch('/horariosdisp', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: body

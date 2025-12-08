@@ -22,10 +22,24 @@ class Profissionais extends Conn {
      */
     public function getProfissionais($TENANCY_ID) {
         try{           
-            $sql = "SELECT * FROM DEN_DENTISTAS WHERE TENANCY_ID = $TENANCY_ID ORDER BY DEN_DCNOME ASC";
+            $sql = "SELECT * FROM DEN_DENTISTAS WHERE TENANCY_ID = :TENANCY_ID ORDER BY DEN_DCNOME ASC";
             $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
             $stmt->execute();
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
+    public function getProfissionalById($TENANCY_ID, $DEN_IDDENTISTA) {
+        try{           
+            $sql = "SELECT * FROM DEN_DENTISTAS WHERE TENANCY_ID = :TENANCY_ID AND DEN_IDDENTISTA = :DEN_IDDENTISTA";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindValue(':TENANCY_ID', $TENANCY_ID, PDO::PARAM_STR);
+            $stmt->bindValue(':DEN_IDDENTISTA', $DEN_IDDENTISTA, PDO::PARAM_STR);
+            $stmt->execute();
+            return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return ["error" => $e->getMessage()];
         } 

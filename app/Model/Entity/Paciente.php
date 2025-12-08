@@ -49,7 +49,7 @@ class Paciente extends Conn {
 
     public function getPacientesById($TENANCY_ID, $PAC_IDPACIENTE) {
         try{           
-            $sql = "SELECT * FROM VW_PACIENTES WHERE TENANCY_ID = :TENANCY_ID AND PAC_IDPACIENTE = :PAC_IDPACIENTE ORDER BY PAC_DCNOME ASC";
+            $sql = "SELECT * FROM VW_PACIENTES WHERE TENANCY_ID = :TENANCY_ID AND PAC_IDPACIENTE = :PAC_IDPACIENTE";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
             $stmt->bindParam(":PAC_IDPACIENTE", $PAC_IDPACIENTE);

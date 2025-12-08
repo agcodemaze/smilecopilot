@@ -1,8 +1,6 @@
 <?php
 date_default_timezone_set('America/Sao_Paulo');
-$dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
-
-
+$dataHoraServidor = date('Y-m-d H:i:s'); 
 ?>
 
 
@@ -105,7 +103,7 @@ $dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="nome" class="form-label"><?= \App\Core\Language::get('nome_completo'); ?></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCNOME']) ?>" type="text" id="nome" name="nome" class="form-control" style="text-transform: uppercase;">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCNOME']) ?>" type="text" id="nome" name="nome" class="form-control" style="text-transform: uppercase;">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="sexo" class="form-label"><?= \App\Core\Language::get('sexo'); ?></label>                                         
@@ -119,21 +117,21 @@ $dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="telefone" class="form-label"><?= \App\Core\Language::get('telefone_whatsapp'); ?></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCTELEFONE']) ?>" type="text" id="telefone" name="nomtelefonee" class="form-control" data-toggle="input-mask" data-mask-format="(00) 00000-0000">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCTELEFONE']) ?>" type="text" id="telefone" name="nomtelefonee" class="form-control" data-toggle="input-mask" data-mask-format="(00) 00000-0000">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="dtnascimento" class="form-label"><?= \App\Core\Language::get('data_nascimento'); ?></label> 
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DTDATANASC']) ?>" type="text" id="dtnascimento" name="dtnascimento" class="form-control" data-toggle="input-mask" data-mask-format="00/00/0000">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DTDATANASC']) ?>" type="text" id="dtnascimento" name="dtnascimento" class="form-control" data-toggle="input-mask" data-mask-format="00/00/0000">
                                             </div>
                                         </div> <!-- end col -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="email" class="form-label"><?= \App\Core\Language::get('email'); ?></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCEMAIL']) ?>" type="text" id="email" name="email" class="form-control" style="text-transform: uppercase;">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCEMAIL']) ?>" type="text" id="email" name="email" class="form-control" style="text-transform: uppercase;">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="documento" class="form-label"><?= \App\Core\Language::get('cpfrg'); ?></label></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCCPF']) ?>" type="text" id="documento" name="documento" class="form-control" style="text-transform: uppercase;">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCCPF']) ?>" type="text" id="documento" name="documento" class="form-control" style="text-transform: uppercase;">
                                             </div>
                                         </div> <!-- end col -->
                                     </div>
@@ -155,31 +153,31 @@ $dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="cep" class="form-label">CEP <a class="small-text" href="https://buscacepinter.correios.com.br/app/localidade_logradouro/index.php" target="_blank"> [não sei informar]</a></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_CEP']) ?>" type="text" id="cep" name="cep" class="form-control" data-toggle="input-mask" data-mask-format="00000-000" placeholder="Digite o CEP" maxlength="9" onblur="buscarEndereco()">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_CEP']) ?>" type="text" id="cep" name="cep" class="form-control" data-toggle="input-mask" data-mask-format="00000-000" placeholder="Digite o CEP" maxlength="9" onblur="buscarEndereco()">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="endereco" class="form-label">Endereço</label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_RUA']) ?>" type="text" id="endereco" name="endereco" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_RUA']) ?>" type="text" id="endereco" name="endereco" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
                                             </div>
                                         </div> <!-- end col -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="numero" class="form-label">Número</label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_NUMERO']) ?>" type="text" id="numero" name="numero" class="form-control" style="text-transform: uppercase;" placeholder="Digite o número">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_NUMERO']) ?>" type="text" id="numero" name="numero" class="form-control" style="text-transform: uppercase;" placeholder="Digite o número">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="bairro" class="form-label">Bairro</label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_BAIRRO']) ?>" type="text" id="bairro" name="bairro" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_BAIRRO']) ?>" type="text" id="bairro" name="bairro" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
                                             </div>
                                         </div> <!-- end col -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="cidade" class="form-label">Cidade</label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_CIDADE']) ?>" type="text" id="cidade" name="cidade" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_CIDADE']) ?>" type="text" id="cidade" name="cidade" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="estado" class="form-label">Estado</label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DCENDERECO_ESTADO']) ?>" type="text" id="estado" name="estado" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DCENDERECO_ESTADO']) ?>" type="text" id="estado" name="estado" class="form-control" style="text-transform: uppercase;" placeholder="" readonly>
                                             </div>
                                         </div> <!-- end col -->
                                     </div>
@@ -212,13 +210,13 @@ $dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
                                             </div>
                                             <div class="mb-3">
                                                 <label for="dtcadastro" class="form-label"><?= \App\Core\Language::get('cliente_desde'); ?></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['PAC_DTCADASTRO']) ?>" type="text" id="dtcadastro" name="dtcadastro" class="form-control">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['PAC_DTCADASTRO']) ?>" type="text" id="dtcadastro" name="dtcadastro" class="form-control">
                                             </div>
                                         </div> <!-- end col -->
                                         <div class="col-lg-4">
                                             <div class="mb-3">
                                                 <label for="plano" class="form-label"><?= \App\Core\Language::get('plano_produto'); ?></label>
-                                                <input value="<?= htmlspecialchars($pacienteInfo[0]['CNV_IDCONVENIO']) ?>" type="text" id="plano" name="plano" class="form-control" style="text-transform: uppercase;">
+                                                <input value="<?= htmlspecialchars($pacienteInfo['CNV_IDCONVENIO']) ?>" type="text" id="plano" name="plano" class="form-control" style="text-transform: uppercase;">
                                             </div>
                                             <div class="mb-3">
                                                 <label for="comoconheceu" class="form-label"><?= \App\Core\Language::get('como_nos_conheceu'); ?></label>                                         

@@ -19,7 +19,7 @@ class EditPaciente extends Page {
         $pacientesObj = new Paciente();
         $convenios = $pacientesObj->getConvenios(); 
 
-        $pacienteInfo = $pacientesObj->getPacientesById(TENANCY_ID, $id); 
+        $pacienteInfo = $pacientesObj->getPacientesById(TENANCY_ID, $id);  
         $pacienteInfoConsultas = $pacientesObj->getTimelinePacientesConsultasById(TENANCY_ID, $id);
 
         // --- COMPONENTES SCRIPTS ---

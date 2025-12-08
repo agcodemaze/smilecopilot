@@ -8,15 +8,15 @@ use \App\Utils\Auth;
 
 class ConsultasAgenda{
 
-    public function getHorariosDisp($data, $duracao) {
+    public function getHorariosDisp($data, $duracao, $iddentista) {
         Auth::authCheck(); 
         try {
-                $objConsultas = new Consultas();
+                $objConsultas = new Consultas(); 
 
                 $dataObj = \DateTime::createFromFormat('d/m/Y', $data);
                 $data = $dataObj->format('Y-m-d');
 
-                $response = $objConsultas->getHorariosDisponiveis($data, $duracao, TENANCY_ID);           
+                $response = $objConsultas->getHorariosDisponiveis($data, $duracao, $iddentista, TENANCY_ID);           
                 return $response;           
 
         } catch (PDOException $e) {   
@@ -97,6 +97,21 @@ class ConsultasAgenda{
         } catch (PDOException $e) {   
             $erro = $e->getMessage();        
             return json_encode(["success" => false, "message" => "Houve um erro ao atualizar a consulta."]);
+        }
+    } 
+
+    public function deleteConsulta($id) {
+        Auth::authCheck();
+
+        try {
+                $objConsultas = new Consultas();
+                $response = $objConsultas->deleteConsultaAgenda($id, TENANCY_ID);
+
+                return json_encode(["success" => true, "message" => "Consulta excluída com sucesso."]);
+        
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();           
+            return json_encode(["success" => false, "message" => "Erro no servidor. Tente novamente mais tarde."]);
         }
     } 
 }

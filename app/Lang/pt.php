@@ -173,8 +173,35 @@
     'tornar_modelo_ativo' => 'Tornar este o modelo ativo.', 
     'excluir_modelo_anamnese' => 'Excluir Modelo de Anamnese', 
     'editar_consulta' => 'Editar Consulta',
+    'registro_atividades' => 'Registro de Atividades', 
+    'nome_executor' => 'Nome do Executor',
+    'nivel' => 'Nível', 
+    'data_hora' => 'Data e Hora',
+    'mensagem' => 'Mensagem', 
+    'id' => 'ID', 
+    'lista_logs' => 'Lista de Atividades do Sistema', 
+    'lista_logs_desc' => 'Nesta tela, é exibido o histórico completo das atividades realizadas pelo sistema, permitindo acompanhar cada ação registrada.', 
 
 
+
+    //LISTA DE MSG DO SISTEMA   
+    'erro_get_consultas' => 'Houve um erro ao buscar as consultas: ',
+    'erro_get_especialidade' => 'Houve um erro ao buscar as especialidades: ',
+    'erro_get_datas_bloqueadas' => 'Houve um erro ao buscar as datas bloqueadas pelo dentista: ',
+    'erro_get_convenios_por_paciente' => 'Houve um erro ao buscar os convênios por paciente: ',
+    'info_insert_consulta' => 'Consulta cadastrada com sucesso: ',
+    'erro_insert_consulta' => 'Houve um erro ao cadastrar uma consulta: ',
+    'info_update_consulta' => 'Consulta atualizada com sucesso: ',
+    'erro_update_consulta' => 'Houve um erro ao atualizar uma consulta: ',
+    'erro_get_consulta_hash' => 'Houve um erro buscar a consulta pelo hash de confirmação de presença: ',
+    'info_update_confirmacao_presenca' => 'Confirmação de presença atualizada com sucesso.',
+    'erro_update_consulta_hash' => 'Houve um erro ao atulizar o status da confirmação de presença: ',
+    'erro_get_consultas_por_profissional' => 'Houve um erro ao buscar as consultas por dentista: ',
+    'info_update_consulta_agenda' => 'Consulta atualizada com sucesso na agenda: ',
+    'erro_update_consulta_agenda' => 'Houve um erro ao atulizar a consulta na agenda: ',
+    'notice_insert_consulta' => 'Login efetuado com sucesso.',
+    'warning_insert_consulta' => 'Tentaiva de login falhou. Usuário ou senha inválidos. Usuário inserido: ',
+    'notice_delete_consulta' => 'Consulta excluída com sucesso.',
 
 
     ];

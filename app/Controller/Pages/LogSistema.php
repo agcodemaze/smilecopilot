@@ -9,10 +9,9 @@ use \App\Model\Entity\Log;
 
 class LogSistema{
     
-    public static function insertLog($LOS_DCUSUARIO, $LOS_DCNIVEL, $LOS_DCMSG) {
+    public static function insertLog($LOS_DCUSUARIO, $LOS_DCNIVEL, $LOS_DCMSG, $TENANCY_ID) {
        
-        // Se TENANCY_ID não estiver definido ou for nulo, usa 0
-        $TENANCY_ID = defined('TENANCY_ID') && TENANCY_ID ? TENANCY_ID : 0;
+        $TENANCY_ID = $TENANCY_ID ?? 0;
 
         $log = new Log();
         return $log->insertLog($LOS_DCUSUARIO, $LOS_DCNIVEL, $LOS_DCMSG, $TENANCY_ID);
