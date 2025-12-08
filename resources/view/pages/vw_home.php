@@ -626,7 +626,7 @@ foreach ($consultasHoje as $c) {
                                            data-bs-toggle="popover" 
                                            data-bs-trigger="hover" 
                                            style="color: #25D366;"
-                                           data-bs-content="<?= \App\Core\Language::get('pedir_confirmacao_whats_botao'); ?>">
+                                           data-bs-content="<?= \App\Core\Language::get('enviar_msg_whatsapp'); ?>">
                                        </i>
                                     </a>                            
                                     

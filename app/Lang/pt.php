@@ -106,6 +106,7 @@
     'codigo_clinica_placeholder' => 'Ex. 12345',
     'selecione_profissional' => 'Selecione o Profissional',
     'pedir_confirmacao_whats_botao' => 'Pedir confirmação de comparecimento via WhatsApp',
+    'enviar_msg_whatsapp' => 'Enviar mensagem pelo Whatsapp',
     'reagendar_consulra' => 'Reagendar consulta',
     'excluir_consulta' => 'Excluir consulta',  
     'todas' => 'Todas',
