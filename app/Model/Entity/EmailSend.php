@@ -31,7 +31,7 @@ class EmailSend extends Conn {
                 $mail->CharSet = 'UTF-8';
        
                 // De / Para
-                $mail->setFrom($mail->Username, 'SmileCopilot');
+                $mail->setFrom($_ENV['ENV_SMTP_USER'], 'SmileCopilot');
                 $mail->addAddress($EMAIL);
             
                 // Conteúdo
