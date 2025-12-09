@@ -15,7 +15,24 @@
         }
     }
 ?>
-
+<style>
+    .steps .step-item {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #dee2e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        color: #6c757d;
+    }
+    .steps .active {
+        background: #0dcaf0;
+        color: #fff;
+        border: 2px solid #0aa4c5;
+    }
+</style>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,7 +198,17 @@
                                     <div class="invalid-feedback">A senha é obrigatória.</div>
                                 </div>
 
-                                <div class="mb-3">
+                                <div class="small text-muted mb-3 ms-1">
+                                    <strong>A senha deve conter:</strong>
+                                    <ul class="mb-2 mt-2 ps-3">
+                                        <li class="rule-tamanho">8 a 10 caracteres</li>
+                                        <li class="rule-maiuscula">Pelo menos 1 letra maiúscula</li>
+                                        <li class="rule-numero">Pelo menos 1 número</li>
+                                        <li class="rule-especial">Pelo menos 1 caractere especial (!@#...)</li>
+                                    </ul>
+                                </div>
+
+                                <div class="mb-3 mt-3">
                                     <label class="form-label">Repita a Senha</label>
                                     <input type="password" class="form-control" id="senha2" required>
                                     <div class="invalid-feedback">As senhas não conferem.</div>
@@ -216,7 +243,7 @@
                             <div class="step d-none" data-step="3">
                                 <div class="text-center py-4">
                                     <h2 class="mt-0">
-                                        <i class="mdi mdi-check-all text-success"></i>
+                                        <i class="mdi mdi-check-all text-info"></i>
                                     </h2>
 
                                     <h3 class="mt-0">Obrigado!</h3>
@@ -226,7 +253,7 @@
                                     </p>
                                 </div>
 
-                                <button type="button" class="btn btn-success w-100" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-info w-100" data-bs-dismiss="modal">
                                     Fechar
                                 </button>
                             </div>
@@ -241,126 +268,6 @@
         </div>
     </div>
 </div>
-
-<!-- Estilos internos do wizard -->
-<style>
-.steps .step-item {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: #dee2e6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: #6c757d;
-}
-.steps .active {
-    background: #0dcaf0;
-    color: #fff;
-    border: 2px solid #0aa4c5;
-}
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    let currentStep = 1;
-
-    const steps = document.querySelectorAll(".step");
-    const indicators = document.querySelectorAll(".step-item");
-
-    const showStep = (step) => {
-        steps.forEach(s => s.classList.add("d-none"));
-        indicators.forEach(i => i.classList.remove("active"));
-
-        document.querySelector(`.step[data-step="${step}"]`).classList.remove("d-none");
-        document.querySelector(`.step-item[data-step="${step}"]`).classList.add("active");
-    };
-
-    const validateStep = (step) => {
-        const inputs = document.querySelectorAll(`.step[data-step="${step}"] input[required]`);
-        let valid = true;
-
-        inputs.forEach(input => {
-            if (!input.value.trim()) {
-                input.classList.add("is-invalid");
-                valid = false;
-            } else {
-                input.classList.remove("is-invalid");
-            }
-        });
-
-        // Validação de senha
-        if (step === 1) {
-            const s1 = document.getElementById("senha1").value;
-            const s2 = document.getElementById("senha2").value;
-
-            if (s1 !== s2) {
-                document.getElementById("senha2").classList.add("is-invalid");
-                valid = false;
-            } else {
-                document.getElementById("senha2").classList.remove("is-invalid");
-            }
-        }
-
-        return valid;
-    };
-
-    // Botões de avançar
-    document.querySelectorAll(".next").forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (!validateStep(currentStep)) return;
-
-            currentStep++;
-            showStep(currentStep);
-
-            // Se chegou no passo 3 → envia para o servidor
-            if (currentStep === 3) {
-                enviarCadastro();
-            }
-        });
-    });
-
-    // Botões de voltar
-    document.querySelectorAll(".prev").forEach(btn => {
-        btn.addEventListener("click", () => {
-            currentStep--;
-            showStep(currentStep);
-        });
-    });
-
-    showStep(currentStep);
-
-    // Enviar ao backend
-    function enviarCadastro() {
-
-        const payload = {
-            email: document.getElementById("email").value,
-            senha: document.getElementById("senha1").value,
-            nome: document.getElementById("nome").value,
-            telefone: document.getElementById("telefone").value
-        };
-
-        fetch("/cadUsuario", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
-        .then(r => r.json())
-        .then(data => {
-            console.log("Cadastro:", data);
-        })
-        .catch(e => console.error("Erro:", e));
-    }
-
-});
-</script>
-
-
-
-
-
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -399,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 </script>
 
-
+    <script src="/public/assets/js/cadNovoAssinante.js"></script>
     <script src="/public/assets/js/vendor.min.js"></script>
     <script src="/public/assets/vendor/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
     <script src="/public/assets/js/app.min.js"></script>
