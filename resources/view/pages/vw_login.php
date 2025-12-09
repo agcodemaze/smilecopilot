@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
             telefone: document.getElementById("telefone").value
         };
 
-        fetch("/cadcliente", {
+        fetch("/cadUsuario", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
