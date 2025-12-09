@@ -324,7 +324,8 @@ if (isset($_GET['profissional_id'])) {
                     <ul class="dropdown-menu border-0 shadow-sm">
                         <li><a class="dropdown-item text-dark" href="#"><i class="ri-computer-line me-1 text-info"></i> <?= \App\Core\Language::get('configuracoes'); ?></a></li>
                         <li><a class="dropdown-item text-dark" href="/listmodeloanamnese"><i class="ri-file-list-3-line me-1 text-info"></i> <?= \App\Core\Language::get('modelo_anamnese'); ?>'s</a></li>
-                        <li><a class="dropdown-item text-dark" href="/listLogInfo"><i class="ri-file-list-3-line me-1 text-info"></i> <?= \App\Core\Language::get('registro_atividades'); ?></a></li>
+                        <li><a href="/listLogInfo" class="text-decoration-none text-dark"><i class="ri-history-line me-1 text-info"></i> <?= \App\Core\Language::get('registro_atividades'); ?></a></li>
+                        <li><a href="/logoff" class="text-decoration-none text-dark"><i class="ri-logout-box-r-line me-1 text-info"></i> <?= \App\Core\Language::get('sair'); ?></a></li>
                     </ul>
                 </li>
             </ul>
@@ -384,9 +385,14 @@ if (isset($_GET['profissional_id'])) {
 </div>
 <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="offcanvasMenu" aria-labelledby="offcanvasMenuLabel">
     <div class="offcanvas-header">
-        <h5 class="offcanvas-title fw-semibold" id="offcanvasMenuLabel">Smilecopilot</h5>
+        <span class="logo-lg">
+            <img src="../../../public/assets/images/logo_bright.png" alt="logo" style="height:28px; width:auto;">
+        </span>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
     </div>
+
+
+
     <div class="offcanvas-body menu-mobile">
         <ul class="list-unstyled d-flex flex-column gap-2">
             <li>
@@ -435,7 +441,8 @@ if (isset($_GET['profissional_id'])) {
                 <ul class="list-unstyled ps-4 d-flex flex-column gap-1">
                     <li><a href="#" class="text-decoration-none text-dark"><i class="ri-computer-line me-1 text-info"></i> <?= \App\Core\Language::get('configuracoes'); ?></a></li>
                     <li><a href="/listmodeloanamnese" class="text-decoration-none text-dark"><i class="ri-file-list-3-line me-1 text-info"></i> <?= \App\Core\Language::get('modelo_anamnese'); ?>'s</a></li>
-                    <li><a href="/listLogInfo" class="text-decoration-none text-dark"><i class="ri-file-list-3-line me-1 text-info"></i> <?= \App\Core\Language::get('registro_atividades'); ?></a></li>
+                    <li><a href="/listLogInfo" class="text-decoration-none text-dark"><i class="ri-history-line me-1 text-info"></i> <?= \App\Core\Language::get('registro_atividades'); ?></a></li>
+                    <li><a href="/logoff" class="text-decoration-none text-dark"><i class="ri-logout-box-r-line me-1 text-info"></i> <?= \App\Core\Language::get('sair'); ?></a></li>
                 </ul>
             </li>
         </ul>

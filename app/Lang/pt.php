@@ -174,7 +174,7 @@
     'tornar_modelo_ativo' => 'Tornar este o modelo ativo.', 
     'excluir_modelo_anamnese' => 'Excluir Modelo de Anamnese', 
     'editar_consulta' => 'Editar Consulta',
-    'registro_atividades' => 'Registro de Atividades', 
+    'registro_atividades' => 'Log de Atividades', 
     'nome_executor' => 'Nome do Executor',
     'nivel' => 'Nível', 
     'data_hora' => 'Data e Hora',
@@ -203,6 +203,10 @@
     'notice_insert_consulta' => 'Login efetuado com sucesso.',
     'warning_insert_consulta' => 'Tentaiva de login falhou. Usuário ou senha inválidos. Usuário inserido: ',
     'notice_delete_consulta' => 'Consulta excluída com sucesso.',
+    'notice_insert_usuario_assinante' => 'Um novo assinante foi cadastrado no sistema. ',
+    'erro_insert_usuario_assinante' => 'Não foi possível cadastrar o novo assinante no sistema: ',
+    'erro_envio_email_notificacao' => 'Houve um erro ao enviar um e-mail de notificação: ',
+    'info_envio_email_notificacao' => 'Notificação por e-mail enviada com sucesso.',
 
 
     ];

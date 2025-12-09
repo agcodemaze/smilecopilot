@@ -21,6 +21,11 @@ class Auth extends Conn {
         $stmt->execute();
         $userinfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        if ($userinfo['USU_STVERIFICACAO_CADASTRO'] != "VERIFICADO" ) 
+        {
+            return json_encode(["success" => false, "message" => "Esta conta não está inativa."]);
+        }
+
         if ($userinfo && password_verify($USU_DCSENHA, $userinfo['USU_DCSENHA'])) 
         {
             $this->GenJWT($userinfo);

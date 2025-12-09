@@ -996,7 +996,6 @@ foreach ($consultasHoje as $c) {
     setInterval(atualizarTimeline, 120000);
 </script>
 
-
 <script>
     function atualizarRelogio() {
         const agora = new Date();

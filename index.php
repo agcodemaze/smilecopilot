@@ -47,6 +47,7 @@ use \App\Controller\Pages\CadModeloAnamnese;
 use \App\Controller\Pages\EditModeloAnamnese; 
 use \App\Controller\Pages\ListLog; 
 use \App\Controller\Pages\LogSistema; 
+use \App\Controller\Pages\Usuarios; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -211,6 +212,22 @@ $obRouter->post('/deleteConsulta',[
 $obRouter->get('/agenda',[
     function(){
         return new Response(200,Agenda::getAgenda());
+    }
+]);
+
+//ROTA CADASTRO NOVO USUÁRIO
+$obRouter->post('/cadUsuario', [
+    function() {
+        $usuariosController = new \App\Controller\Pages\Usuarios();
+
+        $email = EncryptDecrypt::sanitize($_POST['email'] ?? '');
+        $senha = $_POST['senha1'] ?? '';
+        $nome = EncryptDecrypt::sanitize($_POST['nome'] ?? '');
+        $telefone = EncryptDecrypt::sanitize($_POST['telefone'] ?? '');
+
+        $usuariosController->insertUsuarioAssinante($email, $senha, $nome, $telefone);
+        return new Response(200, "Assinante Cadastrado");
+
     }
 ]);
 

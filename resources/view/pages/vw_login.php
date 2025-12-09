@@ -145,14 +145,13 @@
                 <div class="card">
                     <div class="card-header py-4 text-center">
                         <a href="index.html">
-                            <span><img src="/public/assets/images/SmileCopilot-Logo_139x28.png" alt="logo" style="height:28px; width:auto;"></span>
+                            <span><img src="/public/assets/images/logo_bright.png" alt="logo" style="height:28px; width:auto;"></span>
                         </a>
                     </div>
                     <div class="card-body">
 
                         <p class="mb-4"><strong>Teste grátis por 7 dias.</strong> Sem necessidade de cartão de crédito e sem compromisso, pague apenas se gostar.</p>
 
-                        <!-- Adicionando needs-validation e novalidate ao formulário -->
                         <form id="wizardForm" class="needs-validation" novalidate>
                             <div id="progressbarwizard">
 
@@ -221,7 +220,7 @@
                                         </div>
                                         <ul class="list-inline wizard mb-0">
                                             <li class="next list-inline-item float-end">
-                                                <a href="javascript:void(0);" class="btn btn-info" id="continueToProfile">Continuar <i class="mdi mdi-arrow-right ms-1"></i></a>
+                                                <a href="javascript:void(0);" class="btn btn-info" id="continueToProfile">Avançar <i class="mdi mdi-arrow-right ms-1"></i></a>
                                             </li>
                                         </ul>
                                     </div>
@@ -239,18 +238,7 @@
                                                             O nome é obrigatório.
                                                         </div>
                                                     </div>
-                                                </div>
-                                                
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="clinica">Nome da Clínica</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" id="clinica" name="clinica" class="form-control" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            O nome da clínica é obrigatório.
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                </div>                                               
                                                 
                                                 <div class="row mb-3">
                                                     <label class="col-md-3 col-form-label" for="telefone"> DDD + Telefone</label>
@@ -266,10 +254,13 @@
                                         </div>
                                         <ul class="pager wizard mb-0 list-inline">
                                             <li class="previous list-inline-item">
-                                                <a href="javascript:void(0);" class="btn btn-light" data-bs-target="#account-2"><i class="mdi mdi-arrow-left me-1"></i> Voltar para Conta</a>
+                                                <a href="javascript:void(0);" class="btn btn-light" id="backtoaccount"><i class="mdi mdi-arrow-left me-1"></i> Voltar para Conta</a>
                                             </li>
                                             <li class="next list-inline-item float-end">
-                                                <button type="submit" class="btn btn-info" id="submitForm">Enviar</button>
+                                                <button type="submit" 
+                                                class="btn btn-info" 
+                                                id="submitForm"
+                                                >Cadastrar-se</button>
                                             </li>
                                         </ul>
                                     </div>
@@ -303,7 +294,9 @@
     </div><!-- /.modal-dialog -->
     </div>
 
-    <script>
+
+
+<script>
     document.addEventListener('DOMContentLoaded', function() {
 
         function validateTab(tabElement) {
@@ -348,60 +341,73 @@
             nextTab.show();
         }
 
-        document.getElementById('continueToProfile').addEventListener('click', function(event) {
-            event.preventDefault();
+        document.getElementById('continueToProfile').addEventListener('click', function(e) {
+            e.preventDefault();
             if (canProceed(['account-2'])) {
                 showTab('profile-tab-2');
             }
         });
 
-        document.getElementById('submitForm').addEventListener('click', function(event) {
-            event.preventDefault();
-            if (canProceed(['account-2','profile-tab-2'])) {
-                showTab('finish-2');
-            } else {
-                document.getElementById('wizardForm').classList.add('was-validated');
+        document.getElementById('backtoaccount').addEventListener('click', function(e) {
+            e.preventDefault();
+            showTab('account-2');
+        });
+
+        document.getElementById('wizardForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (!canProceed(['account-2','profile-tab-2'])) {
+                this.classList.add('was-validated');
+                return;
             }
+
+            let formData = new FormData(this);
+
+            fetch('/cadUsuario', {
+                method: 'POST',
+                body: formData
+            });
+
+            showTab('finish-2');
         });
 
         document.querySelectorAll('.nav-link').forEach(tab => {
-            tab.addEventListener('click', function(event) {
-                event.preventDefault();
-            });
+            tab.addEventListener('click', e => e.preventDefault());
         });
 
     });
-    </script>
+</script>
+
 
     <script>
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
 
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const codigo = document.getElementById('codigo').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const codigo = document.getElementById('codigo').value;
 
-        const payload = {
-            email: email,
-            codigo: codigo,
-            password: password
-        };
+            const payload = {
+                email: email,
+                codigo: codigo,
+                password: password
+            };
 
-        fetch('/logincheck', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = '/inicial';
-            } else {
-                alert(data.message);
-            }
-        })
-        .catch(error => console.error('Erro:', error));
-    });
+            fetch('/logincheck', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = '/inicial';
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => console.error('Erro:', error));
+        });
     </script>
 
     <script src="/public/assets/js/vendor.min.js"></script>

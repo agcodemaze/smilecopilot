@@ -70,11 +70,11 @@ class CadAnamnese extends Page{
         $returninsert = json_decode($respostas, true);
         if($returninsert['success'] != true){
 
-            LogSistema::insertLog($clinicaInfo["CFG_DCNOME_CLINICA"], 'ERROR', Language::get('erro_insert_anamnese_erro').' '.$pacienteInfo['PAC_DCNOME'].' e:'.$returninsert['message'], $tid);
+            LogSistema::insertLog("SmileCopilot", 'ERROR', Language::get('erro_insert_anamnese_erro').' '.$pacienteInfo['PAC_DCNOME'].' e:'.$returninsert['message'], $tid);
             return $respostas;
         }
 
-        LogSistema::insertLog($clinicaInfo["CFG_DCNOME_CLINICA"], 'INFO', Language::get('insert_anamnese_sucesso').' '.$pacienteInfo['PAC_DCNOME'], $tid);
+        LogSistema::insertLog("SmileCopilot", 'INFO', Language::get('insert_anamnese_sucesso').' '.$pacienteInfo['PAC_DCNOME'], $tid);
 
         $pdfResponse = self::createAnamnesePdf($tid,$id);
         return $pdfResponse;
@@ -245,11 +245,11 @@ class CadAnamnese extends Page{
 
         if (isset($result['success'])) {
             unlink($pdfPath);
-            LogSistema::insertLog($clinicaInfo["CFG_DCNOME_CLINICA"], 'INFO', Language::get('nova_anamnese_respondida_criado_pdf').' '.$pacienteInfo['PAC_DCNOME'], $tid);
+            LogSistema::insertLog("SmileCopilot", 'INFO', Language::get('nova_anamnese_respondida_criado_pdf').' '.$pacienteInfo['PAC_DCNOME'], $tid);
             return json_encode(['success' => true, 'link' => $result['link']]);
         } else {
 
-            LogSistema::insertLog($clinicaInfo["CFG_DCNOME_CLINICA"], 'ERROR', Language::get('erro_cadastro_anamnese_criado_pdf').' '.$pacienteInfo['PAC_DCNOME'].' err: '.$result['error'], $tid);
+            LogSistema::insertLog("SmileCopilot", 'ERROR', Language::get('erro_cadastro_anamnese_criado_pdf').' '.$pacienteInfo['PAC_DCNOME'].' err: '.$result['error'], $tid);
             return json_encode(['error' => $result['error'] ?? 'Erro desconhecido']);
         }
     }
