@@ -218,12 +218,15 @@ $obRouter->get('/agenda',[
 //ROTA CADASTRO NOVO USUÁRIO
 $obRouter->post('/cadUsuario', [
     function() {
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);  
+
         $usuariosController = new \App\Controller\Pages\Usuarios();
 
-        $email = EncryptDecrypt::sanitize($_POST['email'] ?? '');
-        $senha = $_POST['senha1'] ?? '';
-        $nome = EncryptDecrypt::sanitize($_POST['nome'] ?? '');
-        $telefone = EncryptDecrypt::sanitize($_POST['telefone'] ?? '');
+        $email = EncryptDecrypt::sanitize($data['email'] ?? '');
+        $senha = $data['senha'] ?? '';
+        $nome = EncryptDecrypt::sanitize($data['nome'] ?? '');
+        $telefone = EncryptDecrypt::sanitize($data['telefone'] ?? '');
 
         $usuariosController->insertUsuarioAssinante($email, $senha, $nome, $telefone);
         return new Response(200, "Assinante Cadastrado");
