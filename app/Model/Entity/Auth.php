@@ -21,13 +21,13 @@ class Auth extends Conn {
         $stmt->execute();
         $userinfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($userinfo['USU_STVERIFICACAO_CADASTRO'] != "VERIFICADO" ) 
-        {
-            return json_encode(["success" => false, "message" => "Esta conta não está inativa."]);
-        }
-
         if ($userinfo && password_verify($USU_DCSENHA, $userinfo['USU_DCSENHA'])) 
         {
+            if ($userinfo['USU_STVERIFICACAO_CADASTRO'] != "VERIFICADO" ) 
+            {
+                return json_encode(["success" => false, "message" => "Sua conta ainda não foi ativada. <a href=\'/verificacaoEmail\'> Clique aqui</a> para receber um novo e-mail de verificação."]);
+            }
+
             $this->GenJWT($userinfo);
             LogSistema::insertLog($userinfo['USU_DCNOME'],"NOTICE", \App\Core\Language::get('notice_insert_consulta'), $TENANCY_ID);
             return json_encode(["success" => true, "message" => "Credenciais válidas!"]);

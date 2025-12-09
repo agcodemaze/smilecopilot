@@ -104,6 +104,7 @@
                                 <div class="mb-3">
                                     <label for="email" class="form-label"><?= \App\Core\Language::get('email'); ?></label>
                                     <input class="form-control" type="email" id="email" required="" placeholder="<?= \App\Core\Language::get('email_placeholder'); ?>">
+                                    <div id="loginError" class="text-danger mt-1" style="display:none; font-size: 0.9rem;"></div>
                                 </div>
 
                                 <div class="mb-3">
@@ -137,278 +138,267 @@
             <a href="https://codemaze.com.br" target="_blank" style="color: #fff;"><script>document.write(new Date().getFullYear())</script> Codemaze Soluções de Mkt e Software </a>
     </footer>
 
-    <div id="novocliente-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="novocliente-modal" class="modal fade" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <div class="modal-body"> 
                 <div class="card">
                     <div class="card-header py-4 text-center">
-                        <a href="index.html">
-                            <span><img src="/public/assets/images/logo_bright.png" alt="logo" style="height:28px; width:auto;"></span>
-                        </a>
+                        <img src="/public/assets/images/logo_bright.png" alt="logo" style="height:28px;">
                     </div>
+
                     <div class="card-body">
 
-                        <p class="mb-4"><strong>Teste grátis por 7 dias.</strong> Sem necessidade de cartão de crédito e sem compromisso, pague apenas se gostar.</p>
+                        <p class="mb-4">
+                            <strong>Teste grátis por 7 dias.</strong> 
+                            Sem necessidade de cartão de crédito e sem compromisso, pague apenas se gostar.
+                        </p>
 
-                        <form id="wizardForm" class="needs-validation" novalidate>
-                            <div id="progressbarwizard">
+                        <!-- INÍCIO DO NOVO WIZARD -->
+                        <form id="wizardForm">
 
-                                <ul class="nav nav-pills nav-justified form-wizard-header mb-3">
-                                    <li class="nav-item">
-                                        <a href="#account-2"  data-toggle="tab" class="nav-link rounded-0 py-2 active">
-                                            <i class="mdi mdi-account-circle font-18 align-middle me-1"></i>
-                                            <span class="d-none d-sm-inline">Conta</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#profile-tab-2"  data-toggle="tab" class="nav-link rounded-0 py-2">
-                                            <i class="mdi mdi-face-man-profile font-18 align-middle me-1"></i>
-                                            <span class="d-none d-sm-inline">Perfil</span>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="#finish-2"  data-toggle="tab" class="nav-link rounded-0 py-2">
-                                            <i class="mdi mdi-checkbox-marked-circle-outline font-18 align-middle me-1"></i>
-                                            <span class="d-none d-sm-inline">Validar</span>
-                                        </a>
-                                    </li>
-                                </ul>
+                            <!-- Indicadores -->
+                            <div class="steps mb-4 d-flex justify-content-between">
+                                <div class="step-item active" data-step="1">1</div>
+                                <div class="step-item" data-step="2">2</div>
+                                <div class="step-item" data-step="3">3</div>
+                            </div>
 
-                                <div class="tab-content b-0 mb-0">
+                            <!-- STEP 1 -->
+                            <div class="step" data-step="1">
+                                <h5 class="mb-3">Dados da Conta</h5>
 
-                                    <div id="bar" class="progress mb-3" style="height: 7px;">
-                                        <div class="bar progress-bar progress-bar-striped progress-bar-animated bg-success"></div>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">E-mail</label>
+                                    <input type="email" class="form-control" id="email" required>
+                                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                </div>
 
-                                    <!-- Aba de Conta -->
-                                    <div class="tab-pane active" id="account-2">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="email">E-mail</label>
-                                                    <div class="col-md-9">
-                                                        <input type="email" class="form-control" id="email" name="email" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            Por favor, insira um e-mail válido.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="senha1"> Senha</label>
-                                                    <div class="col-md-9">
-                                                        <input type="password" id="senha1" name="senha1" class="form-control" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            A senha é obrigatória.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="senha2"> Repita a Senha</label>
-                                                    <div class="col-md-9">
-                                                        <input type="password" id="senha2" name="senha2" class="form-control" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            As senhas não conferem.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul class="list-inline wizard mb-0">
-                                            <li class="next list-inline-item float-end">
-                                                <a href="javascript:void(0);" class="btn btn-info" id="continueToProfile">Avançar <i class="mdi mdi-arrow-right ms-1"></i></a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Senha</label>
+                                    <input type="password" class="form-control" id="senha1" required>
+                                    <div class="invalid-feedback">A senha é obrigatória.</div>
+                                </div>
 
-                                    <!-- Aba de Perfil -->
-                                    <div class="tab-pane" id="profile-tab-2">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="nome"> Nome Completo</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" id="nome" name="nome" class="form-control" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            O nome é obrigatório.
-                                                        </div>
-                                                    </div>
-                                                </div>                                               
-                                                
-                                                <div class="row mb-3">
-                                                    <label class="col-md-3 col-form-label" for="telefone"> DDD + Telefone</label>
-                                                    <div class="col-md-9">
-                                                        <input type="text" id="telefone" name="telefone" class="form-control" required>
-                                                        <!-- Mensagem de erro -->
-                                                        <div class="invalid-feedback">
-                                                            O telefone é obrigatório.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul class="pager wizard mb-0 list-inline">
-                                            <li class="previous list-inline-item">
-                                                <a href="javascript:void(0);" class="btn btn-light" id="backtoaccount"><i class="mdi mdi-arrow-left me-1"></i> Voltar para Conta</a>
-                                            </li>
-                                            <li class="next list-inline-item float-end">
-                                                <button type="submit" 
-                                                class="btn btn-info" 
-                                                id="submitForm"
-                                                >Cadastrar-se</button>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Repita a Senha</label>
+                                    <input type="password" class="form-control" id="senha2" required>
+                                    <div class="invalid-feedback">As senhas não conferem.</div>
+                                </div>
 
-                                    <!-- Aba de Finalização -->
-                                    <div class="tab-pane" id="finish-2">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="text-center">
-                                                    <h2 class="mt-0"><i class="mdi mdi-check-all"></i></h2>
-                                                    <h3 class="mt-0">Obrigado!</h3>
+                                <button type="button" class="btn btn-info w-100 next">Avançar</button>
+                            </div>
 
-                                                    <p class="w-75 mb-2 mx-auto">Para ativar sua conta, <strong>clique no link</strong> de verificação que enviamos para o seu e-mail.</p>
+                            <!-- STEP 2 -->
+                            <div class="step d-none" data-step="2">
+                                <h5 class="mb-3">Dados Pessoais</h5>
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <ul class="pager wizard mb-0 list-inline mt-1 d-flex justify-content-center">
-                                            <li class="list-inline-item">
-                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Fechar</button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div> <!-- tab-content -->
-                            </div> <!-- end #progressbarwizard-->
+                                <div class="mb-3">
+                                    <label class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" id="nome" required>
+                                    <div class="invalid-feedback">O nome é obrigatório.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">DDD + Telefone</label>
+                                    <input type="text" class="form-control" id="telefone" required>
+                                    <div class="invalid-feedback">O telefone é obrigatório.</div>
+                                </div>
+
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" class="btn btn-light prev">Voltar</button>
+                                    <button type="button" class="btn btn-info next">Continuar</button>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3 -->
+                            <div class="step d-none" data-step="3">
+                                <div class="text-center py-4">
+                                    <h2 class="mt-0">
+                                        <i class="mdi mdi-check-all text-success"></i>
+                                    </h2>
+
+                                    <h3 class="mt-0">Obrigado!</h3>
+
+                                    <p class="w-75 mx-auto">
+                                        Para ativar sua conta, <strong>clique no link</strong> de verificação que enviamos para o seu e-mail.
+                                    </p>
+                                </div>
+
+                                <button type="button" class="btn btn-success w-100" data-bs-dismiss="modal">
+                                    Fechar
+                                </button>
+                            </div>
+
                         </form>
-                    </div> <!-- end card-body -->
-                </div> <!-- end card-->
+                        <!-- FIM DO WIZARD -->
+
+                    </div>
+                </div>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+
+        </div>
     </div>
+</div>
+
+<!-- Estilos internos do wizard -->
+<style>
+.steps .step-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #6c757d;
+}
+.steps .active {
+    background: #0dcaf0;
+    color: #fff;
+    border: 2px solid #0aa4c5;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    let currentStep = 1;
+
+    const steps = document.querySelectorAll(".step");
+    const indicators = document.querySelectorAll(".step-item");
+
+    const showStep = (step) => {
+        steps.forEach(s => s.classList.add("d-none"));
+        indicators.forEach(i => i.classList.remove("active"));
+
+        document.querySelector(`.step[data-step="${step}"]`).classList.remove("d-none");
+        document.querySelector(`.step-item[data-step="${step}"]`).classList.add("active");
+    };
+
+    const validateStep = (step) => {
+        const inputs = document.querySelectorAll(`.step[data-step="${step}"] input[required]`);
+        let valid = true;
+
+        inputs.forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add("is-invalid");
+                valid = false;
+            } else {
+                input.classList.remove("is-invalid");
+            }
+        });
+
+        // Validação de senha
+        if (step === 1) {
+            const s1 = document.getElementById("senha1").value;
+            const s2 = document.getElementById("senha2").value;
+
+            if (s1 !== s2) {
+                document.getElementById("senha2").classList.add("is-invalid");
+                valid = false;
+            } else {
+                document.getElementById("senha2").classList.remove("is-invalid");
+            }
+        }
+
+        return valid;
+    };
+
+    // Botões de avançar
+    document.querySelectorAll(".next").forEach(btn => {
+        btn.addEventListener("click", () => {
+            if (!validateStep(currentStep)) return;
+
+            currentStep++;
+            showStep(currentStep);
+
+            // Se chegou no passo 3 → envia para o servidor
+            if (currentStep === 3) {
+                enviarCadastro();
+            }
+        });
+    });
+
+    // Botões de voltar
+    document.querySelectorAll(".prev").forEach(btn => {
+        btn.addEventListener("click", () => {
+            currentStep--;
+            showStep(currentStep);
+        });
+    });
+
+    showStep(currentStep);
+
+    // Enviar ao backend
+    function enviarCadastro() {
+
+        const payload = {
+            email: document.getElementById("email").value,
+            senha: document.getElementById("senha1").value,
+            nome: document.getElementById("nome").value,
+            telefone: document.getElementById("telefone").value
+        };
+
+        fetch("/cadcliente", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(r => r.json())
+        .then(data => {
+            console.log("Cadastro:", data);
+        })
+        .catch(e => console.error("Erro:", e));
+    }
+
+});
+</script>
+
+
+
 
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-
-        function validateTab(tabElement) {
-            let isValid = true;
-            const requiredFields = tabElement.querySelectorAll('[required]');
-            requiredFields.forEach(field => {
-                if (!field.checkValidity()) {
-                    isValid = false;
-                    field.classList.add('is-invalid');
-                } else {
-                    field.classList.remove('is-invalid');
-                }
-            });
-            return isValid;
-        }
-
-        function validatePasswords() {
-            const senha1 = document.getElementById('senha1');
-            const senha2 = document.getElementById('senha2');
-            if (senha1.value !== senha2.value || senha1.value === '') {
-                senha2.classList.add('is-invalid');
-                senha2.nextElementSibling.textContent = 'As senhas não conferem.';
-                return false;
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+    
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const codigo = document.getElementById('codigo').value;
+    
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
+    
+        const payload = { email, codigo, password };
+    
+        fetch('/logincheck', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/inicial';
             } else {
-                senha2.classList.remove('is-invalid');
+                // Exibe o erro abaixo do email
+                errorDiv.innerHTML = data.message;
+                errorDiv.style.display = 'block';
             }
-            return true;
-        }
-
-        function canProceed(tabIds) {
-            return tabIds.every(id => {
-                let tab = document.getElementById(id);
-                let valid = validateTab(tab);
-                if (id === 'account-2') valid = valid && validatePasswords();
-                return valid;
-            });
-        }
-
-        function showTab(nextTabId) {
-            const tabLink = document.querySelector(`.nav-link[href="#${nextTabId}"]`);
-            const nextTab = new bootstrap.Tab(tabLink);
-            nextTab.show();
-        }
-
-        document.getElementById('continueToProfile').addEventListener('click', function(e) {
-            e.preventDefault();
-            if (canProceed(['account-2'])) {
-                showTab('profile-tab-2');
-            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            errorDiv.textContent = 'Erro inesperado. Tente novamente.';
+            errorDiv.style.display = 'block';
         });
-
-        document.getElementById('backtoaccount').addEventListener('click', function(e) {
-            e.preventDefault();
-            showTab('account-2');
-        });
-
-        document.getElementById('wizardForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            if (!canProceed(['account-2','profile-tab-2'])) {
-                this.classList.add('was-validated');
-                return;
-            }
-
-            let formData = new FormData(this);
-
-            fetch('/cadUsuario', {
-                method: 'POST',
-                body: formData
-            });
-
-            showTab('finish-2');
-        });
-
-        document.querySelectorAll('.nav-link').forEach(tab => {
-            tab.addEventListener('click', e => e.preventDefault());
-        });
-
     });
 </script>
 
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const codigo = document.getElementById('codigo').value;
-
-            const payload = {
-                email: email,
-                codigo: codigo,
-                password: password
-            };
-
-            fetch('/logincheck', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = '/inicial';
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => console.error('Erro:', error));
-        });
-    </script>
 
     <script src="/public/assets/js/vendor.min.js"></script>
     <script src="/public/assets/vendor/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>

@@ -271,7 +271,7 @@ $dataHoraServidor = date('Y-m-d H:i:s');
                         <div class="col-12">
                             <div class="timeline" dir="ltr">
                             <?php $ballonDirect = "left"; ?>
-                            <?php foreach ($pacienteInfoConsultas as $consultas): ?>
+                            <?php foreach ($pacienteInfoConsultas as $consultas): ?> 
 
                                 <?php                                    
                                     $dataFormatada = "";
