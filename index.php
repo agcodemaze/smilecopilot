@@ -48,6 +48,7 @@ use \App\Controller\Pages\EditModeloAnamnese;
 use \App\Controller\Pages\ListLog; 
 use \App\Controller\Pages\LogSistema; 
 use \App\Controller\Pages\Usuarios; 
+use \App\Controller\Pages\LoginAtivacao; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -230,6 +231,28 @@ $obRouter->post('/cadUsuario', [
 
         $usuariosController->insertUsuarioAssinante($email, $senha, $nome, $telefone);
         return new Response(200, "Assinante Cadastrado");
+
+    }
+]);
+
+//ROTA PAGINA LINK ATIVACAO NOVO USUARIO
+$obRouter->get('/assinanteLinkAtivacao', [
+    function() {
+         return new Response(200,LoginAtivacao::getLoginAtivacaoPage());
+    }
+]);
+
+//ROTA PROCESSAR LINK ATIVACAO NOVO USUARIO
+$obRouter->post('/enviarAssinanteLinkAtivacao', [
+    function() {
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);  
+
+        $usuariosController = new \App\Controller\Pages\Usuarios();
+        $email = EncryptDecrypt::sanitize($data['email'] ?? '');
+        $result = json_encode($usuariosController->sendEmailAtivacao($email));
+        return new \App\Http\Response(200, $result);
 
     }
 ]);

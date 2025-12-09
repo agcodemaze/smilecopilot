@@ -17,4 +17,15 @@ class Usuarios{
             $erro = $e->getMessage();           
         }
     }  
+
+    public function sendEmailAtivacao($email) {
+        try {
+                $objUsuario = new Usuario();
+                $response = $objUsuario->sendEmailAtivacaoAssinante($email); 
+                return $response;               
+
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();           
+        }
+    }  
 }

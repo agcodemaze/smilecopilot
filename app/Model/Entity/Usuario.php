@@ -65,4 +65,25 @@ class Usuario extends Conn {
             return [["error" => $e->getMessage()]];
         }
     }
+
+    public function sendEmailAtivacaoAssinante($USU_DCEMAIL)
+    {
+        try {
+            $sql = "SELECT USU_DCEMAIL, USU_DCVERIFICACAO_CADASTRO_HASH FROM USU_USUARIO WHERE USU_DCEMAIL = :USU_DCEMAIL";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCEMAIL", $USU_DCEMAIL);
+            $stmt->execute();
+            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!empty($usuario["USU_DCEMAIL"]) && !empty($usuario["USU_DCVERIFICACAO_CADASTRO_HASH"])) {
+                $result = Email::emailConfirmacaoCadatroAssinante($usuario["USU_DCEMAIL"],$usuario["USU_DCVERIFICACAO_CADASTRO_HASH"]);
+                return ["success" => true,"message" => "Um link de ativação foi enviado para o seu e-mail."];
+            }
+            return ["success" => true,"message" => "E-mail não encontrado!"];
+
+        } catch (PDOException $e) {
+            return ["success" => false,"message" => "Houve um erro."];
+           // return [["error" => $e->getMessage()]];
+        }
+    }
 }

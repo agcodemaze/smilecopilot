@@ -25,7 +25,7 @@ class Auth extends Conn {
         {
             if ($userinfo['USU_STVERIFICACAO_CADASTRO'] != "VERIFICADO" ) 
             {
-                return json_encode(["success" => false, "message" => "Sua conta ainda não foi ativada. <a href=\'/verificacaoEmail\'> Clique aqui</a> para receber um novo e-mail de verificação."]);
+                return json_encode(["success" => false, "message" => "Sua conta ainda não foi ativada. <a href=\'/assinanteLinkAtivacao\'> Clique aqui</a> para receber um novo e-mail de verificação."]);
             }
 
             $this->GenJWT($userinfo);
