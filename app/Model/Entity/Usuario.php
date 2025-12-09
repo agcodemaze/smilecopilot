@@ -44,7 +44,7 @@ class Usuario extends Conn {
 
             if ($lastId) {
                 LogSistema::insertLog("SmileCopilot","INFO", \App\Core\Language::get('notice_insert_usuario_assinante') . "Nome do Assinante: $USU_DCNOME | E-mail: $USU_DCEMAIL | Telefone: $USU_DCTELEFONE", $TENANCY_ID);
-                Email::emailConfirmacaoCadatroAssinante($USU_DCEMAIL);
+                Email::emailConfirmacaoCadatroAssinante($USU_DCEMAIL,$USU_DCVERIFICACAO_CADASTRO_HASH);
             } else {
                 LogSistema::insertLog("SmileCopilot","ERROR", \App\Core\Language::get('erro_insert_usuario_assinante') . "Nome do Assinante: $USU_DCNOME | E-mail: $USU_DCEMAIL | Telefone: $USU_DCTELEFONE", $TENANCY_ID);
             }
