@@ -15,7 +15,7 @@ use \App\Controller\Pages\LogSistema;
 class EmailSend extends Conn { 
 
 
-    public function emailSendNotificacao ($SUBJECT, $MSG, $EMAIL)  {
+    public function emailSendNotificacao ($SUBJECT, $MSG, $ALTBODY, $EMAIL)  {
 
         $mail = new PHPMailer(true);
 
@@ -38,7 +38,7 @@ class EmailSend extends Conn {
                 $mail->isHTML(true);
                 $mail->Subject = $SUBJECT;
                 $mail->Body    = $MSG;
-                $mail->AltBody = $MSG;
+                $mail->AltBody = $ALTBODY;
             
                 $mail->send();
                 return ["success" => true,"message" => "Confirmação de e-mail enviado com sucesso."];

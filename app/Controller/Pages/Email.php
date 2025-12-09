@@ -123,7 +123,7 @@ class Email{
                 HTML;
 
 
-        $result = $EmailSendObj->emailSendNotificacao($SUBJECT, $MSG, $EMAIL);
+        $result = $EmailSendObj->emailSendNotificacao($SUBJECT, $MSG, $ALTBODY, $EMAIL);
 
     }
 
