@@ -229,6 +229,27 @@ $obRouter->post('/cadUsuario', [
         $nome = EncryptDecrypt::sanitize($data['nome'] ?? '');
         $telefone = EncryptDecrypt::sanitize($data['telefone'] ?? '');
 
+        if (strlen($senha) < 8) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve ter no mínimo 8 caracteres.'
+            ]);
+        }
+
+        if (!preg_match('/[A-Z]/', $senha)) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve conter pelo menos 1 letra maiúscula.'
+            ]);
+        }
+
+        if (!preg_match('/[!@#$%^&*(),.?":{}|<>_\-]/', $senha)) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve conter pelo menos 1 caractere especial.'
+            ]);
+        }
+
         $usuariosController->insertUsuarioAssinante($email, $senha, $nome, $telefone);
         return new Response(200, "Assinante Cadastrado");
 
@@ -271,6 +292,27 @@ $obRouter->post('/redefinirSenhaCheck', [
         if(empty($userid) || empty($password)) {
             $result = json_encode(["success" => false, "message" => "Dados inválidos"]);
             return new \App\Http\Response(200, $result);
+        }
+
+        if (strlen($password) < 8) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve ter no mínimo 8 caracteres.'
+            ]);
+        }
+
+        if (!preg_match('/[A-Z]/', $password)) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve conter pelo menos 1 letra maiúscula.'
+            ]);
+        }
+
+        if (!preg_match('/[!@#$%^&*(),.?":{}|<>_\-]/', $password)) {
+            return json_encode([
+                'success' => false,
+                'message' => 'A senha deve conter pelo menos 1 caractere especial.'
+            ]);
         }
 
         $userid = EncryptDecrypt::decrypt_id_token($userid, $KEY);
