@@ -4,17 +4,12 @@
 
     $cloudflareSiteKey = $_ENV['CLOUDFLARE_SITE_KEY'] ?? getenv('CLOUDFLARE_SITE_KEY') ?? '';
     
-    if (isset($_COOKIE['token'])) {
-        $secretKey = $_ENV['ENV_SECRET_KEY'] ?? getenv('ENV_SECRET_KEY') ?? '';
+    $auth = new \App\Model\Entity\Auth();
     
-        try {
-            JWT::decode($_COOKIE['token'], new Key($secretKey, 'HS256'));
-            header('Location: /inicial');
-            exit;
-            
-        } catch (\Exception $e) {
-        
-        }
+    if ($decoded = $auth->verifyOrRefreshJWT()) {
+        // Usuário já logado ou JWT renovado
+        header('Location: /inicial');
+        exit;
     }
 ?>
 <style>

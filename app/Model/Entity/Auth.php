@@ -64,11 +64,13 @@ class Auth extends Conn {
 
         $jwt = JWT::encode($payload, $secretKey, 'HS256');
 
+        $cookie_domain = $_ENV['ENV_DOMAIN'] ?? getenv('ENV_DOMAIN') ?? '';
+
         // Cookie HTTP-only para JWT
         setcookie('token', $jwt, [
             'expires' => time() + $jwtLifetime,
             'path' => '/',
-            //'domain' => 'smilecopilot.com',
+            'domain' => $cookie_domain ,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -80,11 +82,29 @@ class Auth extends Conn {
         // Armazenar refresh token no banco
         $this->putRefreshToken($userinfo['USU_IDUSUARIO'], $refreshToken, $refreshLifetime);
 
+        // Limita tokens ativos (mantém apenas os 5 mais recentes)
+        $stmt = $this->pdo->prepare("
+            DELETE FROM RTK_REFRESH_TOKEN 
+            WHERE USU_IDUSUARIO = :userid 
+              AND RTK_IDREFRESH_TOKEN NOT IN (
+                  SELECT RTK_IDREFRESH_TOKEN FROM (
+                      SELECT RTK_IDREFRESH_TOKEN 
+                      FROM RTK_REFRESH_TOKEN 
+                      WHERE USU_IDUSUARIO = :userid 
+                      ORDER BY RTK_DTCREATE_AT DESC 
+                      LIMIT 5
+                  ) x
+              )
+        ");
+        $stmt->bindParam(':userid', $userinfo['USU_IDUSUARIO']);
+        $stmt->execute();
+
+
         // Cookie HTTP-only para refresh token
         setcookie('refresh_token', $refreshToken, [
             'expires' => time() + $refreshLifetime,
             'path' => '/',
-            //'domain' => 'smilecopilot.com',
+            'domain' => $cookie_domain ,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -92,14 +112,18 @@ class Auth extends Conn {
     }
 
     private function putRefreshToken($USU_IDUSUARIO, $RTK_DCTOKEN, $lifetime) {
-        // Opcional: armazenar hash para mais segurança
-        $hashedToken = password_hash($RTK_DCTOKEN, PASSWORD_DEFAULT);
 
-        $sql = "INSERT INTO RTK_REFRESH_TOKEN (USU_IDUSUARIO, RTK_DCTOKEN, RTK_DTEXPIRE_AT, RTK_DTCREATE_AT, RTK_STREVOKED)
-                VALUES (:USU_IDUSUARIO, :RTK_DCTOKEN, :RTK_DTEXPIRE_AT, NOW(), 0)";
+        $hashedToken = password_hash($RTK_DCTOKEN, PASSWORD_DEFAULT);
+        $RTK_DCIP = $_SERVER['REMOTE_ADDR'] ?? '';
+        $RTK_DCUSERAGENT = $_SERVER['HTTP_USER_AGENT'] ?? '';
+
+        $sql = "INSERT INTO RTK_REFRESH_TOKEN (RTK_DCIP, RTK_DCUSERAGENT, USU_IDUSUARIO, RTK_DCTOKEN, RTK_DTEXPIRE_AT, RTK_DTCREATE_AT, RTK_STREVOKED)
+                VALUES (:RTK_DCIP, :RTK_DCUSERAGENT, :USU_IDUSUARIO, :RTK_DCTOKEN, :RTK_DTEXPIRE_AT, NOW(), 0)";
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':USU_IDUSUARIO', $USU_IDUSUARIO);
         $stmt->bindParam(':RTK_DCTOKEN', $hashedToken);
+        $stmt->bindParam(':RTK_DCIP', $RTK_DCIP);
+        $stmt->bindParam(':RTK_DCUSERAGENT', $RTK_DCUSERAGENT);
         $RTK_DTEXPIRE_AT = date('Y-m-d H:i:s', time() + $lifetime);
         $stmt->bindParam(':RTK_DTEXPIRE_AT', $RTK_DTEXPIRE_AT);
         $stmt->execute();
@@ -134,9 +158,21 @@ class Auth extends Conn {
         if (isset($_COOKIE['refresh_token'])) {
             $refreshToken = $_COOKIE['refresh_token'];
         
-            // Marca como revogado
-            $stmt = $this->pdo->prepare("UPDATE RTK_REFRESH_TOKEN SET RTK_STREVOKED = 1 WHERE RTK_STREVOKED = 0");
+            // Pegar todos os tokens ativos do usuário (ou todos)
+            $stmt = $this->pdo->prepare("SELECT * FROM RTK_REFRESH_TOKEN WHERE RTK_STREVOKED = 0 AND RTK_DTEXPIRE_AT > NOW()");
             $stmt->execute();
+            $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($tokens as $token) {
+                // Verifica se o cookie corresponde ao hash do banco
+                if (password_verify($refreshToken, $token['RTK_DCTOKEN'])) {
+                    // Revoga apenas este token
+                    $stmt = $this->pdo->prepare("UPDATE RTK_REFRESH_TOKEN SET RTK_STREVOKED = 1 WHERE RTK_IDREFRESH_TOKEN = :RTK_IDREFRESH_TOKEN");
+                    $stmt->bindParam(':RTK_IDREFRESH_TOKEN', $token['RTK_IDREFRESH_TOKEN']);
+                    $stmt->execute();
+                    break; // já encontramos e revogamos
+                }
+            }
         }
     
         // Remover cookie de refresh token
@@ -156,4 +192,48 @@ class Auth extends Conn {
                 </script>";
         exit;
     }
+
+    public function verifyOrRefreshJWT() {
+        $secretKey = $_ENV['ENV_SECRET_KEY'] ?? getenv('ENV_SECRET_KEY') ?? '';
+
+        // Se JWT existir
+        if (isset($_COOKIE['token'])) {
+            try {
+                $decoded = JWT::decode($_COOKIE['token'], new Key($secretKey, 'HS256'));
+                return $decoded; // JWT válido
+            } catch (\Firebase\JWT\ExpiredException $e) {
+                // JWT expirou → tentar renovar com refresh token
+            } catch (\Exception $e) {
+                return false; // JWT inválido
+            }
+        }
+
+        // Se refresh token existir
+        if (isset($_COOKIE['refresh_token'])) {
+            $refreshToken = $_COOKIE['refresh_token'];
+
+            // Pegar todos tokens ativos do usuário
+            $stmt = $this->pdo->prepare("SELECT * FROM RTK_REFRESH_TOKEN WHERE RTK_STREVOKED = 0 AND RTK_DTEXPIRE_AT > NOW()");
+            $stmt->execute();
+            $tokens = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($tokens as $token) {
+                if (password_verify($refreshToken, $token['RTK_DCTOKEN'])) {
+                    // Token válido → gerar novo JWT
+                    $stmtUser = $this->pdo->prepare("SELECT * FROM USU_USUARIO WHERE USU_IDUSUARIO = :id");
+                    $stmtUser->bindParam(':id', $token['USU_IDUSUARIO']);
+                    $stmtUser->execute();
+                    $userinfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+                    if ($userinfo) {
+                        $this->GenJWT($userinfo); // gera novo JWT e renova cookie
+                        return JWT::decode($_COOKIE['token'], new Key($secretKey, 'HS256'));
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
 }

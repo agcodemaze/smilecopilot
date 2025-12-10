@@ -8,13 +8,15 @@ if (file_exists($dotenvPath . '/.env')) {
     $dotenv->load();
 }
 
+$cookie_domain = $_ENV['ENV_DOMAIN'] ?? getenv('ENV_DOMAIN') ?? '';
+
 // Tempo de vida da sessão e do JWT (180 dias)
 $lifetime = 60 * 60 * 24 * 180;
 
 session_set_cookie_params([
     'lifetime' => $lifetime,
     'path' => '/',
-    //'domain' => 'meluza.com.br',
+    'domain' => $cookie_domain,
     'secure' => isset($_SERVER['HTTPS']),
     'httponly' => true,
     'samesite' => 'Lax'
@@ -24,11 +26,6 @@ ini_set('session.gc_maxlifetime', $lifetime);
 ini_set('session.cookie_lifetime', $lifetime);
 
 session_start();
-
-/**
- * nome do arquivo .php deve ser o mesmo nome da classe
- * por isso o \Home e na pasta do controler existe um Home.php. Isso é padrão Composer
- */
 
 use \App\Http\Router;
 use \App\Http\Response;
@@ -55,7 +52,7 @@ use App\Core\Language;
 // Inicia sistema de idiomas
 Language::init();
 
-define('URL','https://cliente.meluza.com.br');
+define('URL','https://app.smilecopilot.com.br');
 define('ASSETS_PATH', '/public/assets/');
 define('UXCOMPONENTS_PATH', __DIR__ . '/UX_Components/');
 
