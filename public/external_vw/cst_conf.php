@@ -22,7 +22,7 @@ $con = new Conn();
 
   $consulta = \App\Controller\Pages\ListConsulta::getConsultasByHashUser($_GET['id']);
 
-  var_dump();
+  var_dump($consulta);
   die();
 
   if(empty($consulta["CON_STCONFIRMACAO_PRESENCA"]) && isset($_GET['opcao'])) {
