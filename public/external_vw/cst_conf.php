@@ -22,9 +22,6 @@ $con = new Conn();
 
   $consulta = \App\Controller\Pages\ListConsulta::getConsultasByHashUser($_GET['id']);
 
-  var_dump($consulta);
-  die();
-
   if(empty($consulta["CON_STCONFIRMACAO_PRESENCA"]) && isset($_GET['opcao'])) {
     $updateStatusConfirmacao = \App\Controller\Pages\ListConsulta::updateConfirmacaoPresencaByHashUser($_GET['id'], $_GET['opcao']);
     
