@@ -70,7 +70,7 @@ class Auth extends Conn {
         setcookie('token', $jwt, [
             'expires' => time() + $jwtLifetime,
             'path' => '/',
-            'domain' => $cookie_domain ,
+            //'domain' => $cookie_domain ,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -104,7 +104,7 @@ class Auth extends Conn {
         setcookie('refresh_token', $refreshToken, [
             'expires' => time() + $refreshLifetime,
             'path' => '/',
-            'domain' => $cookie_domain ,
+            //'domain' => $cookie_domain ,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -155,7 +155,7 @@ class Auth extends Conn {
             setcookie(session_name(), '', [
                 'expires' => time() - 42000,
                 'path' => $params['path'],
-                'domain' => $params['domain'],
+                //'domain' => $params['domain'],
                 'secure' => $params['secure'],
                 'httponly' => $params['httponly'],
                 'samesite' => 'Lax'
@@ -166,7 +166,7 @@ class Auth extends Conn {
         setcookie('token', '', [
             'expires' => time() - 3600,
             'path' => '/',
-            'domain' => $cookie_domain,
+            //'domain' => $cookie_domain,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -197,7 +197,7 @@ class Auth extends Conn {
         setcookie('refresh_token', '', [
             'expires' => time() - 3600,
             'path' => '/',
-            'domain' => $cookie_domain,
+            //'domain' => $cookie_domain,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'

@@ -16,7 +16,7 @@ $lifetime = 60 * 60 * 24 * 180;
 session_set_cookie_params([
     'lifetime' => $lifetime,
     'path' => '/',
-    'domain' => $cookie_domain,
+    //'domain' => $cookie_domain,
     'secure' => isset($_SERVER['HTTPS']),
     'httponly' => true,
     'samesite' => 'Lax'
