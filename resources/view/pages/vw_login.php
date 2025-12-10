@@ -1,6 +1,8 @@
 <?php
     use Firebase\JWT\JWT;
     use Firebase\JWT\Key;
+
+    $cloudflareSiteKey = $_ENV['CLOUDFLARE_SITE_KEY'] ?? getenv('CLOUDFLARE_SITE_KEY') ?? '';
     
     if (isset($_COOKIE['token'])) {
         $secretKey = $_ENV['ENV_SECRET_KEY'] ?? getenv('ENV_SECRET_KEY') ?? '';
@@ -62,6 +64,7 @@
     <script src="/public/assets/utils/languageDetector.js"></script>
     <script src="/public/assets/js/serviceworkerpwa.js"></script>
     <link rel="manifest" href="/manifest.json">
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <style>
@@ -99,7 +102,7 @@
 
                         <!-- Logo -->
                         <div class="card-header py-4 text-center">
-                            <a href="index.html">
+                            <a href="/login">
                                 <span><img src="/public/assets/images/logo_bright.png" alt="logo" style="height:28px; width:auto;"></span>
                             </a>
                         </div>
@@ -132,6 +135,13 @@
                                         <div class="input-group-text" data-password="false">
                                             <span class="password-eye"></span>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="cf-turnstile" 
+                                         data-sitekey="<?= $cloudflareSiteKey ?>" 
+                                         data-callback="onTurnstileSuccess"
+                                         data-error-callback="onTurnstileError">
                                     </div>
                                 </div>
                                 <div class="mb-3 mb-0 text-center">
@@ -247,7 +257,7 @@
                                         <i class="mdi mdi-check-all text-info"></i>
                                     </h2>
 
-                                    <h3 class="mt-0">Obrigado!</h3>
+                                    <h3 class="mt-0">Que bom ter você conosco!</h3>
 
                                     <p class="w-75 mx-auto">
                                         Para ativar sua conta, <strong>clique no link</strong> de verificação que enviamos para o seu e-mail.
@@ -270,20 +280,56 @@
     </div>
 </div>
 
+<div id="loadingOverlay"
+     style="
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(2px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+     ">
+    <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+    </div>
+</div>
+
 <script>
+
+    function onTurnstileSuccess(token) {
+
+        window.turnstileToken = token;
+    }
+
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
-    
+
         const email = document.getElementById('emaillogin').value;
         const password = document.getElementById('password').value;
         const codigo = document.getElementById('codigo').value;
-    
+
         const errorDiv = document.getElementById('loginError');
+        const overlay = document.getElementById('loadingOverlay');
+        const btn = this.querySelector('button[type="submit"]');
+
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
-    
-        const payload = { email, codigo, password };
-    
+
+        const token = window.turnstileToken;
+        if(!token){
+            errorDiv.textContent = 'Por favor, complete o captcha!';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        overlay.style.display = 'flex';
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Carregando...`;
+
+        const payload = { email, codigo, password, 'cf-turnstile-response': token };
+
         fetch('/logincheck', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -291,21 +337,33 @@
         })
         .then(response => response.json())
         .then(data => {
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = "Entrar";
+
             if (data.success) {
                 window.location.href = '/inicial';
             } else {
-                // Exibe o erro abaixo do email
                 errorDiv.innerHTML = data.message;
                 errorDiv.style.display = 'block';
+
+                if(window.turnstileReset) window.turnstileReset();
             }
         })
         .catch(error => {
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = "Entrar";
+
             console.error('Erro:', error);
             errorDiv.textContent = 'Erro inesperado. Tente novamente.';
             errorDiv.style.display = 'block';
+            if(window.turnstileReset) window.turnstileReset();
         });
     });
 </script>
+
+
 
     <script src="/public/assets/js/cadNovoAssinante.js"></script>
     <script src="/public/assets/js/vendor.min.js"></script>

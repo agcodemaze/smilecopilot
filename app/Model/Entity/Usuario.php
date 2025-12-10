@@ -6,6 +6,7 @@ use PDO;
 use PDOException;
 use \App\Controller\Pages\LogSistema; 
 use \App\Controller\Pages\Email; 
+use \App\Controller\Pages\EncryptDecrypt; 
 
 class Usuario extends Conn { 
 
@@ -21,6 +22,9 @@ class Usuario extends Conn {
 
             $topTenancyId = $this->getMaxTenancyId();
             $TENANCY_ID = (int)$topTenancyId["TENANCY_ID"] + 1;
+            $USU_DCNOME = ucwords(strtolower($USU_DCNOME));
+            $USU_DCEMAIL = ucwords(strtolower($USU_DCEMAIL));
+            $USU_DCTELEFONE = preg_replace('/\D/', '', $USU_DCTELEFONE);
 
             $USU_DCSENHA_HASH = password_hash($USU_DCSENHA, PASSWORD_DEFAULT);
 

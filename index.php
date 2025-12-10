@@ -293,12 +293,35 @@ $obRouter->get('/logoff',[
 // Rota POST para validar o login
 $obRouter->post('/logincheck', [
     function() {
+
+        $secret = $_ENV['CLOUDFLARE_SECRET_KEY'] ?? getenv('CLOUDFLARE_SECRET_KEY') ?? '';
+
         $loginController = new \App\Controller\Pages\Login();
 
         $input = json_decode(file_get_contents('php://input'), true);
         $email = $input['email'] ?? '';
         $password = $input['password'] ?? '';
         $codigo = $input['codigo'] ?? '';
+        $token = $input['cf-turnstile-response'] ?? '';
+
+        $response = file_get_contents("https://challenges.cloudflare.com/turnstile/v0/siteverify", false, stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'content' => http_build_query([
+                    'secret' => $secret,
+                    'response' => $token,
+                    'remoteip' => $_SERVER['REMOTE_ADDR']
+                ]),
+            ]
+        ]));
+        
+        $result = json_decode($response, true);
+
+        if (!$result['success']) {
+            $result = json_encode(["success" => false,"message" => "Falha na validação do captcha."]);
+            return new \App\Http\Response(200, $result);
+        }
 
         $result = $loginController->validateUser($email, $password, $codigo);
         return new \App\Http\Response(200, $result);

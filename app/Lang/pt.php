@@ -95,8 +95,8 @@
     'login' => 'Entre com a sua conta',
     'login_desc' => 'ou <span class="text-info fw-bold" style="cursor:pointer;">cadastre-se</span> e experimente 
 <span style="color:#0dcaf0; font-weight:700; text-shadow:0 0 6px rgba(13,202,240,.4);">
-    7 dias gratuitos
-</span>.',
+    7 dias gratuitos.
+</span>',
     'senha' => 'Senha',
     'link_ativacao' => 'Gerar Novo Link de Ativação',
     'link_ativacao_desc' => 'Informe o e-mail cadastrado para enviarmos o link de ativação.',

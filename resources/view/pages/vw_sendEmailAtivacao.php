@@ -111,16 +111,39 @@
             <a href="https://codemaze.com.br" target="_blank" style="color: #fff;"><script>document.write(new Date().getFullYear())</script> Codemaze Soluções de Mkt e Software </a>
     </footer>
 
+<div id="loadingOverlay"
+     style="
+        position: fixed;
+        top:0; left:0;
+        width:100%; height:100%;
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(2px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+     ">
+    <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;"></div>
+</div>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
     
         const email = document.getElementById('email').value;
-    
         const errorDiv = document.getElementById('loginError');
+        const overlay = document.getElementById('loadingOverlay');
+        const btn = this.querySelector('button[type="submit"]');
+    
+        // Reset erro
         errorDiv.style.display = 'none';
         errorDiv.textContent = '';
+    
+        // Ativa loading
+        overlay.style.display = 'flex';
+        btn.disabled = true;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enviando...`;
     
         const payload = { email };
     
@@ -131,16 +154,27 @@
         })
         .then(response => response.json())
         .then(data => {
-                errorDiv.innerHTML = data.message;
-                errorDiv.style.display = 'block';
+            // Desativa loading
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        
+            // Mostra mensagem
+            errorDiv.innerHTML = data.message;
+            errorDiv.style.display = 'block';
         })
         .catch(error => {
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        
             console.error('Erro:', error);
             errorDiv.textContent = 'Erro inesperado. Tente novamente.';
             errorDiv.style.display = 'block';
         });
     });
 </script>
+
 
     <script src="/public/assets/js/vendor.min.js"></script>
     <script src="/public/assets/vendor/twitter-bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
