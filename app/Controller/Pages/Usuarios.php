@@ -29,6 +29,17 @@ class Usuarios{
         }
     }  
 
+    public function sendEmailAlterarSenha($email) {
+        try {
+                $objUsuario = new Usuario();
+                $response = $objUsuario->sendEmailLinkAlteracaoSenha($email); 
+                return $response;               
+
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();           
+        }
+    } 
+
     public function checkEmailUsuarioAssinanteExists($email) {
         try {
                 $objUsuario = new Usuario();

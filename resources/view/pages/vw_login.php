@@ -123,7 +123,7 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <a href="pages-recoverpw.html" class="text-muted float-end"><small><?= \App\Core\Language::get('senha_esqueceu'); ?></small></a>
+                                    <a href="/sendEmailAlterarSenha" class="text-muted float-end"><small><?= \App\Core\Language::get('senha_esqueceu'); ?></small></a>
                                     <label for="password" class="form-label"><?= \App\Core\Language::get('senha'); ?></label>
                                     <div class="input-group input-group-merge">
                                         <input type="password" id="password" class="form-control" placeholder="<?= \App\Core\Language::get('senha_placeholder'); ?>">

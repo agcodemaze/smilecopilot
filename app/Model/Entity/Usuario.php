@@ -13,13 +13,13 @@ class Usuario extends Conn {
 
     public function insertUsuarioAssinanteInfo($USU_DCNOME, $USU_DCEMAIL, $USU_DCSENHA, $USU_DCTELEFONE) {
         try {   
-
+    
             $userInfo = $this->checkUsuarioExistsByEmail($USU_DCEMAIL);
 
             if(!($userInfo["success"])) {
                 return ["success" => false,"message" => "Este E-mail já está cadastrado."];
             }
-
+           
             $topTenancyId = $this->getMaxTenancyId();
             $TENANCY_ID = (int)$topTenancyId["TENANCY_ID"] + 1;
             $USU_DCNOME = ucwords(strtolower($USU_DCNOME));
@@ -93,6 +93,36 @@ class Usuario extends Conn {
         } catch (PDOException $e) {
             return ["success" => false,"message" => "Houve um erro."];
            // return [["error" => $e->getMessage()]];
+        }
+    }
+
+    public function sendEmailLinkAlteracaoSenha($USU_DCEMAIL) {
+
+        $USU_DTEXPTOKEN_ALTERAR_SENHA = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        $USU_DCTOKEN_ALTERAR_SENHA = bin2hex(random_bytes(32));
+
+        try {
+                $sql = "UPDATE USU_USUARIO 
+                        SET USU_DCTOKEN_ALTERAR_SENHA = :USU_DCTOKEN_ALTERAR_SENHA,
+                            USU_DTEXPTOKEN_ALTERAR_SENHA = :USU_DTEXPTOKEN_ALTERAR_SENHA
+                        WHERE USU_DCEMAIL = :USU_DCEMAIL";
+
+                $stmt = $this->pdo->prepare($sql);
+                $stmt->bindParam(':USU_DCTOKEN_ALTERAR_SENHA', $USU_DCTOKEN_ALTERAR_SENHA);
+                $stmt->bindParam(':USU_DTEXPTOKEN_ALTERAR_SENHA', $USU_DTEXPTOKEN_ALTERAR_SENHA);
+                $stmt->bindParam(':USU_DCEMAIL', $USU_DCEMAIL);
+
+                $stmt->execute();
+
+                if ($stmt->rowCount() > 0) {
+                    $result = Email::emailAlterarSenhaAssinante($USU_DCEMAIL,$USU_DCTOKEN_ALTERAR_SENHA);
+                    return ["success" => true,"message" => "As instruções foram enviadas para o seu e-mail."];
+                } else {
+                    return ["success" => true,"message" => "E-mail não encontrado!"];
+                }
+
+        } catch (PDOException $e) {
+            return ["success" => false,"message" => "Houve um erro."];
         }
     }
 

@@ -184,7 +184,8 @@
     'id' => 'ID', 
     'lista_logs' => 'Lista de Atividades do Sistema', 
     'lista_logs_desc' => 'Nesta tela, é exibido o histórico completo das atividades realizadas pelo sistema, permitindo acompanhar cada ação registrada.', 
-
+    'pag_alterar_senha' => 'Redefinição de Senha',
+    'pag_alterar_senha_desc' => 'Informe seu e-mail abaixo e enviaremos as instruções para redefinir sua senha',
 
 
     //LISTA DE MSG DO SISTEMA   

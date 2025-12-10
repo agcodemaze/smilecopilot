@@ -47,6 +47,7 @@ use \App\Controller\Pages\LogSistema;
 use \App\Controller\Pages\Usuarios; 
 use \App\Controller\Pages\LoginAtivacao; 
 use \App\Controller\Pages\LoginAtivacaoCheck; 
+use \App\Controller\Pages\SenhaAlterarSend; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -234,9 +235,31 @@ $obRouter->post('/cadUsuario', [
 ]);
 
 //ROTA PAGINA LINK ATIVACAO NOVO USUARIO
-$obRouter->get('/assinanteLinkAtivacao', [
+$obRouter->get('/assinanteLinkAtivacao', [ 
     function() {
          return new Response(200,LoginAtivacao::getLoginAtivacaoPage());
+    }
+]);
+
+//ROTA PAGINA ALETAR SENHA (LINK)
+$obRouter->get('/sendEmailAlterarSenha', [ 
+    function() {
+         return new Response(200,SenhaAlterarSend::getLoginAtivacaoPage());
+    }
+]);
+
+//ROTA PROCESSAR LINK ATIVACAO NOVO USUARIO
+$obRouter->post('/enviarLinkAlterarSenha', [
+    function() {
+        
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);  
+
+        $usuariosController = new \App\Controller\Pages\Usuarios();
+        $email = EncryptDecrypt::sanitize($data['email'] ?? '');
+        $result = json_encode($usuariosController->sendEmailAlterarSenha($email));
+        return new \App\Http\Response(200, $result);
+
     }
 ]);
 
