@@ -234,14 +234,14 @@ class Consultas extends Conn {
 
     public function getConsultasByHash($CON_DCHASH_CONFIRMACAO_PRESENCA) {
         try{           
-            $sql = "SELECT * FROM VW_CONSULTAS WHERE CO_DCHASH_CONFIRMACAO_PRESENCA = :CON_DCHASH_CONFIRMACAO_PRESENCA";
+            $sql = "SELECT * FROM VW_CONSULTAS WHERE CON_DCHASH_CONFIRMACAO_PRESENCA = :CON_DCHASH_CONFIRMACAO_PRESENCA";
             $stmt = $this->pdo->prepare($sql);
             $stmt->bindParam(":CON_DCHASH_CONFIRMACAO_PRESENCA", $CON_DCHASH_CONFIRMACAO_PRESENCA);
             $stmt->execute();
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return ["error" => $e->getMessage()];
-        } 
+        }  
     }
 
     public function updateConfirmacaoPresencaByHashUser($CON_DCHASH_CONFIRMACAO_PRESENCA, $CON_STCONFIRMACAO_PRESENCA) {
