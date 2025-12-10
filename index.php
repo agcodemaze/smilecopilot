@@ -49,6 +49,7 @@ use \App\Controller\Pages\ListLog;
 use \App\Controller\Pages\LogSistema; 
 use \App\Controller\Pages\Usuarios; 
 use \App\Controller\Pages\LoginAtivacao; 
+use \App\Controller\Pages\LoginAtivacaoCheck; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -261,6 +262,24 @@ $obRouter->post('/enviarAssinanteLinkAtivacao', [
 $obRouter->get('/login',[
     function(){
         return new Response(200,Login::getLogin());
+    }
+]);
+
+//ROTA PAGINA LINK ATIVACAO NOVO USUARIO CHECAGEM
+$obRouter->get('/assinanteLinkAtivacaoCheck', [
+    function() {
+        $id = $_GET['id'] ?? '';
+        return new Response(200,LoginAtivacaoCheck::getLoginAtivacaoCheckPage($id));
+    }
+]);
+
+//ROTA PAGINA VERIFICAR SE EMAIL/USUARIO JA EXISTE ANTES (NOVO ASSINANTE)
+$obRouter->get('/assinanteLinkAtivacaoEmailExistisCheck', [
+    function() {
+        $usuariosController = new \App\Controller\Pages\Usuarios();
+        $email = EncryptDecrypt::sanitize($_GET['email'] ?? '');
+        $result = json_encode($usuariosController->checkEmailUsuarioAssinanteExists($email));
+        return new \App\Http\Response(200, $result);
     }
 ]);
 

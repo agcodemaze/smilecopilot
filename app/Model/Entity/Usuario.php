@@ -12,6 +12,13 @@ class Usuario extends Conn {
 
     public function insertUsuarioAssinanteInfo($USU_DCNOME, $USU_DCEMAIL, $USU_DCSENHA, $USU_DCTELEFONE) {
         try {   
+
+            $userInfo = $this->checkUsuarioExistsByEmail($USU_DCEMAIL);
+
+            if(!empty($userInfo)) {
+                return ["success" => false,"message" => "Este E-mail já está cadastrado."];
+            }
+
             $topTenancyId = $this->getMaxTenancyId();
             $TENANCY_ID = (int)$topTenancyId["TENANCY_ID"] + 1;
 
@@ -54,8 +61,7 @@ class Usuario extends Conn {
         } 
     }
 
-    public function getMaxTenancyId()
-    {
+    public function getMaxTenancyId() {
         try {
             $sql = "SELECT MAX(TENANCY_ID) AS TENANCY_ID FROM USU_USUARIO";
             $stmt = $this->pdo->prepare($sql);
@@ -66,8 +72,7 @@ class Usuario extends Conn {
         }
     }
 
-    public function sendEmailAtivacaoAssinante($USU_DCEMAIL)
-    {
+    public function sendEmailAtivacaoAssinante($USU_DCEMAIL) {
         try {
             $sql = "SELECT USU_DCEMAIL, USU_DCVERIFICACAO_CADASTRO_HASH FROM USU_USUARIO WHERE USU_DCEMAIL = :USU_DCEMAIL";
             $stmt = $this->pdo->prepare($sql);
@@ -80,6 +85,42 @@ class Usuario extends Conn {
                 return ["success" => true,"message" => "Um link de ativação foi enviado para o seu e-mail."];
             }
             return ["success" => true,"message" => "E-mail não encontrado!"];
+
+        } catch (PDOException $e) {
+            return ["success" => false,"message" => "Houve um erro."];
+           // return [["error" => $e->getMessage()]];
+        }
+    }
+
+    public function checkEmailAtivacaoById($USU_DCVERIFICACAO_CADASTRO_HASH) {
+        try {
+            $sql = "SELECT USU_DCVERIFICACAO_CADASTRO_HASH, TENANCY_ID, USU_DCNOME FROM USU_USUARIO WHERE USU_DCVERIFICACAO_CADASTRO_HASH = :USU_DCVERIFICACAO_CADASTRO_HASH";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCVERIFICACAO_CADASTRO_HASH", $USU_DCVERIFICACAO_CADASTRO_HASH);
+            $stmt->execute();
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        } catch (PDOException $e) {
+            return ["success" => false,"message" => "Houve um erro."];
+           // return [["error" => $e->getMessage()]];
+        }
+    }
+
+    public function checkUsuarioExistsByEmail($USU_DCEMAIL) {
+        try {
+            $sql = "SELECT * FROM USU_USUARIO WHERE USU_DCEMAIL = :USU_DCEMAIL";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCEMAIL", $USU_DCEMAIL);
+            $stmt->execute();
+
+            $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!empty($userInfo)) {
+                return ["success" => false,"message" => "Este e-mail já está cadastrado."];
+            }
+
+            return ["success" => true,"message" => "Este e-mail é de um assinante novo."];
 
         } catch (PDOException $e) {
             return ["success" => false,"message" => "Houve um erro."];

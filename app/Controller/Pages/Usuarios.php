@@ -28,4 +28,15 @@ class Usuarios{
             $erro = $e->getMessage();           
         }
     }  
+
+    public function checkEmailUsuarioAssinanteExists($email) {
+        try {
+                $objUsuario = new Usuario();
+                $response = $objUsuario->checkUsuarioExistsByEmail($email); 
+                return $response;               
+
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();           
+        }
+    } 
 }

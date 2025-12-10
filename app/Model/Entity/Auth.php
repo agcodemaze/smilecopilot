@@ -27,7 +27,7 @@ class Auth extends Conn {
             {
                 return json_encode([
                     "success" => false,
-                    "message" => "Sua conta ainda não foi ativada. <a href=\"/assinanteLinkAtivacao\">Clique aqui</a> para receber um novo e-mail de verificação."
+                    "message" => "Sua conta ainda não foi ativada. <a href=\"/assinanteLinkAtivacao\">Clique aqui</a> para gerar um novo e-mail de verificação."
                 ]);
             }
 

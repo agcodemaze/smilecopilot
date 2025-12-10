@@ -119,8 +119,8 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="email" class="form-label"><?= \App\Core\Language::get('email'); ?></label>
-                                    <input class="form-control" type="email" id="email" required="" placeholder="<?= \App\Core\Language::get('email_placeholder'); ?>">
+                                    <label for="emaillogin" class="form-label"><?= \App\Core\Language::get('email'); ?></label>
+                                    <input class="form-control" type="email" id="emaillogin" required="" placeholder="<?= \App\Core\Language::get('email_placeholder'); ?>">
                                     <div id="loginError" class="text-danger mt-1" style="display:none; font-size: 0.9rem;"></div>
                                 </div>
 
@@ -190,6 +190,7 @@
                                     <label class="form-label">E-mail</label>
                                     <input type="email" class="form-control" id="email" required>
                                     <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                                    <div id="email-feedback" class="invalid-feedback"></div>
                                 </div>
 
                                 <div class="mb-3">
@@ -273,7 +274,7 @@
     document.getElementById('loginForm').addEventListener('submit', function(event) {
         event.preventDefault();
     
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('emaillogin').value;
         const password = document.getElementById('password').value;
         const codigo = document.getElementById('codigo').value;
     

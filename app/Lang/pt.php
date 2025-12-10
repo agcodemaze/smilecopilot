@@ -98,7 +98,7 @@
     7 dias gratuitos
 </span>.',
     'senha' => 'Senha',
-    'link_ativacao' => 'Solicitar Novo Link de Ativação',
+    'link_ativacao' => 'Gerar Novo Link de Ativação',
     'link_ativacao_desc' => 'Informe o e-mail cadastrado para enviarmos o link de ativação.',
     'senha_esqueceu' => 'Esqueceu sua senha?',
     'entrar' => 'Entrar',

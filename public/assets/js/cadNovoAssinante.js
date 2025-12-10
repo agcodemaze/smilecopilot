@@ -1,4 +1,3 @@
-
 // ===============================
 // MASCARA TELEFONE
 // ===============================
@@ -19,9 +18,8 @@ document.getElementById("telefone").addEventListener("input", function () {
 });
 
 // ===============================
-// VALIDAÇÃO EM TEMPO REAL - EMAIL
+// VALIDAR EMAIL
 // ===============================
-
 function validarEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(String(email).toLowerCase());
@@ -36,9 +34,8 @@ document.getElementById("email").addEventListener("input", function () {
 });
 
 // ===============================
-// VALIDAÇÃO EM TEMPO REAL - SENHA
+// SENHA FORTE
 // ===============================
-
 const senha1 = document.getElementById("senha1");
 const senha2 = document.getElementById("senha2");
 
@@ -50,7 +47,6 @@ function validarSenhaForte(senha) {
         especial: /[\W_]/.test(senha)
     };
 
-    // Atualiza visualmente as regras
     document.querySelector(".rule-tamanho").classList.toggle("text-success", regras.tamanho);
     document.querySelector(".rule-maiuscula").classList.toggle("text-success", regras.maiuscula);
     document.querySelector(".rule-numero").classList.toggle("text-success", regras.numero);
@@ -59,7 +55,6 @@ function validarSenhaForte(senha) {
     return regras.tamanho && regras.maiuscula && regras.numero && regras.especial;
 }
 
-// ESCUTA SENHA 1
 senha1.addEventListener("input", function () {
     if (!validarSenhaForte(this.value)) {
         this.classList.add("is-invalid");
@@ -67,7 +62,6 @@ senha1.addEventListener("input", function () {
         this.classList.remove("is-invalid");
     }
 
-    // Verifica se a senha repetida ainda confere
     if (senha2.value.length > 0 && senha2.value !== senha1.value) {
         senha2.classList.add("is-invalid");
     } else {
@@ -75,7 +69,6 @@ senha1.addEventListener("input", function () {
     }
 });
 
-// ESCUTA SENHA 2
 senha2.addEventListener("input", function () {
     if (this.value !== senha1.value) {
         this.classList.add("is-invalid");
@@ -85,7 +78,7 @@ senha2.addEventListener("input", function () {
 });
 
 // ===============================
-// VALIDAR NOME COMPLETO (max 100)
+// VALIDAR NOME
 // ===============================
 document.getElementById("nome").addEventListener("input", function () {
     if (this.value.length > 100) {
@@ -98,7 +91,6 @@ document.getElementById("nome").addEventListener("input", function () {
 // ===============================
 // WIZARD
 // ===============================
-
 let currentStep = 1;
 
 function updateSteps() {
@@ -153,19 +145,60 @@ function validateStep(step) {
     return valid;
 }
 
+// ===============================
+// NEXT — (CORRIGIDO)
+// ===============================
 document.querySelectorAll(".next").forEach(btn => {
-    btn.addEventListener("click", function () {
+    btn.addEventListener("click", async function () {
+
         if (!validateStep(currentStep)) return;
 
+        // STEP 1 → Verificar e-mail antes de avançar
+        if (currentStep === 1) {
+
+            const emailInput = document.getElementById("email");
+            const feedback = document.getElementById("email-feedback");
+            const email = emailInput.value.trim();
+
+            try {
+                const response = await fetch('/assinanteLinkAtivacaoEmailExistisCheck?email=' + encodeURIComponent(email));
+                const data = await response.json();
+
+                 if (data.success === false) {
+                    emailInput.classList.add("is-invalid");
+                    emailInput.classList.remove("is-valid");
+                
+                    feedback.textContent = data.message || "Este e-mail já está cadastrado.";
+                    feedback.style.display = "block"; // ← SEM ISSO NÃO APARECE!
+                
+                    return; // NÃO AVANÇA
+                }
+
+                // Email liberado:
+                emailInput.classList.remove("is-invalid");
+                emailInput.classList.add("is-valid");
+                feedback.textContent = "";
+
+            } catch (err) {
+                console.error("Erro ao verificar e-mail:", err);
+                return;
+            }
+        }
+
+        // Próximo step
         if (currentStep < 3) {
             currentStep++;
             updateSteps();
         }
 
+        // Step final
         if (currentStep === 3) submitForm();
     });
 });
 
+// ===============================
+// PREVIOUS
+// ===============================
 document.querySelectorAll(".prev").forEach(btn => {
     btn.addEventListener("click", function () {
         if (currentStep > 1) {
@@ -176,9 +209,8 @@ document.querySelectorAll(".prev").forEach(btn => {
 });
 
 // ===============================
-// ENVIO DO FORMULÁRIO
+// SUBMIT FORM
 // ===============================
-
 function submitForm() {
 
     const payload = {
@@ -201,9 +233,7 @@ function submitForm() {
         updateSteps();
     })
     .catch(err => {
-        console.error('Erro no cadastro:', err);
+        console.error('Erro ao cadastrar:', err);
         alert("Erro ao cadastrar. Tente novamente.");
     });
 }
-
-

@@ -105,7 +105,7 @@ class Email{
                     </div>
                 
                     <div class="card">
-                        <a href="https://app.smilecopilot.com/ativacaoAssinante?id=$HASH" class="btn">Ativar Meu Cadastro</a>
+                        <a href="https://app.smilecopilot.com/assinanteLinkAtivacaoCheck?id=$HASH" class="btn">Ativar Meu Cadastro</a>
                     </div>
                 
                     <div class="text">
