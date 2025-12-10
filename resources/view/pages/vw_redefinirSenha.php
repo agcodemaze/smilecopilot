@@ -116,10 +116,10 @@
                                 <p class="text-muted mb-4"  style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#novocliente-modal"><?= \App\Core\Language::get('redefinir_senha_page_desc'); ?></p>
                             </div>
 
+                            <div id="loginError" class="alert alert-danger mt-2" style="display:none"></div>
+                            
                             <form id="loginForm">
-
-                                <div id="loginError" class="alert alert-danger mt-2" style="display:none"></div>
-
+                               
                                 <input type="hidden" class="form-control" id="userid" name="userid" value="<?= $userId ?>">
 
                                 <div class="mb-3">
