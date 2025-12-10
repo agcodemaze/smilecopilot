@@ -54,7 +54,8 @@ class Usuarios{
     public function updateSenhaAssinante($userid, $password) {
         try {
                 $objUsuario = new Usuario();
-                $response = $objUsuario->updateSenhaAssinanteInfo($userid, $password);                  
+                $response = $objUsuario->updateSenhaAssinanteInfo($userid, $password);  
+                return $response;                
 
         } catch (PDOException $e) {   
             $erro = $e->getMessage();           
