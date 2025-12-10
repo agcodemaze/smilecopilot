@@ -146,6 +146,8 @@ class Auth extends Conn {
     }
 
     function logoff() {
+
+        $cookie_domain = $_ENV['ENV_DOMAIN'] ?? getenv('ENV_DOMAIN') ?? '';
     
         // Remover cookie de sessão
         if (ini_get("session.use_cookies")) {
@@ -164,7 +166,7 @@ class Auth extends Conn {
         setcookie('token', '', [
             'expires' => time() - 3600,
             'path' => '/',
-            //'domain' => 'smilecopilot.com.br',
+            'domain' => $cookie_domain,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
@@ -195,7 +197,7 @@ class Auth extends Conn {
         setcookie('refresh_token', '', [
             'expires' => time() - 3600,
             'path' => '/',
-            //'domain' => 'smilecopilot.com.br',
+            'domain' => $cookie_domain,
             'secure' => isset($_SERVER['HTTPS']),
             'httponly' => true,
             'samesite' => 'Lax'
