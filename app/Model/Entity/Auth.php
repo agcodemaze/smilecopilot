@@ -111,10 +111,26 @@ class Auth extends Conn {
         ]);
     }
 
+    function getRealIpAddr() {
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            // Cloudflare
+            return $_SERVER['HTTP_CF_CONNECTING_IP'];
+        }
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return trim(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR'])[0]);
+        }
+        if (!empty($_SERVER['HTTP_X_REAL_IP'])) {
+            return $_SERVER['HTTP_X_REAL_IP'];
+        }
+
+        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+    }
+
     private function putRefreshToken($USU_IDUSUARIO, $RTK_DCTOKEN, $lifetime) {
 
         $hashedToken = password_hash($RTK_DCTOKEN, PASSWORD_DEFAULT);
-        $RTK_DCIP = $_SERVER['REMOTE_ADDR'] ?? '';
+        //$RTK_DCIP = $_SERVER['REMOTE_ADDR'] ?? '';
+        $RTK_DCIP = $this->getRealIpAddr();
         $RTK_DCUSERAGENT = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
         $sql = "INSERT INTO RTK_REFRESH_TOKEN (RTK_DCIP, RTK_DCUSERAGENT, USU_IDUSUARIO, RTK_DCTOKEN, RTK_DTEXPIRE_AT, RTK_DTCREATE_AT, RTK_STREVOKED)
