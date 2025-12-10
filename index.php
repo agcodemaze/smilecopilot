@@ -229,7 +229,7 @@ $obRouter->post('/cadUsuario', [
         $nome = EncryptDecrypt::sanitize($data['nome'] ?? '');
         $telefone = EncryptDecrypt::sanitize($data['telefone'] ?? '');
 
-        if (strlen($senha) < 8) {
+        if (strlen($senha) < 8 || strlen($senha) > 200) {
             return json_encode([
                 'success' => false,
                 'message' => 'A senha deve ter no mínimo 8 caracteres.'
@@ -294,7 +294,7 @@ $obRouter->post('/redefinirSenhaCheck', [
             return new \App\Http\Response(200, $result);
         }
 
-        if (strlen($password) < 8) {
+        if (strlen($password) < 8 || strlen($password) > 200) {
             return json_encode([
                 'success' => false,
                 'message' => 'A senha deve ter no mínimo 8 caracteres.'
