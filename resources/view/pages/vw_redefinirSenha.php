@@ -183,81 +183,84 @@
 </div>
 
 <script>
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    const userid  = document.getElementById('userid').value;
-    const senha1  = document.getElementById('senha1').value;
-    const senha2  = document.getElementById('senha2').value;
+        const userid  = document.getElementById('userid').value;
+        const senha1  = document.getElementById('senha1').value;
+        const senha2  = document.getElementById('senha2').value;
 
-    const errorDiv = document.getElementById('loginError');
-    const overlay  = document.getElementById('loadingOverlay');
-    const btn = this.querySelector('button[type="submit"]');
+        const errorDiv = document.getElementById('loginError');
+        const overlay  = document.getElementById('loadingOverlay');
+        const btn = this.querySelector('button[type="submit"]');
 
-    errorDiv.style.display = 'none';
-    errorDiv.textContent = '';
+        errorDiv.style.display = 'none';
+        errorDiv.textContent = '';
 
-    // 🔎 Validação básica antes de enviar
-    if (senha1 !== senha2) {
-        errorDiv.textContent = "As senhas não conferem.";
-        errorDiv.style.display = "block";
-        return;
-    }
-
-    if (senha1.length < 8) {
-        errorDiv.textContent = "A senha deve ter no mínimo 8 caracteres.";
-        errorDiv.style.display = "block";
-        return;
-    }
-
-    // 🔄 Loading
-    overlay.style.display = 'flex';
-    btn.disabled = true;
-    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enviando...`;
-
-    const payload = { userid, password: senha1 };
-
-    fetch('/redefinirSenhaCheck', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    })
-    .then(response => response.json())
-    .then(data => {
-        overlay.style.display = 'none';
-        btn.disabled = false;
-        btn.innerHTML = "Enviar";
-
-        if (data.success) {
-            // ✅ Apenas mostrar mensagem — sem redirecionamento
-            errorDiv.classList.remove("text-danger");
-            errorDiv.classList.add("text-success");
-            errorDiv.textContent = "Senha alterada com sucesso!";
+        if (senha1 !== senha2) {
+            errorDiv.className = "alert alert-danger";
+            errorDiv.textContent = "As senhas não conferem.";
             errorDiv.style.display = "block";
-
-            // opcional: limpar campos
-            document.getElementById('senha1').value = "";
-            document.getElementById('senha2').value = "";
-        } else {
-            errorDiv.classList.remove("text-success");
-            errorDiv.classList.add("text-danger");
-            errorDiv.textContent = data.message;
-            errorDiv.style.display = "block";
+            return;
         }
-    })
-    .catch(error => {
-        overlay.style.display = 'none';
-        btn.disabled = false;
-        btn.innerHTML = "Enviar";
 
-        console.error('Erro:', error);
-        errorDiv.classList.remove("text-success");
-        errorDiv.classList.add("text-danger");
-        errorDiv.textContent = "Erro inesperado. Tente novamente.";
-        errorDiv.style.display = "block";
+        if (senha1.length < 8) {
+            errorDiv.className = "alert alert-danger";
+            errorDiv.textContent = "A senha deve ter no mínimo 8 caracteres.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        // 🔄 Loading
+        overlay.style.display = 'flex';
+        btn.disabled = true;
+        btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Enviando...`;
+
+        const payload = { userid, password: senha1 };
+
+        fetch('/redefinirSenhaCheck', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = "Enviar";
+
+            if (data.success) {
+
+                // Oculta o formulário
+                document.getElementById('loginForm').style.display = "none";
+
+                // Mensagem final com link para login
+                errorDiv.className = "alert alert-success mt-3";
+                errorDiv.innerHTML = `
+                    Senha alterada com sucesso!<br>
+                    Clique <a href="/login" class="fw-bold text-decoration-underline">aqui</a> para fazer o login.
+                `;
+                errorDiv.style.display = "block";
+
+            } else {
+                errorDiv.className = "alert alert-danger";
+                errorDiv.textContent = data.message;
+                errorDiv.style.display = "block";
+            }
+        })
+        .catch(error => {
+            overlay.style.display = 'none';
+            btn.disabled = false;
+            btn.innerHTML = "Enviar";
+
+            console.error('Erro:', error);
+            errorDiv.className = "alert alert-danger";
+            errorDiv.textContent = "Erro inesperado. Tente novamente.";
+            errorDiv.style.display = "block";
+        });
     });
-});
 </script>
+
 
 
 
