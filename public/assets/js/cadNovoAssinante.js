@@ -41,7 +41,7 @@ const senha2 = document.getElementById("senha2");
 
 function validarSenhaForte(senha) {
     const regras = {
-        tamanho: senha.length >= 8 && senha.length <= 10,
+        tamanho: senha.length >= 8,
         maiuscula: /[A-Z]/.test(senha),
         numero: /[0-9]/.test(senha),
         especial: /[\W_]/.test(senha)

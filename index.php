@@ -270,7 +270,7 @@ $obRouter->get('/sendEmailAlterarSenha', [
     }
 ]);
 
-//ROTA PAGINA ALTERAR SENHA SENHA
+//ROTA PAGINA ALTERAR SENHA
 $obRouter->get('/redefinicaoSenha', [
     function() {
         $id = $_GET['id'] ?? '';

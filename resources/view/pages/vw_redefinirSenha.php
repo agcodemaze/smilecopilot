@@ -131,7 +131,7 @@
                                 <div class="small text-muted mb-3 ms-1">
                                     <strong>A senha deve conter:</strong>
                                     <ul class="mb-2 mt-2 ps-3">
-                                        <li class="rule-tamanho">8 a 10 caracteres</li>
+                                        <li class="rule-tamanho">Mínimo 8 caracteres</li>
                                         <li class="rule-maiuscula">Pelo menos 1 letra maiúscula</li>
                                         <li class="rule-numero">Pelo menos 1 número</li>
                                         <li class="rule-especial">Pelo menos 1 caractere especial (!@#...)</li>

@@ -208,7 +208,7 @@
                                 <div class="small text-muted mb-3 ms-1">
                                     <strong>A senha deve conter:</strong>
                                     <ul class="mb-2 mt-2 ps-3">
-                                        <li class="rule-tamanho">8 a 10 caracteres</li>
+                                        <li class="rule-tamanho">Mínimo 8 caracteres</li>
                                         <li class="rule-maiuscula">Pelo menos 1 letra maiúscula</li>
                                         <li class="rule-numero">Pelo menos 1 número</li>
                                         <li class="rule-especial">Pelo menos 1 caractere especial (!@#...)</li>
@@ -293,10 +293,33 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
 
+        const widget = document.querySelector('.cf-turnstile');
+        if (widget) {
+            window.turnstileReset = function () {
+                turnstile.reset(widget);
+            };
+        }
+    });
     function onTurnstileSuccess(token) {
-
         window.turnstileToken = token;
+    }
+    function onTurnstileError() {
+        window.turnstileToken = null;
+    }
+</script>
+
+<script>
+    function onTurnstileSuccess(token) {
+        window.turnstileToken = token;
+    }
+
+    function resetCaptcha() {
+        if (window.turnstileReset) {
+            window.turnstileReset();  
+        }
+        window.turnstileToken = null; 
     }
 
     document.getElementById('loginForm').addEventListener('submit', function(event) {
@@ -314,7 +337,8 @@
         errorDiv.textContent = '';
 
         const token = window.turnstileToken;
-        if(!token){
+
+        if (!token) {
             errorDiv.textContent = 'Por favor, complete o captcha!';
             errorDiv.style.display = 'block';
             return;
@@ -343,7 +367,8 @@
                 errorDiv.innerHTML = data.message;
                 errorDiv.style.display = 'block';
 
-                if(window.turnstileReset) window.turnstileReset();
+                // 🔥 IMPORTANTE: reseta o captcha COMPLETAMENTE
+                resetCaptcha();
             }
         })
         .catch(error => {
@@ -354,12 +379,12 @@
             console.error('Erro:', error);
             errorDiv.textContent = 'Erro inesperado. Tente novamente.';
             errorDiv.style.display = 'block';
-            if(window.turnstileReset) window.turnstileReset();
+
+            resetCaptcha();
         });
     });
+
 </script>
-
-
 
     <script src="/public/assets/js/cadNovoAssinante.js"></script>
     <script src="/public/assets/js/vendor.min.js"></script>
