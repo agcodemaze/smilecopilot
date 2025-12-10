@@ -15,7 +15,7 @@ class Usuario extends Conn {
 
             $userInfo = $this->checkUsuarioExistsByEmail($USU_DCEMAIL);
 
-            if(!empty($userInfo)) {
+            if(!($userInfo["success"])) {
                 return ["success" => false,"message" => "Este E-mail já está cadastrado."];
             }
 
