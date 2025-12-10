@@ -99,11 +99,38 @@ class Usuario extends Conn {
             $stmt->bindParam(":USU_DCVERIFICACAO_CADASTRO_HASH", $USU_DCVERIFICACAO_CADASTRO_HASH);
             $stmt->execute();
 
-            return $stmt->fetch(PDO::FETCH_ASSOC);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if(!empty($result)) {
+                $ativar = $this->ativarConta($USU_DCVERIFICACAO_CADASTRO_HASH);
+                return $result;
+            }
+
+            return $result;
 
         } catch (PDOException $e) {
             return ["success" => false,"message" => "Houve um erro."];
            // return [["error" => $e->getMessage()]];
+        }
+    }
+
+    public function ativarConta($USU_DCVERIFICACAO_CADASTRO_HASH)
+    {
+        try {
+            $sql = "UPDATE USU_USUARIO 
+                    SET USU_STVERIFICACAO_CADASTRO = 'VERIFICADO', 
+                        USU_DTATIVACAO = NOW()
+                    WHERE USU_DCVERIFICACAO_CADASTRO_HASH = :USU_DCVERIFICACAO_CADASTRO_HASH";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCVERIFICACAO_CADASTRO_HASH", $USU_DCVERIFICACAO_CADASTRO_HASH);
+
+            $stmt->execute();
+
+            return ["success" => true, "message" => "Conta ativada."];
+
+        } catch (PDOException $e) {
+            return ["success" => false, "message" => "Erro ao ativar conta."];
         }
     }
 
