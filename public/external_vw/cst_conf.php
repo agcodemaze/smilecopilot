@@ -109,21 +109,21 @@ $con = new Conn();
     <meta charset="utf-8" />
     <title>SmileCopilot</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SmileCopilot - O sistema completo para gestão de clínicas odontológicas. Controle consultas, pacientes, agenda, prescrição digital e muito mais.">
+    <meta name="description" content="<?= $clinicaNome ?>">
     <meta name="author" content="Codemaze Soluções de Mkt e Software">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://smilecopilot.com">
-    <meta property="og:title" content="SmileCopilot - Gestão inteligente para clínicas odontológicas">
-    <meta property="og:description" content="Otimize a gestão da sua clínica odontológica com SmileCopilot: agenda, pacientes, prescrições digitais e relatórios completos em um só lugar.">
-    <meta property="og:image" content="https://app.smilecopilot.com/public/assets/images/img_meta.jpg">
+    <meta property="og:title" content="<?= $clinicaNome ?>">
+    <meta property="og:description" content="Confirmação de presença. Consulta Dentista: <?= $dentista ?>">
+    <meta property="og:image" content="https://app.smilecopilot.com/public/assets/images/img_meta_agendamento.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SmileCopilot - Gestão inteligente para clínicas odontológicas">
-    <meta name="twitter:description" content="Otimize a gestão da sua clínica odontológica com SmileCopilot: agenda, pacientes, prescrições digitais e relatórios completos em um só lugar.">
-    <meta name="twitter:image" content="https://app.smilecopilot.com/public/assets/images/img_meta.jpg">
+    <meta name="twitter:title" content="<?= $clinicaNome ?>">
+    <meta name="twitter:description" content="Confirmação de presença. Consulta Dentista: <?= $dentista ?>">
+    <meta name="twitter:image" content="https://app.smilecopilot.com/public/assets/images/img_meta_agendamento.jpg">
 
     <link rel="shortcut icon" href="/public/assets/images/favicon.ico">  
 
