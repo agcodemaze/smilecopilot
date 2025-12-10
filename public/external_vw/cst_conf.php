@@ -107,7 +107,7 @@ $con = new Conn();
 <html lang="en" data-layout="topnav">
 <head>
     <meta charset="utf-8" />
-    <title>SmileCopilot</title>
+    <title><?= $clinicaNome ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="<?= $clinicaNome ?>">
     <meta name="author" content="Codemaze Soluções de Mkt e Software">

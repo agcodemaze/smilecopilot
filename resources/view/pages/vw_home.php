@@ -751,9 +751,8 @@ foreach ($consultasHoje as $c) {
 
                 let a = card.querySelector('a.btn-success');
                 if(a) {
-                    let empresa = "<?= addslashes($nomeEmpresa ?? '') ?>";
                     msg = msg.replace(/\\n/g, "\n");
-                    let msgFinal = msg + "\n\n" + empresa;
+                    let msgFinal = msg;
                     a.href = "https://wa.me/" + telefone + "?text=" + encodeURIComponent(msgFinal);
                 }
             });
