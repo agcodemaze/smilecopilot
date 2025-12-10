@@ -117,7 +117,7 @@
                             </div>
 
                             <div id="loginError" class="alert alert-danger mt-2" style="display:none"></div>
-                            
+
                             <form id="loginForm">
                                
                                 <input type="hidden" class="form-control" id="userid" name="userid" value="<?= $userId ?>">
@@ -211,6 +211,20 @@
             return;
         }
 
+        if (!/[A-Z]/.test(senha1)) {
+            errorDiv.className = "alert alert-danger";
+            errorDiv.textContent = "A senha deve conter pelo menos 1 letra maiúscula.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
+        if (!/[!@#$%^&*(),.?\":{}|<>_\-]/.test(senha1)) {
+            errorDiv.className = "alert alert-danger";
+            errorDiv.textContent = "A senha deve conter pelo menos 1 caractere especial.";
+            errorDiv.style.display = "block";
+            return;
+        }
+
         // 🔄 Loading
         overlay.style.display = 'flex';
         btn.disabled = true;
@@ -237,8 +251,8 @@
                 // Mensagem final com link para login
                 errorDiv.className = "alert alert-success mt-3";
                 errorDiv.innerHTML = `
-                    Senha alterada com sucesso!<br>
-                    Clique <a href="/login" class="fw-bold text-decoration-underline">aqui</a> para fazer o login.
+                    <center>Senha alterada com sucesso!<br>
+                    Clique <a href="/login" class="fw-bold text-decoration-underline">aqui</a> para fazer o login.</center>
                 `;
                 errorDiv.style.display = "block";
 
