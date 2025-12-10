@@ -47,7 +47,8 @@ use \App\Controller\Pages\LogSistema;
 use \App\Controller\Pages\Usuarios; 
 use \App\Controller\Pages\LoginAtivacao; 
 use \App\Controller\Pages\LoginAtivacaoCheck; 
-use \App\Controller\Pages\SenhaAlterarSend; 
+use \App\Controller\Pages\SenhaAlterarSend;  
+use \App\Controller\Pages\RedefinirSenha; 
 use App\Core\Language;
 
 // Inicia sistema de idiomas
@@ -241,10 +242,46 @@ $obRouter->get('/assinanteLinkAtivacao', [
     }
 ]);
 
-//ROTA PAGINA ALETAR SENHA (LINK)
+//ROTA PAGINA ALTERAR SENHA (LINK)
 $obRouter->get('/sendEmailAlterarSenha', [ 
     function() {
          return new Response(200,SenhaAlterarSend::getLoginAtivacaoPage());
+    }
+]);
+
+//ROTA PAGINA ALTERAR SENHA SENHA
+$obRouter->get('/redefinicaoSenha', [
+    function() {
+        $id = $_GET['id'] ?? '';
+        return new Response(200,RedefinirSenha::getRedefinirSenhaPage($id));
+    }
+]);
+
+//ROTA ALTERAR SENHA SENHA EFETIVAR
+$obRouter->post('/redefinirSenhaCheck', [
+    function() {
+
+        $usuariosController = new \App\Controller\Pages\Usuarios();
+        $KEY = $_ENV['ENV_SECRET_KEY'] ?? getenv('ENV_SECRET_KEY') ?? '';
+
+        $input = json_decode(file_get_contents('php://input'), true);
+        $userid = $input['userid'] ?? '';
+        $password = $input['password'] ?? '';
+
+        if(empty($userid) || empty($password)) {
+            $result = json_encode(["success" => false, "message" => "Dados inválidos"]);
+            return new \App\Http\Response(200, $result);
+        }
+
+        $userid = EncryptDecrypt::decrypt_id_token($userid, $KEY);
+
+        if ($userid === false || !is_numeric($userid)) {
+            $result = json_encode(["success" => false, "message" => "ID inválido ou corrompido."]);
+            return new \App\Http\Response(200, $result);
+        }
+
+        $result = json_encode($usuariosController->updateSenhaAssinante($userid, $password));
+        return new \App\Http\Response(200, $result);
     }
 ]);
 

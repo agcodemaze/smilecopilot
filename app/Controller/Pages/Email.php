@@ -210,12 +210,12 @@ class Email{
                 
                     <div class="text">
                         Olá! 😊<br><br>
-                        Recebemos uma solicitação para redefinir sua senha no <strong>SmileCopilot</strong>.<br>
-                        Para continuar, clique no botão abaixo e crie uma nova senha com segurança.
+                        Recebemos uma solicitação para redefinir sua senha.<br>
+                        Para continuar, clique no botão abaixo e crie uma nova senha.
                     </div>
                 
                     <div class="card">
-                        <a href="https://app.smilecopilot.com/assinanteLinkAtivacaoCheck?id=$HASH" class="btn">Ativar Meu Cadastro</a>
+                        <a href="https://app.smilecopilot.com/redefinicaoSenha?id=$HASH" class="btn">Redefinir Senha</a>
                     </div>
                 
                     <div class="text">

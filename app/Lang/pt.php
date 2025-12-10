@@ -186,7 +186,8 @@
     'lista_logs_desc' => 'Nesta tela, é exibido o histórico completo das atividades realizadas pelo sistema, permitindo acompanhar cada ação registrada.', 
     'pag_alterar_senha' => 'Redefinição de Senha',
     'pag_alterar_senha_desc' => 'Informe seu e-mail abaixo e enviaremos as instruções para redefinir sua senha',
-
+    'redefinir_senha_page' => 'Redefinir Senha',
+    'redefinir_senha_page_desc' => 'Digite sua nova senha nos campos indicados.',
 
     //LISTA DE MSG DO SISTEMA   
     'erro_get_consultas' => 'Houve um erro ao buscar as consultas: ',
@@ -210,6 +211,7 @@
     'erro_insert_usuario_assinante' => 'Não foi possível cadastrar o novo assinante no sistema: ',
     'erro_envio_email_notificacao' => 'Houve um erro ao enviar um e-mail de notificação: ',
     'info_envio_email_notificacao' => 'Notificação por e-mail enviada com sucesso.',
+
 
 
     ];

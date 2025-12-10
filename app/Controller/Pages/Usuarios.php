@@ -50,4 +50,14 @@ class Usuarios{
             $erro = $e->getMessage();           
         }
     } 
+
+    public function updateSenhaAssinante($userid, $password) {
+        try {
+                $objUsuario = new Usuario();
+                $response = $objUsuario->updateSenhaAssinanteInfo($userid, $password);                  
+
+        } catch (PDOException $e) {   
+            $erro = $e->getMessage();           
+        }
+    }  
 }

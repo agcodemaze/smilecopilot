@@ -188,4 +188,48 @@ class Usuario extends Conn {
            // return [["error" => $e->getMessage()]];
         }
     }
+
+    public function checkRedefinirSenhaById($USU_DCTOKEN_ALTERAR_SENHA) {
+        try {
+            $sql = "SELECT USU_DCTOKEN_ALTERAR_SENHA, USU_DTEXPTOKEN_ALTERAR_SENHA, USU_IDUSUARIO FROM USU_USUARIO WHERE USU_DCTOKEN_ALTERAR_SENHA = :USU_DCTOKEN_ALTERAR_SENHA";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCTOKEN_ALTERAR_SENHA", $USU_DCTOKEN_ALTERAR_SENHA);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $result;
+
+        } catch (PDOException $e) {
+            return ["success" => false,"message" => "Houve um erro."];
+           // return [["error" => $e->getMessage()]];
+        }
+    }
+
+    public function updateSenhaAssinanteInfo($USU_IDUSUARIO, $USU_DCSENHA) {
+        try {   
+            $USU_DCSENHA = password_hash($USU_DCSENHA, PASSWORD_DEFAULT);
+
+            $sql = "UPDATE USU_USUARIO
+                    SET 
+                        USU_DCSENHA = :USU_DCSENHA,
+                        USU_DCTOKEN_ALTERAR_SENHA = '',
+                        USU_DTEXPTOKEN_ALTERAR_SENHA = NULL
+                    WHERE USU_IDUSUARIO = :USU_IDUSUARIO";
+
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":USU_DCSENHA", $USU_DCSENHA);
+            $stmt->bindParam(":USU_IDUSUARIO", $USU_IDUSUARIO);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                return ["success" => true, "message" => "Senha alterada com sucesso!"];
+            }
+
+            return ["success" => false, "message" => "Nenhuma alteração realizada."];
+
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
 }
