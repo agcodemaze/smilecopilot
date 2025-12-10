@@ -107,22 +107,22 @@ $con = new Conn();
 <html lang="en" data-layout="topnav">
 <head>
     <meta charset="utf-8" />
-    <title><?= $clinicaNome ?></title>
+    <title>Consulta Dentista</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="<?= $clinicaNome ?>">
+    <meta name="description" content="">
     <meta name="author" content="Codemaze Soluções de Mkt e Software">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://smilecopilot.com">
-    <meta property="og:title" content="<?= $clinicaNome ?>">
-    <meta property="og:description" content="Confirmação de presença. Consulta Dentista: <?= $dentista ?>">
+    <meta property="og:title" content="Confirmação de Presença">
+    <meta property="og:description" content="Confirmação de presença.>
     <meta property="og:image" content="https://app.smilecopilot.com/public/assets/images/img_meta_agendamento.jpg">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="<?= $clinicaNome ?>">
-    <meta name="twitter:description" content="Confirmação de presença. Consulta Dentista: <?= $dentista ?>">
+    <meta name="twitter:title" content="Confirmação de Presença">
+    <meta name="twitter:description" content="Confirmação de presença.">
     <meta name="twitter:image" content="https://app.smilecopilot.com/public/assets/images/img_meta_agendamento.jpg">
 
     <link rel="shortcut icon" href="/public/assets/images/favicon.ico">  
