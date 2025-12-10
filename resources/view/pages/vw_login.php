@@ -141,6 +141,7 @@
                                     <div class="cf-turnstile" 
                                          data-sitekey="<?= $cloudflareSiteKey ?>" 
                                          data-callback="onTurnstileSuccess"
+                                         data-theme="light"
                                          data-error-callback="onTurnstileError">
                                     </div>
                                 </div>
