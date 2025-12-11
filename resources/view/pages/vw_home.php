@@ -7,6 +7,7 @@ $dataHoraServidor = date('Y-m-d H:i:s'); // hora atual do servidor
 $horarios = [];
 $inicio = $configuracoes["CFG_DCHORA_EXPEDIENTE_INI"];
 $fim = $configuracoes["CFG_DCHORA_EXPEDIENTE_END"];
+$creditoWhatsapp = $configuracoes["CFG_NMCREDITO_WHATSAPP"];
 $hora = new DateTime($inicio);
 $horaFim = new DateTime($fim);
 $intervalo = new DateInterval('PT30M');
@@ -39,16 +40,21 @@ $dia = $_GET['dia'] ?? '1';
 
 if ($profissionalId === "all" && !empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayPredef($dia);
+    $ultimasConsultasPacientes = \App\Controller\Pages\Home::getConsultasLembretePaciente("all","6");
 } elseif ($profissionalId === "all" && empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayPredef("1"); 
+    $ultimasConsultasPacientes = \App\Controller\Pages\Home::getConsultasLembretePaciente("all","6");
 } elseif ($profissionalId === "" && empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayPredef(""); 
+    $ultimasConsultasPacientes = \App\Controller\Pages\Home::getConsultasLembretePaciente("all","6");
 } elseif (!empty($profissionalId) && !empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayProfPredef($profissionalId, $dia);
     $datasBloqueadas = \App\Controller\Pages\Home::getDatasBloqueadasByProfId($profissionalId);
+    $ultimasConsultasPacientes = \App\Controller\Pages\Home::getConsultasLembretePaciente($profissionalId,"6");
 } elseif (!empty($profissionalId) && empty($dia)) {
     $consultasHoje = \App\Controller\Pages\Home::getConsultasByDayProfPredef($profissionalId, $dia);
     $datasBloqueadas = \App\Controller\Pages\Home::getDatasBloqueadasByProfId($profissionalId);
+    $ultimasConsultasPacientes = \App\Controller\Pages\Home::getConsultasLembretePaciente($profissionalId,"6");
 }
 
 $datasBloqueadas = array_column($datasBloqueadas, "AGB_DTBLOQUEADA");
@@ -81,6 +87,7 @@ $totalConsultas = 0;
 $confirmadas = 0;
 $canceladas = 0;
 $concluida = 0;
+$faltas = 0;
 
 $totalConsultas = count($consultasHoje);
 
@@ -94,6 +101,9 @@ foreach ($consultasHoje as $consulta) {
     if ($consulta['CON_ENSTATUS'] === "CONCLUIDA") {
         $concluida++;
     }
+    if ($consulta['CON_ENSTATUS'] === "FALTA") {
+        $faltas++;
+    }
 }
 
 foreach ($consultasHoje as $c) {
@@ -104,6 +114,8 @@ foreach ($consultasHoje as $c) {
         "status" => $c['CON_ENSTATUS']
     ];
 }
+
+$totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasConsultasPacientes) : 0;
 
 ?>
 <style>
@@ -238,6 +250,14 @@ foreach ($consultasHoje as $c) {
     .whatsapp-box i {
         color: #25D366;
     }
+    .collapse-row {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease;
+    }
+    .collapse-row.show {
+        max-height: 1000px;
+    }
 </style>
 
 
@@ -262,47 +282,38 @@ foreach ($consultasHoje as $c) {
                     <div class="row g-0">
                         <div class="row g-0">
 
-                            <!-- AVISO DE RETORNO -->
                             <div class="col-6 col-lg-2 mb-2">
-                                <div class="card rounded-0 shadow-none m-0">
+                                <div class="card rounded-0 shadow-none m-0" style="cursor:pointer;" onclick="toggleRow()">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
-
-                                        <img src="/public/assets/images/consultas.png" 
+                                        <img src="/public/assets/images/calendario.png" 
                                              alt="ícone" 
                                              style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
-
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $totalConsultas; ?></span>
+                                                <span><?= $totalUltimasConsultasPacientes ?></span><span style="font-size: 20px;"> <?= \App\Core\Language::get('pacientes'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('total_de'); ?>
-                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('verificar_agendamento'); ?>
                                             </p>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-6 col-lg-2 mb-2">
-                                <div class="card rounded-0 shadow-none m-0">
+                                <div class="card rounded-0 shadow-none m-0" style="cursor:pointer;" onclick="toggleRow()">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
-
-                                        <img src="/public/assets/images/consultas.png" 
+                                        <img src="/public/assets/images/whastapp.png" 
                                              alt="ícone" 
                                              style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
-
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $totalConsultas; ?></span>
+                                                <span><?= $creditoWhatsapp ?></span><span style="font-size: 20px;"> <?= \App\Core\Language::get('creditos'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('total_de'); ?>
-                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('para_envio_mensagens_whats'); ?>
                                             </p>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -405,6 +416,112 @@ foreach ($consultasHoje as $c) {
         </div> <!-- end col-->
     </div>
     <!-- end row-->
+
+    <!-- cONSULTAS > 6 MESES -->
+    <div class="row collapse-row position-relative" id="agenda-row">
+        <div class="col-lg-12">
+            <div class="card position-relative p-3" style="border: 1px solid #f77e7eff; border-radius: 6px;">
+                <div class="card-header d-flex flex-column justify-content-center align-items-center text-center py-3">   
+                    <h4 class="header-title mb-3"><?= \App\Core\Language::get('pacientes_consulta_lembrete'); ?> 6 meses</h4>
+                </div>
+                <!-- BOTÃO FECHAR -->
+                 <button type="button" class="btn btn-danger btn-sm rounded-pill position-absolute top-0 end-0 m-2" onclick="closeRow()">
+                    Fechar
+                </button>
+                <div class="table-responsive">
+                    <table id="alternative-page-datatable-lembrete" class="table dt-responsive nowrap w-100" style="font-size:14px;">
+                        <thead>
+                            <tr style="line-height:1.2; font-size:14px;">
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('nome_completo'); ?></th>
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('ultima_consulta'); ?></th>
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('status'); ?></th>
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('telefone'); ?></th>
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('profissional'); ?></th>
+                                <th style="text-align:center; padding:4px 8px;"><?= \App\Core\Language::get('especialidade'); ?></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($ultimasConsultasPacientes as $index => $ultimasConsultasPaciente): ?>
+                                <?php
+                                    // Status do paciente
+                                    if ($ultimasConsultasPaciente['CON_ENSTATUS'] == "CONCLUIDA") {
+                                        $classeBadge = "secondary";
+                                    } elseif ($ultimasConsultasPaciente['CON_ENSTATUS'] == "CANCELADA") {
+                                        $classeBadge = "warning";
+                                    } elseif ($ultimasConsultasPaciente['CON_ENSTATUS'] == "AGENDADA") {
+                                        $classeBadge = "primary";
+                                    } elseif ($ultimasConsultasPaciente['CON_ENSTATUS'] == "FALTA") {
+                                        $classeBadge = "danger";
+                                    } elseif ($ultimasConsultasPaciente['CON_ENSTATUS'] == "CONFIRMADA") {
+                                        $classeBadge = "success";
+                                    }
+                                
+                                    // Dia da semana
+                                    $semana = [0=>'domingo',1=>'segunda-feira',2=>'terça-feira',3=>'quarta-feira',4=>'quinta-feira',5=>'sexta-feira',6=>'sábado'];
+                                    $numeroDia = (int) date('w', strtotime($ultimasConsultasPaciente['CON_DTCONSULTA']));
+                                    $diaSemana = $semana[$numeroDia];
+                                
+                                    // Datas e horários
+                                    $dataConsulta = (new DateTimeImmutable($ultimasConsultasPaciente['CON_DTCONSULTA']))->format('d/m/Y');
+                                    $consultaHoraIni = (new DateTime($ultimasConsultasPaciente['CON_HORACONSULTA']))->format('H\hi');
+                                    $hora = $ultimasConsultasPaciente['CON_HORACONSULTA'];
+                                    $duracao = $ultimasConsultasPaciente['CON_NUMDURACAO'];
+                                    $dt = new DateTime($hora);
+                                    $dt->add(new DateInterval("PT{$duracao}M"));
+                                    $consultaHoraFim = $dt->format('H\hi'); 
+                                
+                                    // Telefone formatado
+                                    $tel = preg_replace('/\D/', '', $ultimasConsultasPaciente['PAC_DCTELEFONE'] ?? '');
+                                    if ($tel && strlen($tel) >= 12) {
+                                        $country  = substr($tel, 0, 2);
+                                        $ddd      = substr($tel, 2, 2);
+                                        $numero1  = substr($tel, 4, -4);
+                                        $numero2  = substr($tel, -4);
+                                        $telefoneFormatado = "+$country ($ddd) $numero1-$numero2";
+                                    } else {
+                                        $telefoneFormatado = "";
+                                    }
+                                ?>
+                                <tr style="line-height:1.2; font-size:14px; padding:2px 0;">
+                                    <td class="text-truncate" style="cursor:pointer; max-width:180px; padding:4px 8px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                        <?= htmlspecialchars(ucwords(strtolower($ultimasConsultasPaciente['PAC_DCNOME'])), ENT_QUOTES, 'UTF-8') ?> <?= $showMaisInfo ?>
+                                    </td>
+                                    <td class="text-truncate" style="cursor:pointer; text-align:center; padding:4px 8px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                        <span style="display:none;">
+                                            <?= date('Y-m-d H:i', strtotime($dataConsulta . ' ' . str_replace(['h','ás'], ['',''], $consultaHoraIni))) ?>
+                                        </span>
+                                        <?= htmlspecialchars($dataConsulta, ENT_QUOTES, 'UTF-8') ?>                                        
+                                    </td>
+                                    <td class="text-truncate status" style="cursor:pointer; text-align:center; padding:4px 8px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                        <span class="badge badge-<?= $classeBadge; ?>-lighten"><?= htmlspecialchars(ucwords(strtolower($ultimasConsultasPaciente['CON_ENSTATUS'])), ENT_QUOTES, 'UTF-8') ?></span>
+                                    </td>
+                                    <td class="text-truncate" style="padding:4px 8px; text-align:center;">
+                                        <a href="https://wa.me/<?= $tel ?>" target="_blank" class="whatsapp-box">
+                                            <?= htmlspecialchars($telefoneFormatado, ENT_QUOTES, 'UTF-8') ?>
+                                            <i class="mdi mdi-whatsapp mdi-circle mdi-20px" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="<?= \App\Core\Language::get('conversar_whatsapp'); ?>"></i>
+                                        </a>
+                                    </td>
+                                    <td class="text-truncate" style="cursor:pointer; max-width:150px; text-align:center; padding:4px 8px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                        <?= htmlspecialchars(ucwords(strtolower($ultimasConsultasPaciente['DEN_DCNOME'])), ENT_QUOTES, 'UTF-8') ?>
+                                    </td>
+                                    <td class="text-truncate" style="cursor:pointer; text-align:center; padding:4px 8px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                        <?= htmlspecialchars(ucwords(strtolower($ultimasConsultasPaciente['CON_NMESPECIALIDADE'])), ENT_QUOTES, 'UTF-8') ?>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div> <!-- end table-responsive-->
+            </div>
+        </div>
+    </div>
+
+
+    
     <?php if ($profissionalId != "all"): ?> 
     <div class="row">        
     <div class="col-lg-12">
@@ -1335,6 +1452,18 @@ foreach ($consultasHoje as $c) {
     }
 </script>
 
+<script>
+    function toggleRow() {
+        const row = document.getElementById('agenda-row');
+        row.classList.toggle('show');
+    }
+
+    function closeRow() {
+        const row = document.getElementById('agenda-row');
+        row.classList.remove('show');
+    }
+</script>
+
 <!-- stream eventos consultas -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -1418,13 +1547,16 @@ foreach ($consultasHoje as $c) {
 <script src="<?= ASSETS_PATH ?>utils/alertInsert.js"></script>
 
 <?php if ($lang  === "pt" || empty($lang)): ?>
-    <script src="<?= ASSETS_PATH ?>utils/datatable-Init-ptbr.js"></script>
+    <script src="<?= ASSETS_PATH ?>utils/datatable-Init-ptbr.js"></script> 
+    <script src="<?= ASSETS_PATH ?>utils/datatable-Init-ptbr-lembrete.js"></script>
 <?php endif; ?>
 
 <?php if ($lang  === "en"): ?>
     <script src="<?= ASSETS_PATH ?>utils/datatable-Init-en.js"></script>
+    <script src="<?= ASSETS_PATH ?>utils/datatable-Init-en-lembrete.js"></script>
 <?php endif; ?>
 
 <?php if ($lang  === "es"): ?>
     <script src="<?= ASSETS_PATH ?>utils/datatable-Init-es.js"></script>
+    <script src="<?= ASSETS_PATH ?>utils/datatable-Init-es-lembrete.js"></script>
 <?php endif; ?>

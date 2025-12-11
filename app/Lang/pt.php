@@ -3,12 +3,15 @@
     return [
     'total_de'  => 'Total de',
     'consultas' => 'Consultas',
+    'faltas' => 'Faltas',
     'confirmadas' => 'Confirmadas', 
     'canceladas' => 'Canceladas',
     'programadas' => 'Programadas',
     'pacientes' => 'Pacientes',
     'cadastrados' => 'Cadastrados',
     'cadastradas' => 'Cadastradas',
+    'verificar_agendamento' => 'Última consulta > 6 meses',
+    'para_envio_mensagens_whats' => 'Envio de Mensagens',
     'timeline_de_atendimento' => 'Timeline de Atendimento',
     'de' => 'de',
     'atendimento' => 'Atendimento',
@@ -154,6 +157,7 @@
     'enviado!' => 'Enviado!',
     'anos' => 'anos', 
     'nova_anamnese_respondida_criado_pdf' => 'Uma nova anamnese foi respondida pelo(a) paciente e criado o pdf',
+    'creditos' => 'Créditos', 
 
     //------------- CONTINUA DAQUI PARA TRADUZIR DEMAIS IDIOMAS 
 
@@ -188,7 +192,8 @@
     'pag_alterar_senha_desc' => 'Informe seu e-mail abaixo e enviaremos as instruções para redefinir sua senha',
     'redefinir_senha_page' => 'Redefinir Senha',
     'redefinir_senha_page_desc' => 'Digite sua nova senha nos campos indicados.',
-    'conversar_whatsapp' => 'Conversasr no Whatsapp com o paciente.', 
+    'conversar_whatsapp' => 'Conversar no Whatsapp com o paciente.', 
+    'pacientes_consulta_lembrete' => 'Paciente sem consulta há mais de', 
 
     //LISTA DE MSG DO SISTEMA   
     'erro_get_consultas' => 'Houve um erro ao buscar as consultas: ',

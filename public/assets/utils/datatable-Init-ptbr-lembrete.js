@@ -1,7 +1,7 @@
     $(document).ready(function() {
         "use strict";
 
-        $("#alternative-page-datatable").DataTable({
+        $("#alternative-page-datatable-lembrete").DataTable({
         pagingType: "full_numbers",
         pageLength: 50,
         columnDefs: [

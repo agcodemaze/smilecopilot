@@ -135,5 +135,12 @@ class Home extends Page{
         $datasBloqueadas = $objConsultas->datasBloqueadasByIdProf(TENANCY_ID, $DEN_IDDENTISTA);
         return $datasBloqueadas;
     }
+
+    public static function getConsultasLembretePaciente($DEN_IDDENTISTA, $PERIODO) {
+
+        $objConsultas = new Consultas();
+        $ultimasConsultasPaciente = $objConsultas->getConsultasLembretePacienteInfo(TENANCY_ID, $DEN_IDDENTISTA, $PERIODO);
+        return $ultimasConsultasPaciente;
+    }
 }
 

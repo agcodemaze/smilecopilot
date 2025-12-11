@@ -577,4 +577,47 @@ class Consultas extends Conn {
         } 
     }
 
+    public function getConsultasLembretePacienteInfo($TENANCY_ID, $DEN_IDDENTISTA, $PERIODO) {
+        try{           
+            
+            if($DEN_IDDENTISTA == "all") {
+                $sql = "SELECT c.*
+                        FROM VW_CONSULTAS c
+                        INNER JOIN (
+                            SELECT PAC_IDPACIENTE, MAX(CON_DTCONSULTA) AS ultima_consulta
+                            FROM VW_CONSULTAS
+                            GROUP BY PAC_IDPACIENTE
+                        ) AS ultimas ON c.PAC_IDPACIENTE = ultimas.PAC_IDPACIENTE
+                        WHERE c.PAC_STLEMBRETE_CONSULTA = '1'
+                            AND c.TENANCY_ID = :TENANCY_ID
+                          AND ultimas.ultima_consulta <= DATE_SUB(CONVERT_TZ(NOW(), '+00:00', '-03:00'), INTERVAL :PERIODO MONTH)";
+            } else {
+                $sql = "SELECT c.*
+                        FROM VW_CONSULTAS c
+                        INNER JOIN (
+                            SELECT PAC_IDPACIENTE, MAX(CON_DTCONSULTA) AS ultima_consulta
+                            FROM VW_CONSULTAS
+                            GROUP BY PAC_IDPACIENTE
+                        ) AS ultimas ON c.PAC_IDPACIENTE = ultimas.PAC_IDPACIENTE
+                        WHERE c.PAC_STLEMBRETE_CONSULTA = '1'
+                            AND c.DEN_IDDENTISTA = :DEN_IDDENTISTA
+                            AND c.TENANCY_ID = :TENANCY_ID
+                          AND ultimas.ultima_consulta <= DATE_SUB(CONVERT_TZ(NOW(), '+00:00', '-03:00'), INTERVAL :PERIODO MONTH)";
+            }
+            
+            $stmt = $this->pdo->prepare($sql);
+
+            if($DEN_IDDENTISTA != "all") {
+                $stmt->bindParam(":DEN_IDDENTISTA", $DEN_IDDENTISTA);
+            }
+            
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->bindParam(":PERIODO", $PERIODO);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            //return ["error" => $e->getMessage()];
+        } 
+    }
+
 }
