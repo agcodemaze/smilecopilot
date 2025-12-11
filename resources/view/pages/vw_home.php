@@ -262,8 +262,53 @@ foreach ($consultasHoje as $c) {
                     <div class="row g-0">
                         <div class="row g-0">
 
+                            <!-- AVISO DE RETORNO -->
+                            <div class="col-6 col-lg-2 mb-2">
+                                <div class="card rounded-0 shadow-none m-0">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/consultas.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $totalConsultas; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('total_de'); ?>
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-lg-2 mb-2">
+                                <div class="card rounded-0 shadow-none m-0">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/consultas.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span><?= $totalConsultas; ?></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                <?= \App\Core\Language::get('total_de'); ?>
+                                                <?= \App\Core\Language::get('consultas'); ?>
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
                             <!-- TOTAL CONSULTAS -->
-                            <div class="col-6 col-lg-3 mb-3">
+                            <div class="col-6 col-lg-2 mb-2">
                                 <div class="card rounded-0 shadow-none m-0">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
 
@@ -286,7 +331,7 @@ foreach ($consultasHoje as $c) {
                             </div>
 
                             <!-- CONFIRMADAS -->
-                            <div class="col-6 col-lg-3 mb-3">
+                            <div class="col-6 col-lg-2 mb-2">
                                 <div class="card rounded-0 shadow-none m-0 border-start border-light">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
 
@@ -309,7 +354,7 @@ foreach ($consultasHoje as $c) {
                             </div>
 
                             <!-- CANCELADAS -->
-                            <div class="col-6 col-lg-3 mb-3">
+                            <div class="col-6 col-lg-2 mb-2">
                                 <div class="card rounded-0 shadow-none m-0 border-start border-light">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
 
@@ -332,7 +377,7 @@ foreach ($consultasHoje as $c) {
                             </div>
 
                             <!-- CONCLUÍDAS -->
-                            <div class="col-6 col-lg-3 mb-3">
+                            <div class="col-6 col-lg-2 mb-2">
                                 <div class="card rounded-0 shadow-none m-0 border-start border-light">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
 
