@@ -188,6 +188,7 @@
     'pag_alterar_senha_desc' => 'Informe seu e-mail abaixo e enviaremos as instruções para redefinir sua senha',
     'redefinir_senha_page' => 'Redefinir Senha',
     'redefinir_senha_page_desc' => 'Digite sua nova senha nos campos indicados.',
+    'conversar_whatsapp' => 'Conversasr no Whatsapp com o paciente.', 
 
     //LISTA DE MSG DO SISTEMA   
     'erro_get_consultas' => 'Houve um erro ao buscar as consultas: ',

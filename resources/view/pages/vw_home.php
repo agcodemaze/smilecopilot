@@ -144,7 +144,7 @@ foreach ($consultasHoje as $c) {
     #alternative-page-datatable td {
         padding-top: 4px;
         padding-bottom: 4px;
-        vertical-align: middle; 
+        vertical-align: middle;
     }
     .table td, .table th {
         white-space: normal;
@@ -180,9 +180,9 @@ foreach ($consultasHoje as $c) {
         white-space: nowrap;
     }
     .disabled-link {
-        pointer-events: none; 
-        opacity: 0.3;         
-        cursor: default;      
+        pointer-events: none;
+        opacity: 0.3;
+        cursor: default;
     }
     select {
         cursor: pointer !important;
@@ -203,24 +203,19 @@ foreach ($consultasHoje as $c) {
     #horarios-disponiveis {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 8px 12px; /* espaço entre os horários */
+        gap: 8px 12px;
     }
-</style>
-
-<style>
     .linha-agendamento {
         display: flex;
         align-items: center;
-        gap: 20px; /* espaço entre os blocos */
-        flex-wrap: wrap; /* quebra no mobile */
+        gap: 20px;
+        flex-wrap: wrap;
     }
-
     .grupo-duracao {
         display: flex;
         align-items: center;
-        gap: 15px; /* espaço entre cada duração */
+        gap: 15px;
     }
-
     .grupo-duracao .form-check {
         margin: 0;
         display: flex;
@@ -228,9 +223,23 @@ foreach ($consultasHoje as $c) {
         gap: 5px;
     }
     .mt-horarios {
-        margin-top: 20px !important; /* pode ajustar */
-    }    
+        margin-top: 20px !important;
+    }
+    .whatsapp-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid #8bdba8ff;
+        border-radius: 6px;
+        padding: 4px 8px;
+        color: inherit;
+        text-decoration: none;
+    }
+    .whatsapp-box i {
+        color: #25D366;
+    }
 </style>
+
 
 <!-- Start Content-->
 <div class="container-fluid" style="max-width:100% !important; padding-left:10px; padding-right:10px;">
@@ -427,14 +436,14 @@ foreach ($consultasHoje as $c) {
                     <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th><?= \App\Core\Language::get('nome_completo'); ?></th>
-                                <th><?= \App\Core\Language::get('data_consulta'); ?></th>
-                                <th><?= \App\Core\Language::get('status'); ?></th>
-                                <th><?= \App\Core\Language::get('telefone'); ?></th>
-                                <th><?= \App\Core\Language::get('profissional'); ?></th>
-                                <th><?= \App\Core\Language::get('especialidade'); ?></th> 
-                                <th><?= \App\Core\Language::get('plano_saude_odonto'); ?></th>
+                                <th style="text-align:center;">ID</th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('nome_completo'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('data_consulta'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('status'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('telefone'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('profissional'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('especialidade'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('plano_saude_odonto'); ?></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -534,19 +543,19 @@ foreach ($consultasHoje as $c) {
                                         $telefoneFormatado = "";
                                     }
                                 ?> 
-                            <tr 
+                            <tr style="line-height:1.2;"
                                 data-consulta-id="<?= htmlspecialchars($consulta['CON_IDCONSULTA']) ?>" 
-                                data-consulta-hash="<?= htmlspecialchars($consulta['CON_DCHASH_CONFIRMACAO_PRESENCA']); ?>"
-                            >
+                                data-consulta-hash="<?= htmlspecialchars($consulta['CON_DCHASH_CONFIRMACAO_PRESENCA']); ?>">
+                            
                                 <td>
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_IDCONSULTA'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>                          
 
-                                <td class="text-truncate" style="cursor: pointer; max-width: 180px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; max-width: 180px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['PAC_DCNOME'])), ENT_QUOTES, 'UTF-8') ?> <?= $showMaisInfo ?>
                                 </td>
 
-                                <td class="text-truncate" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <span style="display:none;">
                                         <?= date(
                                             'Y-m-d H:i',
@@ -559,25 +568,37 @@ foreach ($consultasHoje as $c) {
                                     <?= htmlspecialchars($consultaHoraFim, ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
-                                <td class="text-truncate status" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate status" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <span class="badge badge-<?= $classeBadge; ?>-lighten">
                                         <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_ENSTATUS'])), ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <?= htmlspecialchars((string)$telefoneFormatado, ENT_QUOTES, 'UTF-8') ?>
+                                <td class="text-truncate">
+                                    <a href="https://wa.me/<?= $tel ?>" 
+                                       target="_blank" 
+                                       class="whatsapp-box">
+
+                                        <?= htmlspecialchars((string)$telefoneFormatado, ENT_QUOTES, 'UTF-8') ?>
+
+                                        <i class="mdi mdi-whatsapp mdi-circle mdi-24px"
+                                           data-bs-toggle="popover"
+                                           data-bs-trigger="hover"
+                                           data-bs-content="<?= \App\Core\Language::get('conversar_whatsapp'); ?>">
+                                        </i>
+
+                                    </a>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer; max-width: 150px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; max-width: 150px; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['DEN_DCNOME'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_NMESPECIALIDADE'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer; max-width: 150px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_DCCONVENIO'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
@@ -625,7 +646,7 @@ foreach ($consultasHoje as $c) {
                                        <i class="mdi mdi-whatsapp" 
                                            data-bs-toggle="popover" 
                                            data-bs-trigger="hover" 
-                                           style="color: #25D366;"
+                                           style="color: #4bb7ffff;"
                                            data-bs-content="<?= \App\Core\Language::get('enviar_msg_whatsapp'); ?>">
                                        </i>
                                     </a>                            
