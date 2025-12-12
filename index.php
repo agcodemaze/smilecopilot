@@ -303,8 +303,7 @@ $obRouter->post('/encerrarConsulta', [
 
                 // Upload para S3 AWS
                 $result = json_decode($S3Controller->uploadFile($tempFilePath, "consultas/clinica_$tenancyid/$id/$fotoNome"));
-                var_dump($result);
-                if (empty($result)) {
+                if (!($result["success"])) {
                     echo json_encode(["success" => false, "message" => "Erro ao fazer upload da foto {$campo}"]);
                     exit;
                 }
