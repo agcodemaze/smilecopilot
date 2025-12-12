@@ -1234,7 +1234,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
 <?php
         // Garante que o arquivo existe antes de tentar carregar
-        $svg_path = '/public/assets/images/odontograma.svg';
+        $svg_path = '../../../public/assets/images/odontograma.svg';
         echo $svg_path;
 
         if (file_exists($svg_path)) {
