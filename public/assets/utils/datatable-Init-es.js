@@ -5,7 +5,7 @@ $(document).ready(function() {
         pagingType: "full_numbers",
         pageLength: 50,
         columnDefs: [
-            { targets: [0, -1], orderable: false }, 
+            { targets: [0, -2], orderable: false }, 
             { targets: 2, type: 'string', orderData: 2 } 
         ],
         order: [[2, 'asc']], 

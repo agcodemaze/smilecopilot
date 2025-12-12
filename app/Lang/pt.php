@@ -193,7 +193,7 @@
     'redefinir_senha_page' => 'Redefinir Senha',
     'redefinir_senha_page_desc' => 'Digite sua nova senha nos campos indicados.',
     'conversar_whatsapp' => 'Conversar no Whatsapp com o paciente.', 
-    'pacientes_consulta_lembrete' => 'Paciente sem consulta há mais de', 
+    'pacientes_consulta_lembrete' => 'Pacientes ausentes há mais de', 
 
     //LISTA DE MSG DO SISTEMA   
     'erro_get_consultas' => 'Houve um erro ao buscar as consultas: ',

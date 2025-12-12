@@ -69,6 +69,114 @@ $key = $_ENV['ENV_SECRET_KEY'] ?? getenv('ENV_SECRET_KEY') ?? '';
 
 <!-- Start Content-->
 <div class="container-fluid" style="max-width:100% !important; padding-left:10px; padding-right:10px;">
+
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box"> 
+                <div class="page-title-right">
+                </div>
+                <h4 class="page-title"><?= \App\Core\Language::get('consultas'); ?> <?= \App\Core\Language::get($textTitulo); ?> </h4>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card widget-inline">
+                <div class="card-body p-0">
+                    <div class="row g-0">
+                        <div class="row g-0">
+
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0" style="cursor:pointer;" onclick="toggleRow()">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+                                        <img src="/public/assets/images/paciente.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span>157</span><span style="font-size: 20px;">Pacientes</span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                Cadastrados
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light" style="cursor:pointer;" onclick="toggleRow()">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+                                        <img src="/public/assets/images/convenio.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span>28</span><span style="font-size: 20px;"> Convênios</span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                 Atendidos
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- TOTAL CONSULTAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/etaria.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span>12 <span style="font-size: 20px;">Anos</span></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                Média Etária Geral
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CONFIRMADAS -->
+                            <div class="col-6 col-lg-3 mb-3">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
+                                    <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
+
+                                        <img src="/public/assets/images/anamneses.png" 
+                                             alt="ícone" 
+                                             style="width:55px; height:55px; object-fit:contain; opacity:0.9;">
+
+                                        <div class="text-center text-sm-start">
+                                            <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
+                                                <span>7 <span style="font-size: 20px;">Anamneses</span></span>
+                                            </h2>
+                                            <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
+                                                Pendentes
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> <!-- end row -->
+                </div>
+            </div> <!-- end card-box-->
+        </div> <!-- end col-->
+    </div>
+
+
+
     <div class="row">
         <div class="col-12">
             <!-- Seção: Anamnese Médica -->

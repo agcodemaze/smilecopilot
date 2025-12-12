@@ -301,7 +301,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             </div>
 
                             <div class="col-6 col-lg-2 mb-2">
-                                <div class="card rounded-0 shadow-none m-0" style="cursor:pointer;" onclick="toggleRow()">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light" style="cursor:pointer;" onclick="toggleRow()">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
                                         <img src="/public/assets/images/whastapp.png" 
                                              alt="ícone" 
@@ -320,7 +320,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                             <!-- TOTAL CONSULTAS -->
                             <div class="col-6 col-lg-2 mb-2">
-                                <div class="card rounded-0 shadow-none m-0">
+                                <div class="card rounded-0 shadow-none m-0 border-start border-light">
                                     <div class="card-body d-flex flex-column flex-sm-row justify-content-center align-items-center gap-3 py-2 w-100">
 
                                         <img src="/public/assets/images/consultas.png" 
@@ -329,11 +329,10 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $totalConsultas; ?></span>
+                                                <span><?= $totalConsultas; ?></span><span style="font-size: 20px;"> <?= \App\Core\Language::get('consultas'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('total_de'); ?>
-                                                <?= \App\Core\Language::get('consultas'); ?>
+                                                <?= \App\Core\Language::get('cadastradas'); ?>
                                             </p>
                                         </div>
 
@@ -352,10 +351,9 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $confirmadas; ?></span>
+                                                <span><?= $confirmadas; ?></span> <span style="font-size: 20px;"> <?= \App\Core\Language::get('consultas'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('consultas'); ?>
                                                 <?= \App\Core\Language::get('confirmadas'); ?>
                                             </p>
                                         </div>
@@ -375,10 +373,9 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $canceladas; ?></span>
+                                                <span><?= $canceladas; ?></span> <span style="font-size: 20px;"> <?= \App\Core\Language::get('consultas'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('consultas'); ?>
                                                 <?= \App\Core\Language::get('canceladas'); ?>
                                             </p>
                                         </div>
@@ -398,10 +395,9 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                                         <div class="text-center text-sm-start">
                                             <h2 class="fw-bold mb-0" style="font-size: 32px; line-height: 1;">
-                                                <span><?= $concluida; ?></span>
+                                                <span><?= $concluida; ?></span> <span style="font-size: 20px;"> <?= \App\Core\Language::get('consultas'); ?></span>
                                             </h2>
                                             <p class="text-muted font-15 mb-0" style="line-height: 1.1;">
-                                                <?= \App\Core\Language::get('consultas'); ?>
                                                 <?= \App\Core\Language::get('concluidas'); ?>
                                             </p>
                                         </div>
@@ -417,7 +413,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
     </div>
     <!-- end row-->
 
-    <!-- cONSULTAS > 6 MESES -->
+    <!-- CONSULTAS > 6 MESES -->
     <div class="row collapse-row position-relative" id="agenda-row">
         <div class="col-lg-12">
             <div class="card position-relative p-3" style="border: 1px solid #f77e7eff; border-radius: 6px;">
@@ -521,7 +517,6 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
     </div>
 
 
-    
     <?php if ($profissionalId != "all"): ?> 
     <div class="row">        
     <div class="col-lg-12">
@@ -598,14 +593,13 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     <table id="alternative-page-datatable" class="table dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th style="text-align:center;">ID</th>
-                                <th style="text-align:center;"><?= \App\Core\Language::get('nome_completo'); ?></th>
-                                <th style="text-align:center;"><?= \App\Core\Language::get('data_consulta'); ?></th>
-                                <th style="text-align:center;"><?= \App\Core\Language::get('status'); ?></th>
+                                <th style="text-align:center;"><?= \App\Core\Language::get('nome_completo'); ?></th>                                
                                 <th style="text-align:center;"><?= \App\Core\Language::get('telefone'); ?></th>
+                                <th style="text-align:center;">Confirmação por<br>WhatsApp</th>
                                 <th style="text-align:center;"><?= \App\Core\Language::get('profissional'); ?></th>
                                 <th style="text-align:center;"><?= \App\Core\Language::get('especialidade'); ?></th>
                                 <th style="text-align:center;"><?= \App\Core\Language::get('plano_saude_odonto'); ?></th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -638,6 +632,21 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                                         $iconStyle = "border: 1px solid #3dbd4eff;";
                                         $classeBadge = "success";
                                     }
+
+
+                                    if ($consulta['CON_STENVIO_CONFIRMACAO_AUTOMATICA'] == "ENVIADO") {
+                                        $imgIconConf = "uil uil-award-alt font-16";
+                                        $classIconConf = "avatar-title bg-info-lighten rounded-circle text-info";
+                                        $iconStyleConf = "border: 1px solid #03a1fcff;";
+                                        $classeBadgeConf = "info";
+                                        $statusConf = "Enviado";
+                                    } else {
+                                        $imgIconConf = "uil uil-stopwatch-slash font-16";
+                                        $classIconConf = "avatar-title bg-dark-lighten rounded-circle text-dark";
+                                        $iconStyleConf = "border: 1px solid #000000ff;";
+                                        $classeBadgeConf = "danger";
+                                        $statusConf = "Não Enviado";
+                                    } 
 
                                     $semana = [
                                         0 => 'domingo',
@@ -708,42 +717,50 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             <tr style="line-height:1.2;"
                                 data-consulta-id="<?= htmlspecialchars($consulta['CON_IDCONSULTA']) ?>" 
                                 data-consulta-hash="<?= htmlspecialchars($consulta['CON_DCHASH_CONFIRMACAO_PRESENCA']); ?>">
-                            
-                                <td>
-                                    <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_IDCONSULTA'])), ENT_QUOTES, 'UTF-8') ?>
-                                </td>                          
 
-                                <td class="text-truncate" style="cursor: pointer; max-width: 180px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <?= htmlspecialchars(ucwords(strtolower((string)$consulta['PAC_DCNOME'])), ENT_QUOTES, 'UTF-8') ?> <?= $showMaisInfo ?>
-                                </td>
+                                <td class="text-truncate" 
+                                    style="cursor:pointer; max-width:280px; font-size:17px;" 
+                                    >
 
-                                <td class="text-truncate" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <span style="display:none;">
-                                        <?= date(
-                                            'Y-m-d H:i',
-                                            strtotime($dataConsulta . ' ' . str_replace(['h','ás'], ['',''], $consultaHoraIni))
-                                        ) ?>
-                                    </span>
-                                    <?= htmlspecialchars($dataConsulta, ENT_QUOTES, 'UTF-8') ?>
-                                    <span class="text-info fw-bold"><?= htmlspecialchars($consultaHoraIni, ENT_QUOTES, 'UTF-8') ?></span>
-                                    <?= \App\Core\Language::get('as'); ?>
-                                    <?= htmlspecialchars($consultaHoraFim, ENT_QUOTES, 'UTF-8') ?>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; gap:6px;">
+
+                                    <?php
+                                        $nomeCompleto = ucwords(strtolower((string)$consulta['PAC_DCNOME']));
+                                        $partes = explode(' ', trim($nomeCompleto));
+                                        $nomeResumido = implode(' ', array_slice($partes, 0, 3));
+                                    ?>
+                                        <span style="font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                                            <?= htmlspecialchars($nomeResumido, ENT_QUOTES, 'UTF-8') ?>
+                                            <?= $showMaisInfo ?>
+                                        </span>
+                                        <span class="badge badge-<?= $classeBadge; ?>-lighten" 
+                                              style="flex-shrink:0; font-size:13px; padding:4px 6px;">
+                                            <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_ENSTATUS'])), ENT_QUOTES, 'UTF-8') ?>
+                                        </span>
+                                    </div>
+                                    <div style="font-size:13px; color:#6c757d; margin-top:3px; line-height:1.2;">
+
+                                        <?php 
+                                            $dataFormatadaCurta = date('d/m/y', strtotime($dataConsulta));
+                                        ?>
+
+                                        <?= htmlspecialchars($dataFormatadaCurta, ENT_QUOTES, 'UTF-8') ?> —
+                                        <span class="text-info fw-bold" style="font-size:14px;">
+                                            <?= htmlspecialchars($consultaHoraIni, ENT_QUOTES, 'UTF-8') ?>
+                                        </span>
+                                        <?= \App\Core\Language::get('as'); ?>
+                                        <?= htmlspecialchars($consultaHoraFim, ENT_QUOTES, 'UTF-8') ?>
+                                    </div>
                                 </td>
-                                        
-                                <td class="text-truncate status" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
-                                    <span class="badge badge-<?= $classeBadge; ?>-lighten">
-                                        <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_ENSTATUS'])), ENT_QUOTES, 'UTF-8') ?>
-                                    </span>
-                                </td>
-                                        
-                                <td class="text-truncate">
+   
+                                <td class="text-truncate" style="text-align:center; font-size:14px;">
                                     <a href="https://wa.me/<?= $tel ?>" 
                                        target="_blank" 
                                        class="whatsapp-box">
 
                                         <?= htmlspecialchars((string)$telefoneFormatado, ENT_QUOTES, 'UTF-8') ?>
 
-                                        <i class="mdi mdi-whatsapp mdi-circle mdi-24px"
+                                        <i class="mdi mdi-whatsapp mdi-circle mdi-18px"
                                            data-bs-toggle="popover"
                                            data-bs-trigger="hover"
                                            data-bs-content="<?= \App\Core\Language::get('conversar_whatsapp'); ?>">
@@ -751,17 +768,29 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                                     </a>
                                 </td>
+
+                                <td class="text-truncate" style="max-width:45px; cursor: pointer; text-align:center; font-size:18px;">
+                                    <span class="badge badge-outline-<?= $classeBadgeConf; ?> rounded-pill">
+                                        <?= $statusConf ?>
+                                    </span>
+                                </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer; max-width: 150px; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; max-width: 150px; text-align:center; font-size:16px;">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['DEN_DCNOME'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer; text-align:center; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; font-size:16px;">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_NMESPECIALIDADE'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
                                         
-                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#editarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;">
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_DCCONVENIO'])), ENT_QUOTES, 'UTF-8') ?>
+                                </td>
+
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal">
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal">
+                                        <i class="ri-tooth-line"></i> Concluir Consulta
+                                    </button>
                                 </td>
                                         
                                 <td class="table-action" style="width: 90px;">
@@ -945,7 +974,6 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 </script>
 <!-- msg modal -->
 
-
 <!-- /.Modal nova/editar consulta -->
 <div id="novaConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -1063,6 +1091,101 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
     </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Modal nova/editar consulta -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- /.Modal encerrar consulta-->
+<div id="encerrarConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <button type="button"
+                    class="btn-close position-absolute top-0 end-0 m-2"
+                    style="cursor:pointer; z-index:1055;"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                    onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('encerrarConsulta-modal')).hide();">
+            </button>
+
+            <div class="modal-body">
+                <div class="text-center mt-2 mb-4">
+                    <a href="index.html" class="text-success">
+                        <span><img src="/public/assets/images/logo_bright.png" style="height:28px; width:auto;"></span>
+                    </a>
+                </div>
+
+                <form class="ps-3 pe-3" id="formEncerrarConsulta">
+
+                    <input type="hidden" id="id" name="id" />
+
+                    <div class="mb-3">
+                        <label for="paciente" class="form-label">Paciente</label>
+                        <div class="input-group">
+                            <select class="form-control" id="paciente" name="paciente" required>
+                                <option value="">Selecione...</option>
+                                <?php foreach($pacientes as $p): ?>
+                                    <option value="<?= $p['PAC_IDPACIENTE'] ?>">
+                                        <?= htmlspecialchars($p['PAC_DCNOME']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                                
+                    <div class="mb-3">
+                        <label for="observacao" class="form-label">Observações</label>
+                        <textarea class="form-control" id="observacao" name="observacao" rows="3" maxlength="300"
+                                  style="white-space: pre-wrap; overflow-wrap: break-word;"></textarea>
+                        <small id="contadorObs" class="text-muted">0 / 300</small>
+                    </div>
+                                
+                    <script>
+                        document.getElementById('observacao').addEventListener('input', function () {
+                            document.getElementById('contadorObs').textContent = this.value.length + " / 300";
+                        });
+                    </script>
+
+
+                    
+                    <div class="mb-3 text-center">
+                        <button id="btnSalvar"
+                                class="btn btn-info btn-sweet"
+                                data-form="formNovaConsulta"
+                                data-url="/cadconsulta"
+                                data-title="Nova Consulta">
+                            Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+<!-- /.Modal encerrar consulta-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <!-- Info Alert Modal -->
 <div id="info-alert-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1451,6 +1574,157 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
         if (container) container.innerHTML = "";
     }
 </script>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+
+        const modal = document.getElementById("encerrarConsulta-modal");
+        let horarioManual = null; 
+
+        function toBrDateIfIso(dateStr) {
+            if (!dateStr) return "";
+            if (dateStr.indexOf("-") !== -1 && dateStr.split("-").length === 3) {
+                const parts = dateStr.split("-");
+                return `${parts[2]}/${parts[1]}/${parts[0]}`;
+            }
+            return dateStr;
+        }
+
+        async function carregarHorarios() {
+            try {
+                const dateEl = document.getElementById("basic-datepicker");
+                const container = document.getElementById("horarios-disponiveis");
+                const dateStr = dateEl ? dateEl.value : "";
+
+                if (!dateStr) {
+                    container.innerHTML = '<p>Selecione a data para ver horários.</p>';
+                    return;
+                }
+
+                container.innerHTML = '<p>Carregando horários...</p>';
+
+                const duracaoEl = document.querySelector('input[name="duracao"]:checked');
+                const duracao = duracaoEl ? duracaoEl.value : '';
+                const iddentista = '<?= $profissionalId ?>';
+
+                const body = 'data=' + encodeURIComponent(dateStr) + '&duracao=' + encodeURIComponent(duracao) + '&iddentista=' + encodeURIComponent(iddentista);
+
+                const resp = await fetch('/horariosdisp', { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: body
+                });
+
+                const data = await resp.json();
+                container.innerHTML = '';
+
+                if (horarioManual) {
+                    const label = document.createElement('label');
+                    label.className = 'form-check-label d-block mb-1';
+                    label.innerHTML = `
+                        <input type="radio" name="horarios[]" value="${horarioManual}" class="form-check-input me-2" checked>
+                        ${horarioManual}
+                    `;
+                    container.appendChild(label);
+                }
+
+                if (data && data.length > 0) {
+                    data.forEach(function(h) {
+                        const hFormat = (h.horario || '').substring(0,5);
+                        if (hFormat === horarioManual) return; 
+                        const label = document.createElement('label');
+                        label.className = 'form-check-label d-block mb-1';
+                        label.innerHTML = `
+                            <input type="radio" name="horarios[]" value="${h.horario}" class="form-check-input me-2">
+                            ${hFormat}
+                        `;
+                        container.appendChild(label);
+                    });
+                }
+
+                if ((!data || data.length === 0) && !horarioManual) {
+                    container.innerHTML = '<p>Nenhum horário disponível.</p>';
+                }
+
+            } catch (err) {
+                console.error('Erro ao carregar horários:', err);
+                const container = document.getElementById("horarios-disponiveis");
+                if (container) container.innerHTML = '<p>Erro ao buscar horários.</p>';
+            }
+        }
+
+        modal.addEventListener("show.bs.modal", function (event) {
+            const trigger = event.relatedTarget;
+
+            // NOVA CONSULTA
+            if (!trigger || !trigger.classList.contains("abrir-edicao")) {
+                limparModal();
+                document.getElementById("btnSalvar").dataset.url = "/cadconsulta";
+                document.getElementById("btnSalvar").innerText = "Salvar";
+                document.getElementById("btnSalvar").dataset.title = "Nova Consulta";
+                horarioManual = null;
+                return;
+            }
+
+            // EDIÇÃO
+            const id = trigger.dataset.id || "";
+            const paciente = trigger.dataset.paciente || "";
+            const convenio = trigger.dataset.convenio || "";
+            const especialidade = trigger.dataset.especialidade || "";
+            const observacao = trigger.dataset.observacao || "";
+            const data = trigger.dataset.data || "";
+            const duracao = trigger.dataset.duracao || "";
+            const hora = trigger.dataset.hora || "";
+
+            document.getElementById("id").value = id;
+            document.getElementById("paciente").value = paciente;
+            document.getElementById("especialidade").value = especialidade;
+            document.getElementById("observacao").value = observacao;
+            document.getElementById("contadorObs").textContent = observacao.length + " / 300";
+            document.getElementById("basic-datepicker").value = toBrDateIfIso(data);
+            document.getElementById("convenio").checked = (convenio === "Particular");
+
+            if (duracao == "30") document.getElementById("duracao1").checked = true;
+            if (duracao == "60") document.getElementById("duracao2").checked = true;
+
+            horarioManual = hora.length === 8 ? hora.substring(0,5) : hora;
+
+            carregarHorarios();
+
+            document.getElementById("btnSalvar").dataset.url = "/cadconsulta";
+            document.getElementById("btnSalvar").innerText = "Atualizar";
+            document.getElementById("btnSalvar").dataset.title = "Editar Consulta";
+        });
+
+        document.querySelectorAll('input[name="duracao"]').forEach(el => 
+            el.addEventListener('change', () => {
+                horarioManual = null;
+                carregarHorarios();
+            })
+        );
+
+        const datepicker = document.getElementById("basic-datepicker");
+        if (datepicker) datepicker.addEventListener('change', () => {
+            horarioManual = null;
+            carregarHorarios();
+        });
+
+    });
+
+    function limparModal() {
+        const form = document.getElementById("formNovaConsulta");
+        if (form) form.reset();
+        const contador = document.getElementById("contadorObs");
+        if (contador) contador.textContent = "0 / 300";
+        const container = document.getElementById("horarios-disponiveis");
+        if (container) container.innerHTML = "";
+    }
+</script>
+
+
 
 <script>
     function toggleRow() {
