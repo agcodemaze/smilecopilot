@@ -1195,14 +1195,6 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             <input type="file" id="foto2" name="foto2" class="form-control foto-input"
                                    accept=".png, .jpg, .jpeg, .gif">
                         </div>
-                        <div class="col-12 col-md-6 mb-3">
-                            <input type="file" id="foto3" name="foto3" class="form-control foto-input"
-                                   accept=".png, .jpg, .jpeg, .gif">
-                        </div>
-                        <div class="col-12 col-md-6 mb-3">
-                            <input type="file" id="foto4" name="foto4" class="form-control foto-input"
-                                   accept=".png, .jpg, .jpeg, .gif">
-                        </div>
                     </div>
 
                     <script>

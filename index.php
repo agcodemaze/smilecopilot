@@ -210,8 +210,6 @@ $obRouter->post('/encerrarConsulta', [
         $tenancyid = EncryptDecrypt::sanitize($_POST['tenancyid'] ?? '');
         $foto1 = EncryptDecrypt::sanitize($_POST['foto1'] ?? '');
         $foto2 = EncryptDecrypt::sanitize($_POST['foto2'] ?? '');
-        $foto3 = EncryptDecrypt::sanitize($_POST['foto3'] ?? '');
-        $foto4 = EncryptDecrypt::sanitize($_POST['foto4'] ?? '');
         
 
         if(empty($id)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado ID da consulta."]));}
@@ -219,8 +217,8 @@ $obRouter->post('/encerrarConsulta', [
         if(empty($procedimento)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o procedimento da consulta."]));}
 
 
-        // Loop para fotos 1 a 4
-    for ($i = 1; $i <= 4; $i++) {
+        // Loop para fotos 1 a 2
+    for ($i = 1; $i <= 2; $i++) {
         $campo = 'foto' . $i;
         if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK && $_FILES[$campo]['size'] > 0) {
             $fotoTmp = $_FILES[$campo]['tmp_name'];
@@ -322,7 +320,7 @@ $obRouter->post('/encerrarConsulta', [
     }
 
 
-    for ($i = 1; $i <= 4; $i++) {
+    for ($i = 1; $i <= 2; $i++) {
         if (!isset($nomesFotos["foto{$i}"])) {
             $nomesFotos["foto{$i}"] = '';
         }
@@ -330,8 +328,7 @@ $obRouter->post('/encerrarConsulta', [
     
     $fotoTratada1 = $nomesFotos['foto1'];
     $fotoTratada2 = $nomesFotos['foto2'];
-    $fotoTratada3 = $nomesFotos['foto3'];
-    $fotoTratada4 = $nomesFotos['foto4'];
+ 
 
     
 
