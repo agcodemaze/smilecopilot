@@ -1223,107 +1223,71 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     <input type="hidden" name="dentes" id="dentesSelecionados">
                     
                     <div class="mb-3" id="odontograma">
+                    <label for="observacao" class="form-label">Odontograma</label>
 
-<style>
-        /* Opcional: Estilos básicos para o SVG e os dentes */
-        .dente-selecionado {
-            fill: yellow !important; /* Exemplo de cor de seleção */
-            stroke-width: 0.5px !important;
-        }
-    </style>
+                    <style>
+                        /* Opcional: Estilos básicos para o SVG e os dentes */
+                        .dente-selecionado {
+                            fill: #f57070ff !important; /* Exemplo de cor de seleção */
+                            stroke-width: 0.5px !important;
+                        }
+                    </style>
 
-<?php
-        // Garante que o arquivo existe antes de tentar carregar
-        $svg_path = '../../../public/assets/images/odontograma.svg';
-        echo $svg_path;
-
-        if (file_exists($svg_path)) {
-            // Inclui o conteúdo exato do arquivo SVG no corpo do HTML
-            include($svg_path);
-        } else {
-            echo "<p style='color: red;'>Erro: O arquivo odontograma.svg não foi encontrado no servidor.</p>";
-        }
-    ?>
+                    <?php
+                        $PROJECT_ROOT = dirname(__DIR__, 3); 
+                        $svg_path = $PROJECT_ROOT . '/public/assets/images/odontograma.svg';
+                        include($svg_path);
+                    ?>
 
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-    // 1. Obter a referência ao elemento SVG principal (usando o ID do SVG)
-    // Se seu SVG não tem um ID, você pode usar o nome da tag 'svg' e pegar o primeiro:
-    const odontogramaSvg = document.getElementById('svg1'); 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const odontogramaSvg = document.getElementById('svg1');
+                            const dentesInput = document.getElementById('dentesSelecionados');
 
-    if (!odontogramaSvg) {
-        console.error("Elemento SVG principal ('svg1') não foi encontrado.");
-        return;
-    }
+                            if (!odontogramaSvg || !dentesInput) {
+                                return;
+                            }
+                        
+                            const COR_NORMAL = '#57f0f2';
+                            const COR_TRATADO = '#FF5733';
 
-    // Cores para alternar:
-    const COR_NORMAL = '#57f0f2'; // Cor original do seu SVG
-    const COR_TRATADO = '#FF5733'; // Exemplo: Laranja para indicar tratamento
-    
-    // 2. Adicionar o listener de clique ao SVG
-    odontogramaSvg.addEventListener('click', (event) => {
-        // O alvo do evento
-        const targetElement = event.target;
-        
-        // 3. Verificar se o elemento clicado é um "dente"
-        // Um dente é um elemento <path> e tem um ID começando com 'dente'
-        const isDente = targetElement.tagName === 'path' && targetElement.id.startsWith('dente');
+                            let dentesSelecionados = [];
+                        
+                            const atualizarInput = () => {
+                                dentesInput.value = dentesSelecionados.join(',');
+                            };
+                        
+                            odontogramaSvg.addEventListener('click', (event) => {
+                                const targetElement = event.target;
+                                const isDente = targetElement.tagName === 'path' && targetElement.id.startsWith('dente');
+                            
+                                if (isDente) {
+                                    const denteId = targetElement.id;
 
-        if (isDente) {
-            const denteId = targetElement.id;
-            
-            // 4. Lógica de Pintura/Alternância
-            let corAtual = targetElement.style.fill;
-            
-            // Se a cor for a normal, mude para a cor de tratado.
-            // Se for outra cor (ou não definida), volte para a cor normal.
-            if (corAtual === '' || corAtual.toUpperCase() === COR_NORMAL.toUpperCase()) {
-                targetElement.style.fill = COR_TRATADO;
-                console.log(`Dente ${denteId} pintado de ${COR_TRATADO}`);
-                
-                // Exemplo de como você integraria com PHP (enviando o status)
-                // salvarStatusDente(denteId, COR_TRATADO);
-                
-            } else {
-                targetElement.style.fill = COR_NORMAL;
-                console.log(`Dente ${denteId} voltou à cor normal (${COR_NORMAL})`);
-                
-                // salvarStatusDente(denteId, COR_NORMAL);
-            }
-            
-            // Opcional: Adicionar/Remover uma classe CSS para estilos de borda, etc.
-            targetElement.classList.toggle('dente-selecionado');
-        }
-    });
-});
+                                    let corAtual = targetElement.style.fill;
+                                    const estaSelecionado = targetElement.classList.contains('dente-selecionado');
 
-/*
-// Exemplo de função para salvar o status no banco de dados (precisa de AJAX/fetch)
-function salvarStatusDente(id, cor) {
-    // Você usaria 'fetch' para enviar uma requisição POST ao seu script PHP de backend
-    fetch('salvar_dente.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            dente_id: id,
-            nova_cor: cor 
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            console.log("Status do dente salvo com sucesso!");
-        } else {
-            console.error("Erro ao salvar status:", data.message);
-        }
-    })
-    .catch(error => console.error('Erro de rede:', error));
-}
-*/
-</script>
+                                    if (!estaSelecionado || corAtual === COR_NORMAL.toUpperCase()) {
+                                        targetElement.style.fill = COR_TRATADO;
+                                        targetElement.classList.add('dente-selecionado');
+
+                                        if (!dentesSelecionados.includes(denteId)) {
+                                            dentesSelecionados.push(denteId);
+                                        }
+
+                                    } else {
+                                        targetElement.style.fill = COR_NORMAL;
+                                        targetElement.classList.remove('dente-selecionado');
+
+                                        dentesSelecionados = dentesSelecionados.filter(id => id !== denteId);
+                                    }
+
+                                    atualizarInput();
+                                }
+                            });
+                        });
+                    </script>
 
                     </div>
 
