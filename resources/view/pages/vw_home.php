@@ -258,8 +258,29 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
     .collapse-row.show {
         max-height: 1000px;
     }
+        .tooth {
+        fill: #ffffff;
+        stroke: #555;
+        stroke-width: 1;
+        cursor: pointer;
+        transition: 0.1s;
+    }
+    .tooth:hover {
+        fill: #e9f5ff;
+    }
+    .selected {
+        fill: #cfe6ff !important;
+        stroke: #0d6efd !important;
+        stroke-width: 2;
+    }
+    .tooth-number {
+        font-size: 19px;
+        fill: #333;
+        text-anchor: middle;
+        pointer-events: none;
+    }
+    
 </style>
-
 
 <!-- Start Content-->
 <div class="container-fluid" style="max-width:100% !important; padding-left:10px; padding-right:10px;">
@@ -639,13 +660,13 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                                         $classIconConf = "avatar-title bg-info-lighten rounded-circle text-info";
                                         $iconStyleConf = "border: 1px solid #03a1fcff;";
                                         $classeBadgeConf = "info";
-                                        $statusConf = "Enviado";
+                                        $statusConf = "Enviada";
                                     } else {
                                         $imgIconConf = "uil uil-stopwatch-slash font-16";
                                         $classIconConf = "avatar-title bg-dark-lighten rounded-circle text-dark";
                                         $iconStyleConf = "border: 1px solid #000000ff;";
                                         $classeBadgeConf = "danger";
-                                        $statusConf = "Não Enviado";
+                                        $statusConf = "Não Enviada";
                                     } 
 
                                     $semana = [
@@ -740,11 +761,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                                     </div>
                                     <div style="font-size:13px; color:#6c757d; margin-top:3px; line-height:1.2;">
 
-                                        <?php 
-                                            $dataFormatadaCurta = date('d/m/y', strtotime($dataConsulta));
-                                        ?>
-
-                                        <?= htmlspecialchars($dataFormatadaCurta, ENT_QUOTES, 'UTF-8') ?> —
+                                        <?= htmlspecialchars($dataConsulta, ENT_QUOTES, 'UTF-8') ?> —
                                         <span class="text-info fw-bold" style="font-size:14px;">
                                             <?= htmlspecialchars($consultaHoraIni, ENT_QUOTES, 'UTF-8') ?>
                                         </span>
@@ -1127,13 +1144,26 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     <input type="hidden" id="id" name="id" />
 
                     <div class="mb-3">
-                        <label for="paciente" class="form-label">Paciente</label>
+                        <label for="statusConsulta" class="form-label">Status</label>
                         <div class="input-group">
-                            <select class="form-control" id="paciente" name="paciente" required>
+                            <select class="form-control" id="statusConsulta" name="statusConsulta" required>
+                                <option value="CONCLUIDA">Concluída</option>
+                                <option value="PROGRAMADA">Programada</option>
+                                <option value="CONFIRMADA">Confirmada</option>
+                                <option value="FALTA">Falta</option>
+                                <option value="CANCELADA">Cancelada</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="especialidade" class="form-label">Procedimento</label>
+                        <div class="input-group">
+                            <select class="form-control" id="especialidade" name="especialidade" required>
                                 <option value="">Selecione...</option>
-                                <?php foreach($pacientes as $p): ?>
-                                    <option value="<?= $p['PAC_IDPACIENTE'] ?>">
-                                        <?= htmlspecialchars($p['PAC_DCNOME']) ?>
+                                <?php foreach($procedimentos as $p): ?>
+                                    <option value="<?= $p['PRC_DCNOME'] ?>">
+                                        <?= htmlspecialchars($p['PRC_DCNOME']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -1154,6 +1184,270 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     </script>
 
 
+
+                    <div class="mb-3">
+                        <label for="foto1" class="form-label">Fotos</label>
+                        <input type="file" id="foto1" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" id="foto2" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" id="foto3" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                    </div>
+                    <div class="mb-3">
+                        <input type="file" id="foto4" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                    </div>
+
+                    <script>
+                        document.querySelectorAll('.foto-input').forEach(input => {
+                            input.addEventListener('change', function () {
+                                const file = this.files[0];
+                                if (!file) return;
+                            
+                                const maxSize = 5 * 1024 * 1024; // 5MB
+                            
+                                if (file.size > maxSize) {
+                                    alert('O arquivo deve ter no máximo 5MB.');
+                                    this.value = ''; // limpa o input
+                                }
+                            });
+                        });
+                    </script>
+
+                    <input type="hidden" name="dentes" id="dentesSelecionados">
+
+                    <div class="mb-3">
+                        <label for="odontograma" class="form-label" style="margin-bottom:2px !important;">
+                            Odontograma
+                        </label>
+                        <svg id="odontograma" viewBox="0 0 760 300" width="100%" height="200" style="margin-top:2px; display:block;">
+
+                            <!-- ====== LINHA SUPERIOR (1–16) ====== -->
+                            <g transform="translate(10,10)">
+
+                                <!-- DENTE 1 -->
+                                <g id="t1" class="tooth" transform="translate(0,0)">
+                                    <title>18 – Terceiro Molar Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">1</text>
+                                </g>
+
+                                <g id="t2" class="tooth" transform="translate(45,0)">
+                                    <title>17 – Segundo Molar Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">2</text>
+                                </g>
+
+                                <g id="t3" class="tooth" transform="translate(90,0)">
+                                    <title>16 – Primeiro Molar Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">3</text>
+                                </g>
+
+                                <g id="t4" class="tooth" transform="translate(135,0)">
+                                    <title>15 – Segundo Pré-molar Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">4</text>
+                                </g>
+
+                                <g id="t5" class="tooth" transform="translate(180,0)">
+                                    <title>14 – Primeiro Pré-molar Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">5</text>
+                                </g>
+
+                                <g id="t6" class="tooth" transform="translate(225,0)">
+                                    <title>13 – Canino Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">6</text>
+                                </g>
+
+                                <g id="t7" class="tooth" transform="translate(270,0)">
+                                    <title>12 – Incisivo Lateral Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">7</text>
+                                </g>
+
+                                <g id="t8" class="tooth" transform="translate(315,0)">
+                                    <title>11 – Incisivo Central Superior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">8</text>
+                                </g>
+
+                                <g id="t9" class="tooth" transform="translate(360,0)">
+                                    <title>21 – Incisivo Central Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">9</text>
+                                </g>
+
+                                <g id="t10" class="tooth" transform="translate(405,0)">
+                                    <title>22 – Incisivo Lateral Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">10</text>
+                                </g>
+
+                                <g id="t11" class="tooth" transform="translate(450,0)">
+                                    <title>23 – Canino Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">11</text>
+                                </g>
+
+                                <g id="t12" class="tooth" transform="translate(495,0)">
+                                    <title>24 – Primeiro Pré-molar Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">12</text>
+                                </g>
+
+                                <g id="t13" class="tooth" transform="translate(540,0)">
+                                    <title>25 – Segundo Pré-molar Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">13</text>
+                                </g>
+
+                                <g id="t14" class="tooth" transform="translate(585,0)">
+                                    <title>26 – Primeiro Molar Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">14</text>
+                                </g>
+
+                                <g id="t15" class="tooth" transform="translate(630,0)">
+                                    <title>27 – Segundo Molar Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">15</text>
+                                </g>
+
+                                <g id="t16" class="tooth" transform="translate(675,0)">
+                                    <title>28 – Terceiro Molar Superior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">16</text>
+                                </g>
+                            </g>
+
+                            <!-- ====== LINHA INFERIOR (17–32) ====== -->
+                            <g transform="translate(10,110)">
+
+                                <g id="t17" class="tooth" transform="translate(0,0)">
+                                    <title>48 – Terceiro Molar Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">17</text>
+                                </g>
+
+                                <g id="t18" class="tooth" transform="translate(45,0)">
+                                    <title>47 – Segundo Molar Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">18</text>
+                                </g>
+
+                                <g id="t19" class="tooth" transform="translate(90,0)">
+                                    <title>46 – Primeiro Molar Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">19</text>
+                                </g>
+
+                                <g id="t20" class="tooth" transform="translate(135,0)">
+                                    <title>45 – Segundo Pré-molar Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">20</text>
+                                </g>
+
+                                <g id="t21" class="tooth" transform="translate(180,0)">
+                                    <title>44 – Primeiro Pré-molar Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">21</text>
+                                </g>
+
+                                <g id="t22" class="tooth" transform="translate(225,0)">
+                                    <title>43 – Canino Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">22</text>
+                                </g>
+
+                                <g id="t23" class="tooth" transform="translate(270,0)">
+                                    <title>42 – Incisivo Lateral Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">23</text>
+                                </g>
+
+                                <g id="t24" class="tooth" transform="translate(315,0)">
+                                    <title>41 – Incisivo Central Inferior Direito</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">24</text>
+                                </g>
+
+                                <g id="t25" class="tooth" transform="translate(360,0)">
+                                    <title>31 – Incisivo Central Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">25</text>
+                                </g>
+
+                                <g id="t26" class="tooth" transform="translate(405,0)">
+                                    <title>32 – Incisivo Lateral Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">26</text>
+                                </g>
+
+                                <g id="t27" class="tooth" transform="translate(450,0)">
+                                    <title>33 – Canino Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">27</text>
+                                </g>
+
+                                <g id="t28" class="tooth" transform="translate(495,0)">
+                                    <title>34 – Primeiro Pré-molar Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">28</text>
+                                </g>
+
+                                <g id="t29" class="tooth" transform="translate(540,0)">
+                                    <title>35 – Segundo Pré-molar Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">29</text>
+                                </g>
+
+                                <g id="t30" class="tooth" transform="translate(585,0)">
+                                    <title>36 – Primeiro Molar Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">30</text>
+                                </g>
+
+                                <g id="t31" class="tooth" transform="translate(630,0)">
+                                    <title>37 – Segundo Molar Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">31</text>
+                                </g>
+
+                                <g id="t32" class="tooth" transform="translate(675,0)">
+                                    <title>38 – Terceiro Molar Inferior Esquerdo</title>
+                                    <rect width="40" height="50" rx="6"></rect>
+                                    <text x="20" y="76" class="tooth-number">32</text>
+                                </g>
+
+                            </g>
+
+                        </svg>
+                    </div>
+
+
+                    <script>
+                        const campoDentes = document.getElementById('dentesSelecionados');
+
+                        document.querySelectorAll('.tooth').forEach(t => {
+                            t.addEventListener('click', () => {
+                            
+                                t.classList.toggle('selected');
+                            
+                                const selecionados = [...document.querySelectorAll('.tooth.selected')]
+                                    .map(d => d.id.replace('t', '')); 
+                                campoDentes.value = selecionados.join(',');
+                            });
+                        });
+                    </script>
+
+
+                 
+
+
                     
                     <div class="mb-3 text-center">
                         <button id="btnSalvar"
@@ -1170,7 +1464,6 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
     </div><!-- /.modal-dialog -->
 </div>
 <!-- /.Modal encerrar consulta-->
-
 
 
 
@@ -1574,7 +1867,6 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
         if (container) container.innerHTML = "";
     }
 </script>
-
 
 
 

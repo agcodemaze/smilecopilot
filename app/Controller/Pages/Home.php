@@ -26,6 +26,7 @@ class Home extends Page{
 
         $consultasHoje = $objConsultas->getConsultasHoje(TENANCY_ID);
         $especialidades = $objConsultas->getEspecialidade(TENANCY_ID);
+        $procedimentos = $objConsultas->getProcedimentos(TENANCY_ID);
         $getModeloMsgsWhatsapp = $objWhatsapp->getModelosMsgWhatsapp(TENANCY_ID); 
         $configuracoes = $objOrganization->getConfiguracoes(TENANCY_ID);
         $pacientes = $objPaciente->getPacientes(TENANCY_ID);
@@ -56,7 +57,6 @@ class Home extends Page{
             <script src="'.ASSETS_PATH.'vendor/ad_sweetalert/sweetalert2.all.min.js"></script>
             <script src="'.ASSETS_PATH.'js/serviceworkerpwa.js"></script>
             <link rel="manifest" href="/manifest.json">
-
         ';
 
         $componentsScriptsFooter = '
@@ -78,7 +78,7 @@ class Home extends Page{
             <script src="'.ASSETS_PATH.'vendor/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
             <script src="'.ASSETS_PATH.'vendor/datatables.net-select/js/dataTables.select.min.js"></script>
             <script src="'.ASSETS_PATH.'js/app.min.js"></script>
-            <script src="'.ASSETS_PATH.'utils/alertDelete.js"></script>     
+            <script src="'.ASSETS_PATH.'utils/alertDelete.js"></script>               
         ';
 //<script src="'.ASSETS_PATH.'utils/simple-timepicker-pt.js"></script>
         //VIEW DA HOME
@@ -93,7 +93,8 @@ class Home extends Page{
             'consultasHoje' => $consultasHoje,
             'componentsScriptsHeader' => $componentsScriptsHeader,
             'componentsScriptsFooter' => $componentsScriptsFooter,
-            'especialidades' => $especialidades,
+            'especialidades' => $especialidades, 
+            'procedimentos' => $procedimentos,
             's3' => $s3
         ]); 
 

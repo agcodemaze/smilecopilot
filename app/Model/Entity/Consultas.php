@@ -53,6 +53,19 @@ class Consultas extends Conn {
         } 
     }
 
+    public function getProcedimentos($TENANCY_ID) {
+        try{           
+            $sql = "SELECT * FROM PRC_PROCEDIMENTOS WHERE TENANCY_ID = :TENANCY_ID ORDER BY PRC_DCNOME  ASC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->bindParam(":TENANCY_ID", $TENANCY_ID);
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            //LogSistema::insertLog(USER_NAME,"ERROR", \App\Core\Language::get('erro_get_especialidade') .$e->getMessage(), $TENANCY_ID);
+            return ["error" => $e->getMessage()];
+        } 
+    }
+
     public function datasBloqueadasByIdProf($TENANCY_ID, $DEN_IDDENTISTA) {
         try{           
             $sql = "SELECT AGB_DTBLOQUEADA FROM AGB_AGENDA_BLOQUEIO WHERE TENANCY_ID = :TENANCY_ID AND DEN_IDDENTISTA = :DEN_IDDENTISTA AND AGB_DCDIA_TODO = 'SIM'";

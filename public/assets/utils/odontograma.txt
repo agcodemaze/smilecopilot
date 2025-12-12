@@ -1,0 +1,205 @@
+<svg id="odontograma" viewBox="0 0 760 200" width="100%" height="200">
+
+    <!-- ====== LINHA SUPERIOR (1–16) ====== -->
+    <g transform="translate(10,10)">
+
+        <!-- DENTE 1 -->
+        <g id="t1" class="tooth" transform="translate(0,0)">
+            <title>18 – Terceiro Molar Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">1</text>
+        </g>
+
+        <g id="t2" class="tooth" transform="translate(45,0)">
+            <title>17 – Segundo Molar Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">2</text>
+        </g>
+
+        <g id="t3" class="tooth" transform="translate(90,0)">
+            <title>16 – Primeiro Molar Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">3</text>
+        </g>
+
+        <g id="t4" class="tooth" transform="translate(135,0)">
+            <title>15 – Segundo Pré-molar Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">4</text>
+        </g>
+
+        <g id="t5" class="tooth" transform="translate(180,0)">
+            <title>14 – Primeiro Pré-molar Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">5</text>
+        </g>
+
+        <g id="t6" class="tooth" transform="translate(225,0)">
+            <title>13 – Canino Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">6</text>
+        </g>
+
+        <g id="t7" class="tooth" transform="translate(270,0)">
+            <title>12 – Incisivo Lateral Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">7</text>
+        </g>
+
+        <g id="t8" class="tooth" transform="translate(315,0)">
+            <title>11 – Incisivo Central Superior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">8</text>
+        </g>
+
+        <g id="t9" class="tooth" transform="translate(360,0)">
+            <title>21 – Incisivo Central Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">9</text>
+        </g>
+
+        <g id="t10" class="tooth" transform="translate(405,0)">
+            <title>22 – Incisivo Lateral Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">10</text>
+        </g>
+
+        <g id="t11" class="tooth" transform="translate(450,0)">
+            <title>23 – Canino Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">11</text>
+        </g>
+
+        <g id="t12" class="tooth" transform="translate(495,0)">
+            <title>24 – Primeiro Pré-molar Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">12</text>
+        </g>
+
+        <g id="t13" class="tooth" transform="translate(540,0)">
+            <title>25 – Segundo Pré-molar Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">13</text>
+        </g>
+
+        <g id="t14" class="tooth" transform="translate(585,0)">
+            <title>26 – Primeiro Molar Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">14</text>
+        </g>
+
+        <g id="t15" class="tooth" transform="translate(630,0)">
+            <title>27 – Segundo Molar Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">15</text>
+        </g>
+
+        <g id="t16" class="tooth" transform="translate(675,0)">
+            <title>28 – Terceiro Molar Superior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">16</text>
+        </g>
+    </g>
+
+    <!-- ====== LINHA INFERIOR (17–32) ====== -->
+    <g transform="translate(10,110)">
+        
+        <g id="t17" class="tooth" transform="translate(0,0)">
+            <title>48 – Terceiro Molar Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">17</text>
+        </g>
+
+        <g id="t18" class="tooth" transform="translate(45,0)">
+            <title>47 – Segundo Molar Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">18</text>
+        </g>
+
+        <g id="t19" class="tooth" transform="translate(90,0)">
+            <title>46 – Primeiro Molar Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">19</text>
+        </g>
+
+        <g id="t20" class="tooth" transform="translate(135,0)">
+            <title>45 – Segundo Pré-molar Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">20</text>
+        </g>
+
+        <g id="t21" class="tooth" transform="translate(180,0)">
+            <title>44 – Primeiro Pré-molar Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">21</text>
+        </g>
+
+        <g id="t22" class="tooth" transform="translate(225,0)">
+            <title>43 – Canino Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">22</text>
+        </g>
+
+        <g id="t23" class="tooth" transform="translate(270,0)">
+            <title>42 – Incisivo Lateral Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">23</text>
+        </g>
+
+        <g id="t24" class="tooth" transform="translate(315,0)">
+            <title>41 – Incisivo Central Inferior Direito</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">24</text>
+        </g>
+
+        <g id="t25" class="tooth" transform="translate(360,0)">
+            <title>31 – Incisivo Central Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">25</text>
+        </g>
+
+        <g id="t26" class="tooth" transform="translate(405,0)">
+            <title>32 – Incisivo Lateral Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">26</text>
+        </g>
+
+        <g id="t27" class="tooth" transform="translate(450,0)">
+            <title>33 – Canino Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">27</text>
+        </g>
+
+        <g id="t28" class="tooth" transform="translate(495,0)">
+            <title>34 – Primeiro Pré-molar Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">28</text>
+        </g>
+
+        <g id="t29" class="tooth" transform="translate(540,0)">
+            <title>35 – Segundo Pré-molar Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">29</text>
+        </g>
+
+        <g id="t30" class="tooth" transform="translate(585,0)">
+            <title>36 – Primeiro Molar Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">30</text>
+        </g>
+
+        <g id="t31" class="tooth" transform="translate(630,0)">
+            <title>37 – Segundo Molar Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">31</text>
+        </g>
+
+        <g id="t32" class="tooth" transform="translate(675,0)">
+            <title>38 – Terceiro Molar Inferior Esquerdo</title>
+            <rect width="40" height="50" rx="6"></rect>
+            <text x="20" y="76" class="tooth-number">32</text>
+        </g>
+
+    </g>
+
+</svg>
