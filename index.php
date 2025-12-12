@@ -295,7 +295,7 @@ $obRouter->post('/encerrarConsulta', [
 
                 // Salva imagem temporariamente
                 $tempFilePath = __DIR__.'/tmp/' . $fotoNome;
-                imagejpeg($finalImage, $tempFilePath, 70); // Qualidade 60
+                imagejpeg($finalImage, $tempFilePath, 60); // Qualidade 60
             
                 // Libera memória
                 imagedestroy($image);
