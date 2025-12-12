@@ -15,6 +15,9 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copia os arquivos do projeto para a pasta do Apache
 COPY . /var/www/html/
 
+# Cria a pasta /var/www/html/tmp e define permissão 755
+RUN mkdir -p /var/www/html/tmp && chmod 755 /var/www/html/tmp
+
 # Instala dependências do projeto e AWS SDK
 RUN composer require aws/aws-sdk-php \
     && composer install || true
