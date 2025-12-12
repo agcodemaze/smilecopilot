@@ -197,6 +197,147 @@ $obRouter->post('/cadconsulta', [
     }
 ]);
 
+//ROTA ENCERRAR CONSULTA
+$obRouter->post('/encerrarConsulta', [
+    function() {
+        $consultaController = new \App\Controller\Pages\ConsultasAgenda();
+
+        $id = EncryptDecrypt::sanitize($_POST['id'] ?? '');
+        $procedimento = EncryptDecrypt::sanitize($_POST['procedimento'] ?? '');
+        $observacao = EncryptDecrypt::sanitize($_POST['observacao'] ?? '');
+        $dentesSelecionados = EncryptDecrypt::sanitize($_POST['dentesSelecionados'] ?? '');
+        $foto1 = EncryptDecrypt::sanitize($_POST['foto1'] ?? '');
+        $foto2 = EncryptDecrypt::sanitize($_POST['foto2'] ?? '');
+        $foto3 = EncryptDecrypt::sanitize($_POST['foto3'] ?? '');
+        $foto4 = EncryptDecrypt::sanitize($_POST['foto4'] ?? '');
+        
+
+        if(empty($id)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado ID da consulta."]));}
+        if(empty($procedimento)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o procedimento da consulta."]));}
+
+
+        // Loop para fotos 1 a 4
+    for ($i = 1; $i <= 4; $i++) {
+        $campo = 'foto' . $i;
+        if (isset($_FILES[$campo]) && $_FILES[$campo]['error'] === UPLOAD_ERR_OK && $_FILES[$campo]['size'] > 0) {
+            $fotoTmp = $_FILES[$campo]['tmp_name'];
+            $fotoNome = uniqid("foto{$i}_") . ".jpg"; // Nome único
+        
+            try {
+                // Verifica se é uma imagem válida
+                $imageInfo = getimagesize($fotoTmp);
+                if ($imageInfo === false) {
+                    echo json_encode(["success" => false, "message" => "O arquivo enviado no {$campo} não é uma imagem válida."]);
+                    exit;
+                }
+            
+                // Cria imagem a partir do tipo MIME
+                switch ($imageInfo['mime']) {
+                    case 'image/jpeg':
+                        $image = imagecreatefromjpeg($fotoTmp);
+                        break;
+                    case 'image/png':
+                        $image = imagecreatefrompng($fotoTmp);
+                        break;
+                    case 'image/gif':
+                        $image = imagecreatefromgif($fotoTmp);
+                        break;
+                    default:
+                        echo json_encode(["success" => false, "message" => "Formato não suportado em {$campo}."]);
+                        exit;
+                }
+            
+                // ROTACIONA PARA PAISAGEM (apenas JPEG suporta EXIF)
+                if ($imageInfo['mime'] === 'image/jpeg' && function_exists('exif_read_data')) {
+                    $exif = @exif_read_data($fotoTmp);
+                    if (!empty($exif['Orientation'])) {
+                        switch ($exif['Orientation']) {
+                            case 3:
+                                $image = imagerotate($image, 180, 0);
+                                break;
+                            case 6:
+                                $image = imagerotate($image, -90, 0);
+                                break;
+                            case 8:
+                                $image = imagerotate($image, 90, 0);
+                                break;
+                        }
+                    }
+                }
+            
+                // Pega tamanho real da imagem após rotação
+                $originalWidth = imagesx($image);
+                $originalHeight = imagesy($image);
+            
+                // Se ainda estiver em retrato, gira para paisagem
+                if ($originalHeight > $originalWidth) {
+                    $image = imagerotate($image, -90, 0);
+                    $originalWidth = imagesx($image);
+                    $originalHeight = imagesy($image);
+                }
+            
+                // Redimensiona proporcionalmente para largura 1280px
+                $finalWidth = 1280;
+                $finalHeight = intval(($originalHeight / $originalWidth) * $finalWidth);
+            
+                $finalImage = imagecreatetruecolor($finalWidth, $finalHeight);
+                imagecopyresampled(
+                    $finalImage, $image,
+                    0, 0, 0, 0,
+                    $finalWidth, $finalHeight,
+                    $originalWidth, $originalHeight
+                );
+            
+                // Salva imagem temporariamente
+                $tempFilePath = '/tmp/' . $fotoNome;
+                imagejpeg($finalImage, $tempFilePath, 70); // Qualidade 60
+            
+                // Libera memória
+                imagedestroy($image);
+                imagedestroy($finalImage);
+            
+                // Upload para S3
+                //$result = $dadosS3->putObjS3($tempFilePath, $fotoNome, "ORDEM_SERVICO", IDCONDOMINIO);
+                //if (!$result) {
+                //    echo json_encode(["success" => false, "message" => "Erro ao fazer upload da foto {$campo}"]);
+                //    exit;
+                //}
+            
+                // Remove arquivo temporário
+                unlink($tempFilePath);
+                $nomesFotos[$campo] = $fotoNome;
+            
+            } catch (Exception $e) {
+                $nomesFotos[$campo] = ''; 
+            }
+        } else {
+            $nomesFotos[$campo] = ''; 
+        }
+    }
+
+
+    for ($i = 1; $i <= 4; $i++) {
+        if (!isset($nomesFotos["foto{$i}"])) {
+            $nomesFotos["foto{$i}"] = '';
+        }
+    }
+    
+    $fotoTratada1 = $nomesFotos['foto1'];
+    $fotoTratada2 = $nomesFotos['foto2'];
+    $fotoTratada3 = $nomesFotos['foto3'];
+    $fotoTratada4 = $nomesFotos['foto4'];
+
+
+
+
+
+
+        $result = json_encode(["success" => true,"message" => "Consulta encerrada com sucesso. $fotoTratada1, $fotoTratada2, $fotoTratada3, $fotoTratada4"]);
+        return new Response(200, $result );
+        
+    }
+]);
+
 //ROTA DELETAR CONSULTA
 $obRouter->post('/deleteConsulta',[
     function(){

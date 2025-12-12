@@ -804,8 +804,8 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                                     <?= htmlspecialchars(ucwords(strtolower((string)$consulta['CON_DCCONVENIO'])), ENT_QUOTES, 'UTF-8') ?>
                                 </td>
 
-                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal">
-                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal">
+                                <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal" >
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal" data-id="<?= $consulta['CON_IDCONSULTA'] ?>">
                                         <i class="ri-tooth-line"></i> Concluir Consulta
                                     </button>
                                 </td>
@@ -1139,7 +1139,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     </a>
                 </div>
 
-                <form class="ps-3 pe-3" id="formEncerrarConsulta">
+                <form class="ps-3 pe-3" id="formEncerrarConsulta" enctype="multipart/form-data">
 
                     <input type="hidden" id="id" name="id" />
 
@@ -1148,18 +1148,15 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                         <div class="input-group">
                             <select class="form-control" id="statusConsulta" name="statusConsulta" required>
                                 <option value="CONCLUIDA">Concluída</option>
-                                <option value="PROGRAMADA">Programada</option>
-                                <option value="CONFIRMADA">Confirmada</option>
-                                <option value="FALTA">Falta</option>
                                 <option value="CANCELADA">Cancelada</option>
                             </select>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="especialidade" class="form-label">Procedimento</label>
+                        <label for="procedimento" class="form-label">Procedimento</label>
                         <div class="input-group">
-                            <select class="form-control" id="especialidade" name="especialidade" required>
+                            <select class="form-control" id="procedimento" name="procedimento" required>
                                 <option value="">Selecione...</option>
                                 <?php foreach($procedimentos as $p): ?>
                                     <option value="<?= $p['PRC_DCNOME'] ?>">
@@ -1187,16 +1184,16 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
                     <div class="mb-3">
                         <label for="foto1" class="form-label">Fotos</label>
-                        <input type="file" id="foto1" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                        <input type="file" id="foto1" name="foto1" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
                     </div>
                     <div class="mb-3">
-                        <input type="file" id="foto2" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                        <input type="file" id="foto2" name="foto2" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
                     </div>
                     <div class="mb-3">
-                        <input type="file" id="foto3" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                        <input type="file" id="foto3" name="foto3" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
                     </div>
                     <div class="mb-3">
-                        <input type="file" id="foto4" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                        <input type="file" id="foto4" name="foto4" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
                     </div>
 
                     <script>
@@ -1221,7 +1218,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                         <label for="odontograma" class="form-label" style="margin-bottom:2px !important;">
                             Odontograma
                         </label>
-                        <svg id="odontograma" viewBox="0 0 760 300" width="100%" height="200" style="margin-top:2px; display:block;">
+                        <svg id="odontograma" viewBox="0 0 760 330" width="100%" height="200" style="margin-top:2px; display:block;">
 
                             <!-- ====== LINHA SUPERIOR (1–16) ====== -->
                             <g transform="translate(10,10)">
@@ -1443,18 +1440,13 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             });
                         });
                     </script>
-
-
-                 
-
-
                     
                     <div class="mb-3 text-center">
                         <button id="btnSalvar"
                                 class="btn btn-info btn-sweet"
-                                data-form="formNovaConsulta"
-                                data-url="/cadconsulta"
-                                data-title="Nova Consulta">
+                                data-form="formEncerrarConsulta"
+                                data-url="/encerrarConsulta"
+                                data-title="Encerrar Consulta">
                             Salvar
                         </button>
                     </div>
@@ -1495,6 +1487,24 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
         </div>
     </div>
 </div>
+
+
+<script>
+    const encerrarConsultaModal = document.getElementById('encerrarConsulta-modal');
+    if (encerrarConsultaModal) {
+
+        encerrarConsultaModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget; 
+            const idConsulta = button.getAttribute('data-id');
+            const inputHiddenId = encerrarConsultaModal.querySelector('#id');
+
+            if (inputHiddenId) {
+                inputHiddenId.value = idConsulta;
+            }
+        });
+        
+    }
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

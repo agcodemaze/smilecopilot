@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y \
     libfontconfig1 libzip-dev unzip curl git vim cron \
     libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd pdo pdo_mysql mysqli sockets pdo_pgsql zip gd
+    && docker-php-ext-install gd pdo pdo_mysql mysqli sockets pdo_pgsql zip
 
 # Instala Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
