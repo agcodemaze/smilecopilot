@@ -1121,20 +1121,20 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
 <!-- /.Modal encerrar consulta-->
 <div id="encerrarConsulta-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <button type="button"
-                    class="btn-close position-absolute top-0 end-0 m-2"
-                    style="cursor:pointer; z-index:1055;"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                    onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('encerrarConsulta-modal')).hide();">
+                class="btn-close position-absolute top-0 end-0 m-2"
+                style="cursor:pointer; z-index:1055;"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('encerrarConsulta-modal')).hide();">
             </button>
 
             <div class="modal-body">
                 <div class="text-center mt-2 mb-4">
-                    <a href="index.html" class="text-success">
+                    <a href="#" class="text-success">
                         <span><img src="/public/assets/images/logo_bright.png" style="height:28px; width:auto;"></span>
                     </a>
                 </div>
@@ -1144,19 +1144,18 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                     <input type="hidden" id="id" name="id" />
                     <input type="hidden" id="tenancyid" name="tenancyid" />
 
-                    <div class="mb-3">
-                        <label for="statusConsulta" class="form-label">Status</label>
-                        <div class="input-group">
+                    <!-- ================= STATUS + PROCEDIMENTO LADO A LADO ================= -->
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="statusConsulta" class="form-label">Status</label>
                             <select class="form-control" id="statusConsulta" name="statusConsulta" required>
                                 <option value="CONCLUIDA">Concluída</option>
                                 <option value="CANCELADA">Cancelada</option>
                             </select>
                         </div>
-                    </div>
 
-                    <div class="mb-3">
-                        <label for="procedimento" class="form-label">Procedimento</label>
-                        <div class="input-group">
+                        <div class="col-md-8 mb-3">
+                            <label for="procedimento" class="form-label">Procedimento</label>
                             <select class="form-control" id="procedimento" name="procedimento" required>
                                 <option value="">Selecione...</option>
                                 <?php foreach($procedimentos as $p): ?>
@@ -1167,34 +1166,43 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             </select>
                         </div>
                     </div>
-                                
+
+                    <!-- ================= OBSERVAÇÕES ================= -->
                     <div class="mb-3">
                         <label for="observacao" class="form-label">Observações</label>
                         <textarea class="form-control" id="observacao" name="observacao" rows="3" maxlength="300"
                                   style="white-space: pre-wrap; overflow-wrap: break-word;"></textarea>
                         <small id="contadorObs" class="text-muted">0 / 300</small>
                     </div>
-                                
+
                     <script>
                         document.getElementById('observacao').addEventListener('input', function () {
                             document.getElementById('contadorObs').textContent = this.value.length + " / 300";
                         });
                     </script>
 
+                    <!-- ================= FOTOS EM 2 COLUNAS ================= -->
+                    <div class="mb-2">
+                        <label class="form-label">Fotos</label>
+                    </div>
 
-
-                    <div class="mb-3">
-                        <label for="foto1" class="form-label">Fotos</label>
-                        <input type="file" id="foto1" name="foto1" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
-                    </div>
-                    <div class="mb-3">
-                        <input type="file" id="foto2" name="foto2" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
-                    </div>
-                    <div class="mb-3">
-                        <input type="file" id="foto3" name="foto3" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
-                    </div>
-                    <div class="mb-3">
-                        <input type="file" id="foto4" name="foto4" class="form-control foto-input" accept=".png, .jpg, .jpeg, .gif">
+                    <div class="row">
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="file" id="foto1" name="foto1" class="form-control foto-input"
+                                   accept=".png, .jpg, .jpeg, .gif">
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="file" id="foto2" name="foto2" class="form-control foto-input"
+                                   accept=".png, .jpg, .jpeg, .gif">
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="file" id="foto3" name="foto3" class="form-control foto-input"
+                                   accept=".png, .jpg, .jpeg, .gif">
+                        </div>
+                        <div class="col-12 col-md-6 mb-3">
+                            <input type="file" id="foto4" name="foto4" class="form-control foto-input"
+                                   accept=".png, .jpg, .jpeg, .gif">
+                        </div>
                     </div>
 
                     <script>
@@ -1202,260 +1210,139 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                             input.addEventListener('change', function () {
                                 const file = this.files[0];
                                 if (!file) return;
-                            
-                                const maxSize = 5 * 1024 * 1024; // 5MB
-                            
+                                const maxSize = 5 * 1024 * 1024;
                                 if (file.size > maxSize) {
                                     alert('O arquivo deve ter no máximo 5MB.');
-                                    this.value = ''; // limpa o input
+                                    this.value = '';
                                 }
                             });
                         });
                     </script>
 
+                    <!-- ================= ODONTOGRAMA ================= -->
                     <input type="hidden" name="dentes" id="dentesSelecionados">
+                    
+                    <div class="mb-3" id="odontograma">
 
-                    <div class="mb-3">
-                        <label for="odontograma" class="form-label" style="margin-bottom:2px !important;">
-                            Odontograma
-                        </label>
-                        <svg id="odontograma" viewBox="0 0 760 330" width="100%" height="200" style="margin-top:2px; display:block;">
+<style>
+        /* Opcional: Estilos básicos para o SVG e os dentes */
+        .dente-selecionado {
+            fill: yellow !important; /* Exemplo de cor de seleção */
+            stroke-width: 0.5px !important;
+        }
+    </style>
 
-                            <!-- ====== LINHA SUPERIOR (1–16) ====== -->
-                            <g transform="translate(10,10)">
+<?php
+        // Garante que o arquivo existe antes de tentar carregar
+        $svg_path = __DIR__.'/public/assets/images/odontograma.svg';
+        echo $svg_path;
 
-                                <!-- DENTE 1 -->
-                                <g id="t1" class="tooth" transform="translate(0,0)">
-                                    <title>18 – Terceiro Molar Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">1</text>
-                                </g>
+        if (file_exists($svg_path)) {
+            // Inclui o conteúdo exato do arquivo SVG no corpo do HTML
+            include($svg_path);
+        } else {
+            echo "<p style='color: red;'>Erro: O arquivo odontograma.svg não foi encontrado no servidor.</p>";
+        }
+    ?>
 
-                                <g id="t2" class="tooth" transform="translate(45,0)">
-                                    <title>17 – Segundo Molar Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">2</text>
-                                </g>
 
-                                <g id="t3" class="tooth" transform="translate(90,0)">
-                                    <title>16 – Primeiro Molar Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">3</text>
-                                </g>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+    // 1. Obter a referência ao elemento SVG principal (usando o ID do SVG)
+    // Se seu SVG não tem um ID, você pode usar o nome da tag 'svg' e pegar o primeiro:
+    const odontogramaSvg = document.getElementById('svg1'); 
 
-                                <g id="t4" class="tooth" transform="translate(135,0)">
-                                    <title>15 – Segundo Pré-molar Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">4</text>
-                                </g>
+    if (!odontogramaSvg) {
+        console.error("Elemento SVG principal ('svg1') não foi encontrado.");
+        return;
+    }
 
-                                <g id="t5" class="tooth" transform="translate(180,0)">
-                                    <title>14 – Primeiro Pré-molar Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">5</text>
-                                </g>
+    // Cores para alternar:
+    const COR_NORMAL = '#57f0f2'; // Cor original do seu SVG
+    const COR_TRATADO = '#FF5733'; // Exemplo: Laranja para indicar tratamento
+    
+    // 2. Adicionar o listener de clique ao SVG
+    odontogramaSvg.addEventListener('click', (event) => {
+        // O alvo do evento
+        const targetElement = event.target;
+        
+        // 3. Verificar se o elemento clicado é um "dente"
+        // Um dente é um elemento <path> e tem um ID começando com 'dente'
+        const isDente = targetElement.tagName === 'path' && targetElement.id.startsWith('dente');
 
-                                <g id="t6" class="tooth" transform="translate(225,0)">
-                                    <title>13 – Canino Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">6</text>
-                                </g>
+        if (isDente) {
+            const denteId = targetElement.id;
+            
+            // 4. Lógica de Pintura/Alternância
+            let corAtual = targetElement.style.fill;
+            
+            // Se a cor for a normal, mude para a cor de tratado.
+            // Se for outra cor (ou não definida), volte para a cor normal.
+            if (corAtual === '' || corAtual.toUpperCase() === COR_NORMAL.toUpperCase()) {
+                targetElement.style.fill = COR_TRATADO;
+                console.log(`Dente ${denteId} pintado de ${COR_TRATADO}`);
+                
+                // Exemplo de como você integraria com PHP (enviando o status)
+                // salvarStatusDente(denteId, COR_TRATADO);
+                
+            } else {
+                targetElement.style.fill = COR_NORMAL;
+                console.log(`Dente ${denteId} voltou à cor normal (${COR_NORMAL})`);
+                
+                // salvarStatusDente(denteId, COR_NORMAL);
+            }
+            
+            // Opcional: Adicionar/Remover uma classe CSS para estilos de borda, etc.
+            targetElement.classList.toggle('dente-selecionado');
+        }
+    });
+});
 
-                                <g id="t7" class="tooth" transform="translate(270,0)">
-                                    <title>12 – Incisivo Lateral Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">7</text>
-                                </g>
+/*
+// Exemplo de função para salvar o status no banco de dados (precisa de AJAX/fetch)
+function salvarStatusDente(id, cor) {
+    // Você usaria 'fetch' para enviar uma requisição POST ao seu script PHP de backend
+    fetch('salvar_dente.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            dente_id: id,
+            nova_cor: cor 
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Status do dente salvo com sucesso!");
+        } else {
+            console.error("Erro ao salvar status:", data.message);
+        }
+    })
+    .catch(error => console.error('Erro de rede:', error));
+}
+*/
+</script>
 
-                                <g id="t8" class="tooth" transform="translate(315,0)">
-                                    <title>11 – Incisivo Central Superior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">8</text>
-                                </g>
-
-                                <g id="t9" class="tooth" transform="translate(360,0)">
-                                    <title>21 – Incisivo Central Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">9</text>
-                                </g>
-
-                                <g id="t10" class="tooth" transform="translate(405,0)">
-                                    <title>22 – Incisivo Lateral Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">10</text>
-                                </g>
-
-                                <g id="t11" class="tooth" transform="translate(450,0)">
-                                    <title>23 – Canino Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">11</text>
-                                </g>
-
-                                <g id="t12" class="tooth" transform="translate(495,0)">
-                                    <title>24 – Primeiro Pré-molar Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">12</text>
-                                </g>
-
-                                <g id="t13" class="tooth" transform="translate(540,0)">
-                                    <title>25 – Segundo Pré-molar Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">13</text>
-                                </g>
-
-                                <g id="t14" class="tooth" transform="translate(585,0)">
-                                    <title>26 – Primeiro Molar Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">14</text>
-                                </g>
-
-                                <g id="t15" class="tooth" transform="translate(630,0)">
-                                    <title>27 – Segundo Molar Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">15</text>
-                                </g>
-
-                                <g id="t16" class="tooth" transform="translate(675,0)">
-                                    <title>28 – Terceiro Molar Superior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">16</text>
-                                </g>
-                            </g>
-
-                            <!-- ====== LINHA INFERIOR (17–32) ====== -->
-                            <g transform="translate(10,110)">
-
-                                <g id="t17" class="tooth" transform="translate(0,0)">
-                                    <title>48 – Terceiro Molar Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">17</text>
-                                </g>
-
-                                <g id="t18" class="tooth" transform="translate(45,0)">
-                                    <title>47 – Segundo Molar Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">18</text>
-                                </g>
-
-                                <g id="t19" class="tooth" transform="translate(90,0)">
-                                    <title>46 – Primeiro Molar Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">19</text>
-                                </g>
-
-                                <g id="t20" class="tooth" transform="translate(135,0)">
-                                    <title>45 – Segundo Pré-molar Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">20</text>
-                                </g>
-
-                                <g id="t21" class="tooth" transform="translate(180,0)">
-                                    <title>44 – Primeiro Pré-molar Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">21</text>
-                                </g>
-
-                                <g id="t22" class="tooth" transform="translate(225,0)">
-                                    <title>43 – Canino Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">22</text>
-                                </g>
-
-                                <g id="t23" class="tooth" transform="translate(270,0)">
-                                    <title>42 – Incisivo Lateral Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">23</text>
-                                </g>
-
-                                <g id="t24" class="tooth" transform="translate(315,0)">
-                                    <title>41 – Incisivo Central Inferior Direito</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">24</text>
-                                </g>
-
-                                <g id="t25" class="tooth" transform="translate(360,0)">
-                                    <title>31 – Incisivo Central Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">25</text>
-                                </g>
-
-                                <g id="t26" class="tooth" transform="translate(405,0)">
-                                    <title>32 – Incisivo Lateral Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">26</text>
-                                </g>
-
-                                <g id="t27" class="tooth" transform="translate(450,0)">
-                                    <title>33 – Canino Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">27</text>
-                                </g>
-
-                                <g id="t28" class="tooth" transform="translate(495,0)">
-                                    <title>34 – Primeiro Pré-molar Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">28</text>
-                                </g>
-
-                                <g id="t29" class="tooth" transform="translate(540,0)">
-                                    <title>35 – Segundo Pré-molar Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">29</text>
-                                </g>
-
-                                <g id="t30" class="tooth" transform="translate(585,0)">
-                                    <title>36 – Primeiro Molar Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">30</text>
-                                </g>
-
-                                <g id="t31" class="tooth" transform="translate(630,0)">
-                                    <title>37 – Segundo Molar Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">31</text>
-                                </g>
-
-                                <g id="t32" class="tooth" transform="translate(675,0)">
-                                    <title>38 – Terceiro Molar Inferior Esquerdo</title>
-                                    <rect width="40" height="50" rx="6"></rect>
-                                    <text x="20" y="76" class="tooth-number">32</text>
-                                </g>
-
-                            </g>
-
-                        </svg>
                     </div>
 
-
-                    <script>
-                        const campoDentes = document.getElementById('dentesSelecionados');
-
-                        document.querySelectorAll('.tooth').forEach(t => {
-                            t.addEventListener('click', () => {
-                            
-                                t.classList.toggle('selected');
-                            
-                                const selecionados = [...document.querySelectorAll('.tooth.selected')]
-                                    .map(d => d.id.replace('t', '')); 
-                                campoDentes.value = selecionados.join(',');
-                            });
-                        });
-                    </script>
-                    
+                    <!-- BOTÃO -->
                     <div class="mb-3 text-center">
                         <button id="btnSalvar"
-                                class="btn btn-info btn-sweet"
-                                data-form="formEncerrarConsulta"
-                                data-url="/encerrarConsulta"
-                                data-title="Encerrar Consulta">
+                            class="btn btn-info btn-sweet"
+                            data-form="formEncerrarConsulta"
+                            data-url="/encerrarConsulta"
+                            data-title="Encerrar Consulta">
                             Salvar
                         </button>
                     </div>
                 </form>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+        </div>
+    </div>
 </div>
+
 <!-- /.Modal encerrar consulta-->
 
 
