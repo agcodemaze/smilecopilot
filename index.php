@@ -201,11 +201,13 @@ $obRouter->post('/cadconsulta', [
 $obRouter->post('/encerrarConsulta', [
     function() {
         $consultaController = new \App\Controller\Pages\ConsultasAgenda();
+        $S3Controller = new \App\Controller\Pages\S3Controller();
 
         $id = EncryptDecrypt::sanitize($_POST['id'] ?? '');
         $procedimento = EncryptDecrypt::sanitize($_POST['procedimento'] ?? '');
         $observacao = EncryptDecrypt::sanitize($_POST['observacao'] ?? '');
         $dentesSelecionados = EncryptDecrypt::sanitize($_POST['dentesSelecionados'] ?? '');
+        $tenancyid = EncryptDecrypt::sanitize($_POST['tenancyid'] ?? '');
         $foto1 = EncryptDecrypt::sanitize($_POST['foto1'] ?? '');
         $foto2 = EncryptDecrypt::sanitize($_POST['foto2'] ?? '');
         $foto3 = EncryptDecrypt::sanitize($_POST['foto3'] ?? '');
@@ -213,6 +215,7 @@ $obRouter->post('/encerrarConsulta', [
         
 
         if(empty($id)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado ID da consulta."]));}
+        if(empty($tenancyid)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado ID da clínica."]));}
         if(empty($procedimento)){return new Response(200,json_encode(["success" => false, "message" => "Não foi informado o procedimento da consulta."]));}
 
 
@@ -288,20 +291,23 @@ $obRouter->post('/encerrarConsulta', [
                     $originalWidth, $originalHeight
                 );
             
+                
+
                 // Salva imagem temporariamente
-                $tempFilePath = '/tmp/' . $fotoNome;
+                $tempFilePath = __DIR__.'/tmp/' . $fotoNome;
                 imagejpeg($finalImage, $tempFilePath, 70); // Qualidade 60
             
                 // Libera memória
                 imagedestroy($image);
                 imagedestroy($finalImage);
-            
-                // Upload para S3
-                //$result = $dadosS3->putObjS3($tempFilePath, $fotoNome, "ORDEM_SERVICO", IDCONDOMINIO);
-                //if (!$result) {
-                //    echo json_encode(["success" => false, "message" => "Erro ao fazer upload da foto {$campo}"]);
-                //    exit;
-                //}
+
+                // Upload para S3 AWS
+                $result = json_decode($S3Controller->uploadFile($tempFilePath, "consultas/clinica_$tenancyid/$id/$fotoNome"));
+                var_dump($result);
+                if (empty($result)) {
+                    echo json_encode(["success" => false, "message" => "Erro ao fazer upload da foto {$campo}"]);
+                    exit;
+                }
             
                 // Remove arquivo temporário
                 unlink($tempFilePath);
@@ -327,12 +333,14 @@ $obRouter->post('/encerrarConsulta', [
     $fotoTratada3 = $nomesFotos['foto3'];
     $fotoTratada4 = $nomesFotos['foto4'];
 
+    
 
 
 
 
 
-        $result = json_encode(["success" => true,"message" => "Consulta encerrada com sucesso. $fotoTratada1, $fotoTratada2, $fotoTratada3, $fotoTratada4"]);
+
+        $result = json_encode(["success" => true,"message" => "Consulta encerrada com sucesso."]);
         return new Response(200, $result );
         
     }

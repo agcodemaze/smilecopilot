@@ -805,7 +805,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                                 </td>
 
                                 <td class="text-truncate" style="cursor: pointer; text-align:center; max-width: 150px; font-size:16px;" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal" >
-                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal" data-id="<?= $consulta['CON_IDCONSULTA'] ?>">
+                                    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#encerrarConsulta-modal" data-id="<?= $consulta['CON_IDCONSULTA'] ?>" data-tenancyid="<?= $consulta['TENANCY_ID'] ?>">
                                         <i class="ri-tooth-line"></i> Concluir Consulta
                                     </button>
                                 </td>
@@ -1142,6 +1142,7 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
                 <form class="ps-3 pe-3" id="formEncerrarConsulta" enctype="multipart/form-data">
 
                     <input type="hidden" id="id" name="id" />
+                    <input type="hidden" id="tenancyid" name="tenancyid" />
 
                     <div class="mb-3">
                         <label for="statusConsulta" class="form-label">Status</label>
@@ -1495,11 +1496,16 @@ $totalUltimasConsultasPacientes = $ultimasConsultasPacientes ? count($ultimasCon
 
         encerrarConsultaModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget; 
-            const idConsulta = button.getAttribute('data-id');
+            const idConsulta = button.getAttribute('data-id'); 
+            const tenancyid = button.getAttribute('data-tenancyid');
             const inputHiddenId = encerrarConsultaModal.querySelector('#id');
+            const inputHiddentenancyid= encerrarConsultaModal.querySelector('#tenancyid');
 
             if (inputHiddenId) {
                 inputHiddenId.value = idConsulta;
+            }
+            if (inputHiddentenancyid) {
+                inputHiddentenancyid.value = tenancyid;
             }
         });
         
